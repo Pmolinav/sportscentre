@@ -1,0 +1,14 @@
+package net.pmolinav.springboot.repository;
+
+import net.pmolinav.springboot.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    // All crud database methods
+
+    Optional<User> findByUsername(String username);
+}
+
+
