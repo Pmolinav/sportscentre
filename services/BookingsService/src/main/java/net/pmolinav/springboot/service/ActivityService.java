@@ -1,7 +1,7 @@
 package net.pmolinav.springboot.service;
 
 import net.pmolinav.springboot.exception.NotFoundException;
-import net.pmolinav.springboot.model.Activity;
+import net.pmolinav.bookings.model.Activity;
 import net.pmolinav.springboot.repository.ActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

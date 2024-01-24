@@ -1,7 +1,7 @@
 package net.pmolinav.springboot.mapper;
 
-import net.pmolinav.springboot.dto.UserDTO;
-import net.pmolinav.springboot.model.User;
+import net.pmolinav.bookings.dto.UserDTO;
+import net.pmolinav.bookings.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

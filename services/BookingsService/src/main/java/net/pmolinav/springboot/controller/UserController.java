@@ -1,15 +1,12 @@
 package net.pmolinav.springboot.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import net.pmolinav.springboot.dto.ChangeType;
-import net.pmolinav.springboot.dto.UserDTO;
+import net.pmolinav.bookings.dto.ChangeType;
+import net.pmolinav.bookings.dto.UserDTO;
 import net.pmolinav.springboot.exception.BadRequestException;
 import net.pmolinav.springboot.exception.NotFoundException;
 import net.pmolinav.springboot.mapper.UserMapper;
-import net.pmolinav.springboot.model.User;
+import net.pmolinav.bookings.model.User;
 import net.pmolinav.springboot.repository.UserRepository;
 import net.pmolinav.springboot.security.WebSecurityConfig;
 import net.pmolinav.springboot.service.UserService;
@@ -27,8 +24,6 @@ import java.util.List;
 @CrossOrigin("*")
 @RestController
 @RequestMapping("users")
-@SecurityRequirement(name = "BearerToken")
-@Tag(name = "2. User", description = "The User Controller. Contains all the operations that can be performed on an user.")
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -43,7 +38,6 @@ public class UserController {
     //TODO: Fix tests if necessary
 
     @GetMapping
-    @Operation(summary = "Retrieve all users", description = "Bearer token is required to authorize users.")
     public ResponseEntity<List<User>> getAllUsers() {
         try {
             List<User> users = userService.findAllUsers();
@@ -55,7 +49,6 @@ public class UserController {
     }
 
     @PostMapping
-    @Operation(summary = "Create a new user", description = "Bearer token is required to authorize users.")
     public ResponseEntity<User> createUser(@RequestBody UserDTO user) {
         String message = validateMandatoryFieldsInRequest(user);
         if (!StringUtils.hasText(message)) {
@@ -71,7 +64,6 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "Get a specific user by Id", description = "Bearer token is required to authorize users.")
     public ResponseEntity<User> getUserById(@PathVariable long id) {
         try {
             User user = userService.findById(id);
@@ -83,9 +75,7 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    @Operation(summary = "Update a specific user", description = "Bearer token is required to authorize users.")
     public ResponseEntity<User> updateUser(@PathVariable long id, @RequestBody UserDTO userDetails) {
-
         String message = validateMandatoryFieldsInRequest(userDetails);
 
         try {
@@ -111,7 +101,6 @@ public class UserController {
     }
 
     @DeleteMapping("{id}")
-    @Operation(summary = "Delete an user by Id", description = "Bearer token is required to authorize users.")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable long id) {
         try {
             userService.deleteUser(id);

@@ -1,14 +1,11 @@
 package net.pmolinav.springboot.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import net.pmolinav.springboot.dto.ActivityDTO;
 import net.pmolinav.springboot.exception.BadRequestException;
 import net.pmolinav.springboot.exception.NotFoundException;
 import net.pmolinav.springboot.mapper.ActivityMapper;
-import net.pmolinav.springboot.model.Activity;
+import net.pmolinav.bookings.dto.ActivityDTO;
+import net.pmolinav.bookings.model.Activity;
 import net.pmolinav.springboot.service.ActivityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +22,6 @@ import java.util.List;
 @CrossOrigin("*")
 @RestController
 @RequestMapping("activities")
-@SecurityRequirement(name = "BearerToken")
-@Tag(name = "3. Activity", description = "The Activity Controller. Contains all the operations that can be performed on an activity.")
 public class ActivityController {
 
     //TODO: Add logs
@@ -38,7 +33,6 @@ public class ActivityController {
     private ActivityMapper activityMapper;
 
     @GetMapping
-    @Operation(summary = "Retrieve all activities", description = "Bearer token is required to authorize users.")
     public ResponseEntity<List<Activity>> getAllActivities() {
         try {
             List<Activity> activities = activityService.findAllActivities();
@@ -50,7 +44,6 @@ public class ActivityController {
     }
 
     @PostMapping
-    @Operation(summary = "Create a new activity", description = "Bearer token is required to authorize users.")
     public ResponseEntity<Activity> createActivity(@RequestBody ActivityDTO activityDTO) {
         String message = validateMandatoryFieldsInRequest(activityDTO);
         if (!StringUtils.hasText(message)) {
@@ -63,7 +56,6 @@ public class ActivityController {
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "Get a specific activity by Id", description = "Bearer token is required to authorize users.")
     public ResponseEntity<Activity> getActivityById(@PathVariable long id) {
         try {
             Activity activity = activityService.findById(id);
@@ -75,7 +67,6 @@ public class ActivityController {
     }
 
     @PutMapping("{id}")
-    @Operation(summary = "Update a specific activity", description = "Bearer token is required to authorize users.")
     public ResponseEntity<Activity> updateActivity(@PathVariable long id, @RequestBody ActivityDTO activityDetails) {
 
         String message = validateMandatoryFieldsInRequest(activityDetails);
@@ -103,7 +94,6 @@ public class ActivityController {
     }
 
     @DeleteMapping("{id}")
-    @Operation(summary = "Delete an activity by Id", description = "Bearer token is required to authorize users.")
     public ResponseEntity<HttpStatus> deleteActivity(@PathVariable long id) {
         try {
             activityService.deleteActivity(id);

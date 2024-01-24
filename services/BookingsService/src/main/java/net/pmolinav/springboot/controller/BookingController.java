@@ -1,15 +1,12 @@
 package net.pmolinav.springboot.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import net.pmolinav.springboot.dto.BookingDTO;
-import net.pmolinav.springboot.dto.BookingUpdateDTO;
+import net.pmolinav.bookings.dto.BookingDTO;
+import net.pmolinav.bookings.dto.BookingUpdateDTO;
 import net.pmolinav.springboot.exception.BadRequestException;
 import net.pmolinav.springboot.exception.NotFoundException;
 import net.pmolinav.springboot.mapper.BookingMapper;
-import net.pmolinav.springboot.model.Booking;
+import net.pmolinav.bookings.model.Booking;
 import net.pmolinav.springboot.service.BookingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +22,6 @@ import java.util.List;
 @CrossOrigin("*")
 @RestController
 @RequestMapping("bookings")
-@SecurityRequirement(name = "BearerToken")
-@Tag(name = "4. Booking", description = "The Booking Controller. Contains all the operations that can be performed on a booking.")
 public class BookingController {
 
     //TODO: Add logs
@@ -38,7 +33,6 @@ public class BookingController {
     private BookingMapper bookingMapper;
 
     @GetMapping
-    @Operation(summary = "Retrieve all bookings", description = "Bearer token is required to authorize users.")
     public ResponseEntity<List<Booking>> getAllBookings() {
         try {
             List<Booking> bookings = bookingService.findAllBookings();
@@ -50,12 +44,11 @@ public class BookingController {
     }
 
     @PostMapping
-    @Operation(summary = "Create a new booking", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<Booking> createBooking(@RequestBody BookingDTO booking) {
+    public ResponseEntity<Long> createBooking(@RequestBody BookingDTO booking) {
         String message = validateMandatoryFieldsInRequest(booking);
         if (!StringUtils.hasText(message)) {
             Booking createdBooking = bookingService.createBooking(bookingMapper.bookingDTOToBookingEntity(booking));
-            return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
+            return new ResponseEntity<>(createdBooking.getBookingId(), HttpStatus.CREATED);
         } else {
             logger.error(message);
             throw new BadRequestException(message);
@@ -63,7 +56,6 @@ public class BookingController {
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "Get a specific booking by Id", description = "Bearer token is required to authorize users.")
     public ResponseEntity<Booking> getBookingById(@PathVariable long id) {
         try {
             Booking booking = bookingService.findById(id);
@@ -75,7 +67,6 @@ public class BookingController {
     }
 
     @PutMapping("{id}")
-    @Operation(summary = "Update a specific booking", description = "Bearer token is required to authorize users.")
     public ResponseEntity<Booking> updateBooking(@PathVariable long id, @RequestBody BookingUpdateDTO bookingDetails) {
 
         String message = validateMandatoryFieldsInUpdateRequest(bookingDetails);
@@ -99,7 +90,6 @@ public class BookingController {
     }
 
     @DeleteMapping("{id}")
-    @Operation(summary = "Delete a booking by Id", description = "Bearer token is required to authorize users.")
     public ResponseEntity<HttpStatus> deleteBooking(@PathVariable long id) {
         try {
             bookingService.deleteBooking(id);

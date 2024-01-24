@@ -17,6 +17,7 @@
 
     <modules>
         <module>backoffice/ConfigurationBOApi</module>
+        <module>libraries/bookings-lib</module>
         <module>services/BookingsService</module>
     </modules>
     <properties>
