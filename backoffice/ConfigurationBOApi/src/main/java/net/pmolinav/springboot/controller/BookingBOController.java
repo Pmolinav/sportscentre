@@ -4,15 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import net.pmolinav.springboot.dto.BookingDTO;
-import net.pmolinav.springboot.dto.BookingUpdateDTO;
-import net.pmolinav.springboot.exception.BadRequestException;
-import net.pmolinav.springboot.exception.NotFoundException;
-import net.pmolinav.springboot.mapper.BookingMapper;
-import net.pmolinav.springboot.model.Booking;
+import net.pmolinav.bookings.dto.BookingDTO;
+import net.pmolinav.bookings.dto.BookingUpdateDTO;
+import net.pmolinav.bookings.exception.NotFoundException;
+import net.pmolinav.bookings.mapper.BookingMapper;
+import net.pmolinav.bookings.model.Booking;
 import net.pmolinav.springboot.service.BookingService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +24,9 @@ import java.util.List;
 @RequestMapping("bookings")
 @SecurityRequirement(name = "BearerToken")
 @Tag(name = "4. Booking", description = "The Booking Controller. Contains all the operations that can be performed on a booking.")
-public class BookingController {
+public class BookingBOController {
 
-    //TODO: Add logs
     //TODO: Fix tests if necessary
-    private static final Logger logger = LoggerFactory.getLogger(BookingController.class);
     @Autowired
     private BookingService bookingService;
     @Autowired
@@ -42,23 +37,21 @@ public class BookingController {
     public ResponseEntity<List<Booking>> getAllBookings() {
         try {
             List<Booking> bookings = bookingService.findAllBookings();
-            return new ResponseEntity<>(bookings, HttpStatus.OK);
-        } catch (NotFoundException e) {
-            logger.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.ok(bookings);
+        } catch (NotFoundException notFoundException) {
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
     @Operation(summary = "Create a new booking", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<Booking> createBooking(@RequestBody BookingDTO booking) {
-        String message = validateMandatoryFieldsInRequest(booking);
+    public ResponseEntity<Long> createBooking(@RequestBody BookingDTO bookingDTO) {
+        String message = validateMandatoryFieldsInRequest(bookingDTO);
         if (!StringUtils.hasText(message)) {
-            Booking createdBooking = bookingService.createBooking(bookingMapper.bookingDTOToBookingEntity(booking));
-            return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
+            Long createdActivityId = bookingService.createBooking(bookingDTO);
+            return new ResponseEntity<>(createdActivityId, HttpStatus.CREATED);
         } else {
-            logger.error(message);
-            throw new BadRequestException(message);
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -66,47 +59,45 @@ public class BookingController {
     @Operation(summary = "Get a specific booking by Id", description = "Bearer token is required to authorize users.")
     public ResponseEntity<Booking> getBookingById(@PathVariable long id) {
         try {
-            Booking booking = bookingService.findById(id);
+            Booking booking = bookingService.findBookingById(id);
             return ResponseEntity.ok(booking);
         } catch (NotFoundException e) {
-            logger.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
-
-    @PutMapping("{id}")
-    @Operation(summary = "Update a specific booking", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<Booking> updateBooking(@PathVariable long id, @RequestBody BookingUpdateDTO bookingDetails) {
-
-        String message = validateMandatoryFieldsInUpdateRequest(bookingDetails);
-
-        try {
-            Booking updatedBooking = bookingService.findById(id);
-
-            if (!StringUtils.hasText(message)) {
-                updatedBooking.setStartTime(bookingDetails.getStartTime());
-                updatedBooking.setEndTime(bookingDetails.getEndTime());
-                bookingService.createBooking(updatedBooking);
-                return ResponseEntity.ok(updatedBooking);
-            } else {
-                logger.error(message);
-                throw new BadRequestException(message);
-            }
-        } catch (NotFoundException e) {
-            logger.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+// TODO: Complete
+//    @PutMapping("{id}")
+//    @Operation(summary = "Update a specific booking", description = "Bearer token is required to authorize users.")
+//    public ResponseEntity<Booking> updateBooking(@PathVariable long id, @RequestBody BookingUpdateDTO bookingDetails) {
+//
+//        String message = validateMandatoryFieldsInUpdateRequest(bookingDetails);
+//
+//        try {
+//            Booking updatedBooking = bookingService.findById(id);
+//
+//            if (!StringUtils.hasText(message)) {
+//                updatedBooking.setStartTime(bookingDetails.getStartTime());
+//                updatedBooking.setEndTime(bookingDetails.getEndTime());
+//                bookingService.createBooking(updatedBooking);
+//                return ResponseEntity.ok(updatedBooking);
+//            } else {
+//                logger.error(message);
+//                throw new BadRequestException(message);
+//            }
+//        } catch (NotFoundException e) {
+//            logger.error(e.getMessage());
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     @DeleteMapping("{id}")
     @Operation(summary = "Delete a booking by Id", description = "Bearer token is required to authorize users.")
     public ResponseEntity<HttpStatus> deleteBooking(@PathVariable long id) {
         try {
             bookingService.deleteBooking(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
-            logger.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 

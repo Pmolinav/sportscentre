@@ -1,7 +1,7 @@
-package net.pmolinav.springboot.mapper;
+package net.pmolinav.bookings.mapper;
 
-import net.pmolinav.springboot.dto.ActivityDTO;
-import net.pmolinav.springboot.model.Activity;
+import net.pmolinav.bookings.dto.ActivityDTO;
+import net.pmolinav.bookings.model.Activity;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

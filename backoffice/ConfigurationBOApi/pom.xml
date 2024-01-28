@@ -41,6 +41,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
+		<!-- SportsCentre libs -->
+		<dependency>
+			<groupId>net.pmolinav.sportscentre.libraries.bookings-lib</groupId>
+			<artifactId>bookings-lib</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>

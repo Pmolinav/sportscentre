@@ -1,10 +1,14 @@
 package net.pmolinav.springboot.service;
 
-import net.pmolinav.springboot.dto.BookingDTO;
-import net.pmolinav.springboot.exception.NotFoundException;
-import net.pmolinav.springboot.client.BookingsClient;
+import feign.FeignException;
+import net.pmolinav.bookings.dto.BookingDTO;
+import net.pmolinav.bookings.exception.NotFoundException;
+import net.pmolinav.bookings.exception.UnexpectedException;
+import net.pmolinav.bookings.model.Booking;
+import net.pmolinav.springboot.client.BookingClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -12,33 +16,56 @@ import java.util.List;
 
 @Service
 public class BookingService {
-    //TODO: Complete all services
+    //TODO: Complete all services and log message
+    private static final Logger logger = LoggerFactory.getLogger(ActivityService.class);
 
     @Autowired
-    private BookingsClient bookingsClient;
+    private BookingClient bookingClient;
 
     public List<Booking> findAllBookings() {
-        ResponseEntity<List<BookingDTO>> bookingList = bookingsClient.getAllBookings();
-        if (CollectionUtils.isEmpty(bookingList)) {
-            throw new NotFoundException("No bookings found.");
-        } else {
-            return bookingList;
+        try {
+            List<Booking> bookingList = bookingClient.getAllBookings();
+            if (CollectionUtils.isEmpty(bookingList)) {
+                logger.error("No bookings found.");
+                throw new NotFoundException("No bookings found.");
+            } else {
+                return bookingList;
+            }
+        } catch (FeignException e) {
+            logger.error("Unexpected error while calling service with status code " + e.status(), e);
+            throw new UnexpectedException(e.getMessage(), e.status());
         }
     }
 
-    public BookingDTO createBooking(BookingDTO booking) {
-        return bookingsClient.save(booking);
+    public Long createBooking(BookingDTO bookingDTO) {
+        try {
+            return bookingClient.createBooking(bookingDTO);
+        } catch (FeignException e) {
+            logger.error("Unexpected error while calling service with status code " + e.status(), e);
+            throw new UnexpectedException(e.getMessage(), e.status());
+        }
     }
 
-    public BookingDTO findById(long id) {
-        return bookingsClient.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Booking with id %s does not exist.", id)));
+    public Booking findBookingById(long id) {
+        try {
+            return bookingClient.getBookingById(id).orElseThrow(
+                    () -> new NotFoundException(String.format("Booking with id %s does not exist.", id)));
+        } catch (FeignException e) {
+            logger.error("Unexpected error while calling service with status code " + e.status(), e);
+            throw new UnexpectedException(e.getMessage(), e.status());
+        }
     }
 
     public void deleteBooking(Long id) {
-        BookingDTO booking = bookingsClient.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Booking with id %s does not exist.", id)));
+        try {
+            Booking booking = bookingClient.getBookingById(id).orElseThrow(
+                    () -> new NotFoundException(String.format("Booking with id %s does not exist.", id)));
 
-        bookingsClient.delete(booking);
+            bookingClient.deleteBooking(booking.getBookingId());
+        } catch (FeignException e) {
+            logger.error("Unexpected error while calling service with status code " + e.status(), e);
+            throw new UnexpectedException(e.getMessage(), e.status());
+        }
     }
+
 }
