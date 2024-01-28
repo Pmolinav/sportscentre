@@ -1,7 +1,7 @@
 package net.pmolinav.springboot.security;
 
-import net.pmolinav.springboot.model.User;
-import net.pmolinav.springboot.repository.UserRepository;
+import net.pmolinav.bookings.model.User;
+import net.pmolinav.springboot.client.UserClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,14 +12,13 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    UserRepository userRepository;
+    UserClient userClient;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        User user = userRepository
-                .findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User with username %s does not exist", username)));
+        User user = userClient
+                .getUserByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " does not exist"));
 
         return new UserDetailsImpl(user);
 

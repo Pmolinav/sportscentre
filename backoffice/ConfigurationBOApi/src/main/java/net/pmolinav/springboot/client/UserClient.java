@@ -3,7 +3,6 @@ package net.pmolinav.springboot.client;
 import net.pmolinav.bookings.dto.UserDTO;
 import net.pmolinav.bookings.model.User;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,9 +20,12 @@ public interface UserClient {
     @GetMapping("/{id}")
     Optional<User> getUserById(@PathVariable long id);
 
+    @GetMapping("/username/{username}")
+    Optional<User> getUserByUsername(@PathVariable String username);
+
 //    @PutMapping("/{id}")
 //    User updateUser(@PathVariable long id, @RequestBody UserUpdateDTO userDetails);
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable long id);
+    void deleteUser(@PathVariable long id);
 }

@@ -1,7 +1,7 @@
 package net.pmolinav.springboot.security;
 
 import lombok.AllArgsConstructor;
-import net.pmolinav.springboot.model.User;
+import net.pmolinav.bookings.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

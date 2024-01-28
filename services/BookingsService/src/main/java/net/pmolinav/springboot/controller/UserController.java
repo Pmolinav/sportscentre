@@ -57,6 +57,18 @@ public class UserController {
         }
     }
 
+    @GetMapping("username/{username}")
+    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
+        try {
+            User user = userService.findByUsername(username);
+            return ResponseEntity.ok(user);
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (InternalServerErrorException e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
 // TODO: Complete
 //    @PutMapping("{id}")
 //    @Operation(summary = "Update a specific user", description = "Bearer token is required to authorize users.")

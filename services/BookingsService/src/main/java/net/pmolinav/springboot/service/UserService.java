@@ -56,6 +56,17 @@ public class UserService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public User findByUsername(String username) {
+        try {
+            return userRepository.findByUsername(username)
+                    .orElseThrow(() -> new NotFoundException(String.format("User with username %s does not exist.", username)));
+        } catch (Exception e) {
+            logger.error("Unexpected error while searching user with username " + username + " in repository.", e);
+            throw new InternalServerErrorException(e.getMessage());
+        }
+    }
+
     @Transactional
     public void deleteUser(Long id) {
         try {
