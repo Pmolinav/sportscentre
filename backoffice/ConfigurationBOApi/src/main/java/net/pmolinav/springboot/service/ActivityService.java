@@ -24,12 +24,12 @@ public class ActivityService {
 
     public List<Activity> findAllActivities() {
         try {
-            List<Activity> ActivityList = activityClient.getAllActivities();
-            if (CollectionUtils.isEmpty(ActivityList)) {
+            List<Activity> activityList = activityClient.getAllActivities();
+            if (CollectionUtils.isEmpty(activityList)) {
                 logger.error("No activities found.");
                 throw new NotFoundException("No activities found.");
             } else {
-                return ActivityList;
+                return activityList;
             }
         } catch (FeignException e) {
             logger.error("Unexpected error while calling service with status code " + e.status(), e);
