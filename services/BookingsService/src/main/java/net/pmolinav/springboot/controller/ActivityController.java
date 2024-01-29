@@ -25,10 +25,12 @@ public class ActivityController {
     private ActivityService activityService;
 
     @GetMapping
-    public ResponseEntity<List<Activity>> getAllActivities() {
+    public ResponseEntity<List<Activity>> findAllActivities() {
         try {
             List<Activity> activities = activityService.findAllActivities();
             return ResponseEntity.ok(activities);
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
         } catch (InternalServerErrorException e) {
             return ResponseEntity.internalServerError().build();
         }
@@ -46,7 +48,7 @@ public class ActivityController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Activity> getActivityById(@PathVariable long id) {
+    public ResponseEntity<Activity> findActivityById(@PathVariable long id) {
         try {
             Activity activity = activityService.findById(id);
             return ResponseEntity.ok(activity);
@@ -91,6 +93,8 @@ public class ActivityController {
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (InternalServerErrorException e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

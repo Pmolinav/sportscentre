@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -27,7 +28,12 @@ public class ActivityService {
     @Transactional(readOnly = true)
     public List<Activity> findAllActivities() {
         try {
-            return activityRepository.findAll();
+            List<Activity> activityList = activityRepository.findAll();
+            if (CollectionUtils.isEmpty(activityList)) {
+                throw new NotFoundException("No activities found in repository.");
+            } else {
+                return activityList;
+            }
         } catch (Exception e) {
             logger.error("Unexpected error while searching all activities in repository.", e);
             throw new InternalServerErrorException(e.getMessage());
