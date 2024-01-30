@@ -157,7 +157,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>net.pmolinav.springboot.Main</mainClass>
+							<mainClass>net.pmolinav.configuration.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

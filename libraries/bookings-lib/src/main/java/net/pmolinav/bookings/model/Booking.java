@@ -49,7 +49,7 @@ public class Booking {
     @ManyToOne
     private Activity activity;
 
-    public Booking(long bookingId, long userId, long activityId, Date startTime, Date endTime, String status) {
+    public Booking(long bookingId, long userId, long activityId, Date startTime, Date endTime, String status, Date creationDate, Date modificationDate) {
         this.bookingId = bookingId;
         this.userId = userId;
         this.activityId = activityId;
@@ -58,5 +58,7 @@ public class Booking {
         if (status != null) {
             this.status = status;
         }
+        this.creationDate = creationDate;
+        this.modificationDate = modificationDate;
     }
 }

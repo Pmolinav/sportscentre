@@ -134,7 +134,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>net.pmolinav.springboot.Main</mainClass>
+							<mainClass>net.pmolinav.bookings.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
