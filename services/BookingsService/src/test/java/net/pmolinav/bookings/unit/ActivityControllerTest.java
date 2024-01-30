@@ -1,4 +1,4 @@
-package net.pmolinav.springboot.unit;
+package net.pmolinav.bookings.unit;
 
 import net.pmolinav.bookings.dto.ActivityDTO;
 import net.pmolinav.bookings.dto.ActivityType;
