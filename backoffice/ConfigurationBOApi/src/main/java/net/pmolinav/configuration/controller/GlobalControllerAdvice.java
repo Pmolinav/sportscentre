@@ -1,7 +1,7 @@
 package net.pmolinav.configuration.controller;
 
-import net.pmolinav.bookings.dto.MDCKeys;
-import net.pmolinav.bookings.exception.UnexpectedException;
+import net.pmolinav.bookingslib.dto.MDCKeys;
+import net.pmolinav.bookingslib.exception.UnexpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;

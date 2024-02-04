@@ -1,11 +1,11 @@
 package net.pmolinav.bookings.service;
 
-import net.pmolinav.bookings.dto.ActivityDTO;
-import net.pmolinav.bookings.exception.InternalServerErrorException;
-import net.pmolinav.bookings.exception.NotFoundException;
 import net.pmolinav.bookings.mapper.ActivityMapper;
-import net.pmolinav.bookings.model.Activity;
 import net.pmolinav.bookings.repository.ActivityRepository;
+import net.pmolinav.bookingslib.dto.ActivityDTO;
+import net.pmolinav.bookingslib.exception.InternalServerErrorException;
+import net.pmolinav.bookingslib.exception.NotFoundException;
+import net.pmolinav.bookingslib.model.Activity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +27,17 @@ public class ActivityService {
 
     @Transactional(readOnly = true)
     public List<Activity> findAllActivities() {
+        List<Activity> activityList;
         try {
-            List<Activity> activityList = activityRepository.findAll();
-            if (CollectionUtils.isEmpty(activityList)) {
-                throw new NotFoundException("No activities found in repository.");
-            } else {
-                return activityList;
-            }
+            activityList = activityRepository.findAll();
         } catch (Exception e) {
             logger.error("Unexpected error while searching all activities in repository.", e);
             throw new InternalServerErrorException(e.getMessage());
+        }
+        if (CollectionUtils.isEmpty(activityList)) {
+            throw new NotFoundException("No activities found in repository.");
+        } else {
+            return activityList;
         }
     }
 

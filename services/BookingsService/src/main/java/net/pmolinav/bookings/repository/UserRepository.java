@@ -1,6 +1,6 @@
 package net.pmolinav.bookings.repository;
 
-import net.pmolinav.bookings.model.User;
+import net.pmolinav.bookingslib.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

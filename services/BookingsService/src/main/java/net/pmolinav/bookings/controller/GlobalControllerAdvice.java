@@ -1,6 +1,6 @@
 package net.pmolinav.bookings.controller;
 
-import net.pmolinav.bookings.exception.UnexpectedException;
+import net.pmolinav.bookingslib.exception.UnexpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

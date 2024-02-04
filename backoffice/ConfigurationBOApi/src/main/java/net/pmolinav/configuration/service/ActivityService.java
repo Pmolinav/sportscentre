@@ -1,10 +1,10 @@
 package net.pmolinav.configuration.service;
 
 import feign.FeignException;
-import net.pmolinav.bookings.dto.ActivityDTO;
-import net.pmolinav.bookings.exception.NotFoundException;
-import net.pmolinav.bookings.exception.UnexpectedException;
-import net.pmolinav.bookings.model.Activity;
+import net.pmolinav.bookingslib.dto.ActivityDTO;
+import net.pmolinav.bookingslib.exception.NotFoundException;
+import net.pmolinav.bookingslib.exception.UnexpectedException;
+import net.pmolinav.bookingslib.model.Activity;
 import net.pmolinav.configuration.client.ActivityClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

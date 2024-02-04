@@ -1,11 +1,11 @@
 package net.pmolinav.bookings.service;
 
-import net.pmolinav.bookings.dto.UserDTO;
-import net.pmolinav.bookings.exception.InternalServerErrorException;
-import net.pmolinav.bookings.exception.NotFoundException;
 import net.pmolinav.bookings.mapper.UserMapper;
-import net.pmolinav.bookings.model.User;
 import net.pmolinav.bookings.repository.UserRepository;
+import net.pmolinav.bookingslib.dto.UserDTO;
+import net.pmolinav.bookingslib.exception.InternalServerErrorException;
+import net.pmolinav.bookingslib.exception.NotFoundException;
+import net.pmolinav.bookingslib.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

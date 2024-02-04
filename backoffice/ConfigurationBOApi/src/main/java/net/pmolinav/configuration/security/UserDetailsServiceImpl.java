@@ -1,6 +1,6 @@
 package net.pmolinav.configuration.security;
 
-import net.pmolinav.bookings.model.User;
+import net.pmolinav.bookingslib.model.User;
 import net.pmolinav.configuration.client.UserClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

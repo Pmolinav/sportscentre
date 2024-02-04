@@ -1,7 +1,7 @@
 package net.pmolinav.configuration.client;
 
-import net.pmolinav.bookings.dto.ActivityDTO;
-import net.pmolinav.bookings.model.Activity;
+import net.pmolinav.bookingslib.dto.ActivityDTO;
+import net.pmolinav.bookingslib.model.Activity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,8 +1,8 @@
 package net.pmolinav.configuration.client;
 
-import net.pmolinav.bookings.dto.BookingDTO;
-import net.pmolinav.bookings.dto.BookingUpdateDTO;
-import net.pmolinav.bookings.model.Booking;
+import net.pmolinav.bookingslib.dto.BookingDTO;
+import net.pmolinav.bookingslib.dto.BookingUpdateDTO;
+import net.pmolinav.bookingslib.model.Booking;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

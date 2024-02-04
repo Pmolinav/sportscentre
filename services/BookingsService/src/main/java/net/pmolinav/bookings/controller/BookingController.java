@@ -1,10 +1,10 @@
 package net.pmolinav.bookings.controller;
 
 import lombok.AllArgsConstructor;
-import net.pmolinav.bookings.dto.BookingDTO;
-import net.pmolinav.bookings.exception.InternalServerErrorException;
-import net.pmolinav.bookings.exception.NotFoundException;
-import net.pmolinav.bookings.model.Booking;
+import net.pmolinav.bookingslib.dto.BookingDTO;
+import net.pmolinav.bookingslib.exception.InternalServerErrorException;
+import net.pmolinav.bookingslib.exception.NotFoundException;
+import net.pmolinav.bookingslib.model.Booking;
 import net.pmolinav.bookings.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
