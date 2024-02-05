@@ -12,11 +12,11 @@ import java.util.Date;
 @EqualsAndHashCode
 @ToString
 @Entity
-@Table(name = "activities")
+@Table(name = "history")
 public class History {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 

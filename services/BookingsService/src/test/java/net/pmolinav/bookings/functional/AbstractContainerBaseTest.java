@@ -11,6 +11,9 @@ public abstract class AbstractContainerBaseTest {
     private int databasePort;
     private final static int DB_PORT = 5432;
     static final PostgreSQLContainer<?> postgresContainer;
+    static String jdbcUrl;
+    static String username;
+    static String password;
 
     static {
         postgresContainer = new PostgreSQLContainer<>("postgres:latest")
@@ -18,7 +21,12 @@ public abstract class AbstractContainerBaseTest {
                 .withDatabaseName("bookings")
                 .withUsername("postgres")
                 .withPassword("mysecretpassword");
+
         postgresContainer.start();
+
+        jdbcUrl = postgresContainer.getJdbcUrl();
+        username = postgresContainer.getUsername();
+        password = postgresContainer.getPassword();
 
         System.setProperty("database.port", String.valueOf(postgresContainer.getMappedPort(DB_PORT)));
 
