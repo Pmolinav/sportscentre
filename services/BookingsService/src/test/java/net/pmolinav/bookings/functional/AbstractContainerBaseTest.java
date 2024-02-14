@@ -32,7 +32,6 @@ public abstract class AbstractContainerBaseTest {
 
         System.out.println("Connection started for database: " + postgresContainer.getDatabaseName() +
                 " and mapped port: " + postgresContainer.getMappedPort(DB_PORT));
-
     }
 
 }

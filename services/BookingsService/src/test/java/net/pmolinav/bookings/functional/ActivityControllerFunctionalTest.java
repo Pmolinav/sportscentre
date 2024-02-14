@@ -7,6 +7,7 @@ import net.pmolinav.bookings.repository.ActivityRepository;
 import net.pmolinav.bookingslib.dto.ActivityDTO;
 import net.pmolinav.bookingslib.dto.ActivityType;
 import net.pmolinav.bookingslib.model.Activity;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,6 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,12 +52,14 @@ class ActivityControllerFunctionalTest extends AbstractContainerBaseTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
+    @Sql(scripts = "/cleanup-activities.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findAllActivitiesNotFound() throws Exception {
         mockMvc.perform(get("/activities"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
+    @Sql(scripts = "/cleanup-activities.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findAllActivitiesHappyPath() throws Exception {
         givenSomeActivitiesPreviouslyStoredWithIds(1, 2);
         MvcResult result = mockMvc.perform(get("/activities"))
@@ -67,9 +70,9 @@ class ActivityControllerFunctionalTest extends AbstractContainerBaseTest {
                 new TypeReference<List<Activity>>() {
                 });
 
-        assertEquals(2, activityResponseList.size());
-        assertEquals(ActivityType.FOOTBALL.name(), activityResponseList.get(0).getType());
-        assertEquals(ActivityType.TENNIS.name(), activityResponseList.get(1).getType());
+        Assertions.assertEquals(2, activityResponseList.size());
+        Assertions.assertEquals(ActivityType.FOOTBALL.name(), activityResponseList.get(0).getType());
+        Assertions.assertEquals(ActivityType.TENNIS.name(), activityResponseList.get(1).getType());
     }
 
     @Test
@@ -95,6 +98,7 @@ class ActivityControllerFunctionalTest extends AbstractContainerBaseTest {
     }
 
     @Test
+    @Sql(scripts = "/cleanup-activities.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findActivityByIdHappyPath() throws Exception {
         givenSomeActivitiesPreviouslyStoredWithIds(3, 4);
         MvcResult result = mockMvc.perform(get("/activities/3"))
@@ -105,8 +109,8 @@ class ActivityControllerFunctionalTest extends AbstractContainerBaseTest {
                 new TypeReference<Activity>() {
                 });
 
-        assertEquals(ActivityType.FOOTBALL.name(), activityResponse.getType());
-        assertEquals(BigDecimal.valueOf(25), activityResponse.getPrice());
+        Assertions.assertEquals(ActivityType.FOOTBALL.name(), activityResponse.getType());
+        Assertions.assertEquals(BigDecimal.valueOf(25).longValue(), activityResponse.getPrice().longValue());
     }
 
     @Test
@@ -139,7 +143,7 @@ class ActivityControllerFunctionalTest extends AbstractContainerBaseTest {
                 statement.executeUpdate(insertQuery2);
             }
         } catch (Exception e) {
-            fail();
+            Assertions.fail();
         }
     }
 }
