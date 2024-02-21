@@ -12,6 +12,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /**
+     * Method used to configure application's accessibility.
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
