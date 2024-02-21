@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.pmolinav.bookings.mapper.UserMapper;
 import net.pmolinav.bookings.repository.UserRepository;
-import net.pmolinav.bookings.security.WebSecurityConfig;
 import net.pmolinav.bookingslib.dto.Role;
 import net.pmolinav.bookingslib.dto.UserDTO;
 import net.pmolinav.bookingslib.model.User;
@@ -21,9 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
 
@@ -57,7 +53,8 @@ class UsersControllerFunctionalTest extends AbstractContainerBaseTest {
 
     @Test
     void findAllUsersHappyPath() throws Exception {
-        givenSomeUsersPreviouslyStoredWithIds(1, 2);
+        givenSomePreviouslyStoredDataWithIds(1, 2, false, true, false);
+
         MvcResult result = mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -71,7 +68,8 @@ class UsersControllerFunctionalTest extends AbstractContainerBaseTest {
 
     @Test
     void createUserHappyPath() throws Exception {
-        givenSomeUsersPreviouslyStoredWithIds(1, 2);
+        givenSomePreviouslyStoredDataWithIds(1, 2, false, true, false);
+
         UserDTO requestDto = new UserDTO("someUser", "somePassword", "someName",
                 "some@email.com", Role.USER, new Date(), new Date());
 
@@ -94,7 +92,8 @@ class UsersControllerFunctionalTest extends AbstractContainerBaseTest {
 
     @Test
     void findUserByIdHappyPath() throws Exception {
-        givenSomeUsersPreviouslyStoredWithIds(3, 4);
+        givenSomePreviouslyStoredDataWithIds(3, 4, false, true, false);
+
         MvcResult result = mockMvc.perform(get("/users/3"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -114,7 +113,7 @@ class UsersControllerFunctionalTest extends AbstractContainerBaseTest {
 
     @Test
     void deleteUserByIdHappyPath() throws Exception {
-        givenSomeUsersPreviouslyStoredWithIds(5, 6);
+        givenSomePreviouslyStoredDataWithIds(5, 6, false, true, false);
 
         mockMvc.perform(delete("/users/5"))
                 .andExpect(status().isOk());
@@ -123,21 +122,5 @@ class UsersControllerFunctionalTest extends AbstractContainerBaseTest {
                 .andExpect(status().isOk());
     }
 
-    private void givenSomeUsersPreviouslyStoredWithIds(long id, long id2) {
-        try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password)) {
-            try (Statement statement = connection.createStatement()) {
-
-                String insertUserQuery = "INSERT INTO users (user_id, username, password, name, email, role, creation_date, modification_date) " +
-                        "VALUES (" + id + ", 'someUser', '" + WebSecurityConfig.passwordEncoder().encode("somePassword") + "', 'John Doe', 'john@example.com', 'ADMIN', '2024-02-14 10:00:00', NULL);";
-                statement.executeUpdate(insertUserQuery);
-
-                String insertUserQuery2 = "INSERT INTO users (user_id, username, password, name, email, role, creation_date, modification_date) " +
-                        "VALUES (" + id2 + ", 'otherUser', '" + WebSecurityConfig.passwordEncoder().encode("somePassword") + "', 'Jane Smith', 'jane@example.com', 'ADMIN', '2024-02-14 10:30:00', '2024-02-14 11:15:00');";
-                statement.executeUpdate(insertUserQuery2);
-            }
-        } catch (Exception e) {
-            Assertions.fail();
-        }
-    }
 }
 

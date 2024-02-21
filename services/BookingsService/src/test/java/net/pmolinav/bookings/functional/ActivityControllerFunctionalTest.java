@@ -21,9 +21,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
 
@@ -57,7 +54,8 @@ class ActivityControllerFunctionalTest extends AbstractContainerBaseTest {
 
     @Test
     void findAllActivitiesHappyPath() throws Exception {
-        givenSomeActivitiesPreviouslyStoredWithIds(1, 2);
+        givenSomePreviouslyStoredDataWithIds(1, 2, true, false, false);
+
         MvcResult result = mockMvc.perform(get("/activities"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -95,7 +93,8 @@ class ActivityControllerFunctionalTest extends AbstractContainerBaseTest {
 
     @Test
     void findActivityByIdHappyPath() throws Exception {
-        givenSomeActivitiesPreviouslyStoredWithIds(3, 4);
+        givenSomePreviouslyStoredDataWithIds(3, 4, true, false, false);
+
         MvcResult result = mockMvc.perform(get("/activities/3"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -116,30 +115,13 @@ class ActivityControllerFunctionalTest extends AbstractContainerBaseTest {
 
     @Test
     void deleteActivityByIdHappyPath() throws Exception {
-        givenSomeActivitiesPreviouslyStoredWithIds(5, 6);
+        givenSomePreviouslyStoredDataWithIds(5, 6, true, false, false);
 
         mockMvc.perform(delete("/activities/5"))
                 .andExpect(status().isOk());
 
         mockMvc.perform(delete("/activities/6"))
                 .andExpect(status().isOk());
-    }
-
-    private void givenSomeActivitiesPreviouslyStoredWithIds(long id, long id2) {
-        try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password)) {
-            try (Statement statement = connection.createStatement()) {
-
-                String insertQuery = "INSERT INTO activities (activity_id, type, name, description, price, creation_date, modification_date) " +
-                        "VALUES (" + id + ", 'FOOTBALL', 'Football', 'Football activity', 25, '2024-01-01 08:00:00', '2024-01-01 08:00:00');";
-                statement.executeUpdate(insertQuery);
-
-                String insertQuery2 = "INSERT INTO activities (activity_id, type, name, description, price, creation_date, modification_date) " +
-                        "VALUES (" + id2 + ", 'TENNIS', 'Tennis', 'Tennis Activity', 15.50, '2023-01-02 10:00:00', '2024-01-02 10:00:00');";
-                statement.executeUpdate(insertQuery2);
-            }
-        } catch (Exception e) {
-            Assertions.fail();
-        }
     }
 }
 
