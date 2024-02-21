@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.pmolinav.bookings.mapper.BookingMapper;
 import net.pmolinav.bookings.repository.BookingRepository;
+import net.pmolinav.bookings.security.WebSecurityConfig;
 import net.pmolinav.bookingslib.dto.BookingDTO;
 import net.pmolinav.bookingslib.dto.BookingStatus;
 import net.pmolinav.bookingslib.model.Booking;
@@ -15,9 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,14 +50,12 @@ class BookingsControllerFunctionalTest extends AbstractContainerBaseTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    @Sql(scripts = "/cleanup-bookings.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findAllBookingsNotFound() throws Exception {
         mockMvc.perform(get("/bookings"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @Sql(scripts = "/cleanup-bookings.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findAllBookingsHappyPath() throws Exception {
         givenSomeBookingsPreviouslyStoredWithIds(1, 2, true);
         MvcResult result = mockMvc.perform(get("/bookings"))
@@ -96,7 +93,6 @@ class BookingsControllerFunctionalTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    @Sql(scripts = "/cleanup-bookings.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findBookingByIdHappyPath() throws Exception {
         givenSomeBookingsPreviouslyStoredWithIds(3, 4, true);
         MvcResult result = mockMvc.perform(get("/bookings/3"))
@@ -140,21 +136,21 @@ class BookingsControllerFunctionalTest extends AbstractContainerBaseTest {
                         "VALUES (" + id2 + ", 'TENNIS', 'Tennis', 'Tennis Activity', 15.50, '2023-01-02 10:00:00', '2024-01-02 10:00:00');";
                 statement.executeUpdate(insertActivityQuery2);
 
-                String insertUserQuery = "INSERT INTO users (user_id, username, password, name, email, role, creationDate, modificationDate) " +
-                        "VALUES (" + id + ", 'someUser', " + new BCryptPasswordEncoder().encode("somePassword") + ", 'John Doe', 'john@example.com', 'ADMIN', '2024-02-14 10:00:00', NULL);";
+                String insertUserQuery = "INSERT INTO users (user_id, username, password, name, email, role, creation_date, modification_date) " +
+                        "VALUES (" + id + ", 'someUser', '" + WebSecurityConfig.passwordEncoder().encode("somePassword") + "', 'John Doe', 'john@example.com', 'ADMIN', '2024-02-14 10:00:00', NULL);";
                 statement.executeUpdate(insertUserQuery);
 
-                String insertUserQuery2 = "INSERT INTO users (user_id, username, password, name, email, role, creationDate, modificationDate) " +
-                        "VALUES (" + id2 + ", 'otherUser', " + new BCryptPasswordEncoder().encode("somePassword") + ", 'Jane Smith', 'jane@example.com', 'ADMIN', '2024-02-14 10:30:00', '2024-02-14 11:15:00');";
+                String insertUserQuery2 = "INSERT INTO users (user_id, username, password, name, email, role, creation_date, modification_date) " +
+                        "VALUES (" + id2 + ", 'otherUser', '" + WebSecurityConfig.passwordEncoder().encode("somePassword") + "', 'Jane Smith', 'jane@example.com', 'ADMIN', '2024-02-14 10:30:00', '2024-02-14 11:15:00');";
                 statement.executeUpdate(insertUserQuery2);
 
                 if (createBookings) {
-                    String insertBookingQuery = "INSERT INTO bookings (booking_id, user_id, activity_id, startTime, endTime, status, creationDate, modificationDate) " +
+                    String insertBookingQuery = "INSERT INTO bookings (booking_id, user_id, activity_id, start_time, end_time, status, creation_date, modification_date) " +
                             "VALUES (" + id + ", " + id + ", " + id + ", '2024-02-14 09:00:00', '2024-02-14 11:00:00', 'OPEN', '2024-02-14 08:00:00', NULL);";
                     statement.executeUpdate(insertBookingQuery);
 
-                    String insertBookingQuery2 = "INSERT INTO bookings (booking_id, user_id, activity_id, startTime, endTime, status, creationDate, modificationDate) " +
-                            "VALUES (" + id + ", " + id + ", " + id + "'2024-02-15 14:00:00', '2024-02-15 16:00:00', 'OPEN', '2024-02-15 13:00:00', '2024-02-15 13:30:00');";
+                    String insertBookingQuery2 = "INSERT INTO bookings (booking_id, user_id, activity_id, start_time, end_time, status, creation_date, modification_date) " +
+                            "VALUES (" + id2 + ", " + id2 + ", " + id2 + ", '2024-02-15 14:00:00', '2024-02-15 16:00:00', 'OPEN', '2024-02-15 13:00:00', '2024-02-15 13:30:00');";
                     statement.executeUpdate(insertBookingQuery2);
                 }
             }

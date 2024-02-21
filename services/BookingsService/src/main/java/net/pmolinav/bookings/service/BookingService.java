@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -26,11 +27,17 @@ public class BookingService {
 
     @Transactional(readOnly = true)
     public List<Booking> findAllBookings() {
+        List<Booking> bookingsList;
         try {
-            return bookingRepository.findAll();
+            bookingsList = bookingRepository.findAll();
         } catch (Exception e) {
             logger.error("Unexpected error while searching all bookings in repository.", e);
             throw new InternalServerErrorException(e.getMessage());
+        }
+        if (CollectionUtils.isEmpty(bookingsList)) {
+            throw new NotFoundException("No bookings found in repository.");
+        } else {
+            return bookingsList;
         }
     }
 
@@ -50,6 +57,9 @@ public class BookingService {
         try {
             return bookingRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException(String.format("Booking with id %s does not exist.", id)));
+        } catch (NotFoundException e) {
+            logger.error("Booking with id " + id + " was not found.", e);
+            throw e;
         } catch (Exception e) {
             logger.error("Unexpected error while searching booking with id " + id + " in repository.", e);
             throw new InternalServerErrorException(e.getMessage());
@@ -63,6 +73,9 @@ public class BookingService {
                     .orElseThrow(() -> new NotFoundException(String.format("Booking with id %s does not exist.", id)));
 
             bookingRepository.delete(booking);
+        } catch (NotFoundException e) {
+            logger.error("Booking with id " + id + " was not found.", e);
+            throw e;
         } catch (Exception e) {
             logger.error("Unexpected error while removing booking with id " + id + " in repository.", e);
             throw new InternalServerErrorException(e.getMessage());

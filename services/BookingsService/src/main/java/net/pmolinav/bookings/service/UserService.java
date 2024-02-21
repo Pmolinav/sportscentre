@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -26,11 +27,17 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<User> findAllUsers() {
+        List<User> usersList;
         try {
-            return userRepository.findAll();
+            usersList = userRepository.findAll();
         } catch (Exception e) {
             logger.error("Unexpected error while searching all users in repository.", e);
             throw new InternalServerErrorException(e.getMessage());
+        }
+        if (CollectionUtils.isEmpty(usersList)) {
+            throw new NotFoundException("No users found in repository.");
+        } else {
+            return usersList;
         }
     }
 
@@ -50,6 +57,9 @@ public class UserService {
         try {
             return userRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException(String.format("User with id %s does not exist.", id)));
+        } catch (NotFoundException e) {
+            logger.error("User with id " + id + " was not found.", e);
+            throw e;
         } catch (Exception e) {
             logger.error("Unexpected error while searching user with id " + id + " in repository.", e);
             throw new InternalServerErrorException(e.getMessage());
@@ -61,6 +71,9 @@ public class UserService {
         try {
             return userRepository.findByUsername(username)
                     .orElseThrow(() -> new NotFoundException(String.format("User with username %s does not exist.", username)));
+        } catch (NotFoundException e) {
+            logger.error("User with username " + username + " was not found.", e);
+            throw e;
         } catch (Exception e) {
             logger.error("Unexpected error while searching user with username " + username + " in repository.", e);
             throw new InternalServerErrorException(e.getMessage());
@@ -74,6 +87,9 @@ public class UserService {
                     .orElseThrow(() -> new NotFoundException(String.format("User with id %s does not exist.", id)));
 
             userRepository.delete(user);
+        } catch (NotFoundException e) {
+            logger.error("User with id " + id + " was not found.", e);
+            throw e;
         } catch (Exception e) {
             logger.error("Unexpected error while removing user with id " + id + " in repository.", e);
             throw new InternalServerErrorException(e.getMessage());
