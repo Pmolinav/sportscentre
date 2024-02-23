@@ -2,8 +2,8 @@ package net.pmolinav.configuration.unit;
 
 import net.pmolinav.bookingslib.dto.ActivityDTO;
 import net.pmolinav.bookingslib.dto.ActivityType;
-import net.pmolinav.bookingslib.exception.InternalServerErrorException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
+import net.pmolinav.bookingslib.exception.UnexpectedException;
 import net.pmolinav.bookingslib.model.Activity;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -135,27 +135,25 @@ class ActivityControllerTest extends BaseUnitTest {
                         2L, ActivityType.GYM.name(), "otherActivity",
                         "otherDescription", BigDecimal.ONE, new Date(), null));
 
-        when(activityServiceMock.findAllActivities()).thenReturn(expectedActivities);
+        when(activityBOServiceMock.findAllActivities()).thenReturn(expectedActivities);
     }
 
     private void whenFindAllActivitiesInServiceThrowsNotFoundException() {
-        when(activityServiceMock.findAllActivities()).thenThrow(new NotFoundException("Not Found"));
+        when(activityBOServiceMock.findAllActivities()).thenThrow(new NotFoundException("Not Found"));
     }
 
     private void whenFindAllActivitiesInServiceThrowsServerException() {
-        when(activityServiceMock.findAllActivities())
-                .thenThrow(new InternalServerErrorException("Internal Server Error"));
+        when(activityBOServiceMock.findAllActivities())
+                .thenThrow(new UnexpectedException("Internal Server Error", 500));
     }
 
     private void whenCreateActivityInServiceReturnedAValidActivity() {
-        when(activityServiceMock.createActivity(any())).thenReturn(new Activity(
-                1L, activityDTO.getType().name(), activityDTO.getName(),
-                activityDTO.getDescription(), BigDecimal.TEN, new Date(), null));
+        when(activityBOServiceMock.createActivity(any())).thenReturn(1L);
     }
 
     private void whenCreateActivityInServiceThrowsServerException() {
-        when(activityServiceMock.createActivity(any(ActivityDTO.class)))
-                .thenThrow(new InternalServerErrorException("Internal Server Error"));
+        when(activityBOServiceMock.createActivity(any(ActivityDTO.class)))
+                .thenThrow(new UnexpectedException("Internal Server Error", 500));
     }
 
     private void whenFindActivityByIdInServiceReturnedValidActivities() {
@@ -163,31 +161,31 @@ class ActivityControllerTest extends BaseUnitTest {
                 new Activity(1L, ActivityType.FOOTBALL.name(), "someActivity",
                         "someDescription", BigDecimal.TEN, new Date(), null));
 
-        when(activityServiceMock.findById(1L)).thenReturn(expectedActivities.get(0));
+        when(activityBOServiceMock.findActivityById(1L)).thenReturn(expectedActivities.get(0));
     }
 
     private void whenFindActivityByIdInServiceThrowsNotFoundException() {
-        when(activityServiceMock.findById(1L)).thenThrow(new NotFoundException("Not Found"));
+        when(activityBOServiceMock.findActivityById(1L)).thenThrow(new NotFoundException("Not Found"));
     }
 
     private void whenFindActivityByIdInServiceThrowsServerException() {
-        when(activityServiceMock.findById(1L))
-                .thenThrow(new InternalServerErrorException("Internal Server Error"));
+        when(activityBOServiceMock.findActivityById(1L))
+                .thenThrow(new UnexpectedException("Internal Server Error", 500));
     }
 
     private void whenDeleteActivityInServiceIsOk() {
-        doNothing().when(activityServiceMock).deleteActivity(anyLong());
+        doNothing().when(activityBOServiceMock).deleteActivity(anyLong());
     }
 
     private void whenDeleteActivityInServiceThrowsNotFoundException() {
         doThrow(new NotFoundException("Not Found"))
-                .when(activityServiceMock)
+                .when(activityBOServiceMock)
                 .deleteActivity(anyLong());
     }
 
     private void whenDeleteActivityInServiceThrowsServerException() {
-        doThrow(new InternalServerErrorException("Internal Server Error"))
-                .when(activityServiceMock)
+        doThrow(new UnexpectedException("Internal Server Error", 500))
+                .when(activityBOServiceMock)
                 .deleteActivity(anyLong());
     }
 
@@ -196,7 +194,7 @@ class ActivityControllerTest extends BaseUnitTest {
     }
 
     private void andFindActivityByIdIsCalledInController() {
-        result = activityController.findActivityById(1L);
+        result = activityController.getActivityById(1L);
     }
 
     private void andCreateActivityIsCalledInController() {
@@ -208,19 +206,19 @@ class ActivityControllerTest extends BaseUnitTest {
     }
 
     private void thenVerifyFindAllActivitiesHasBeenCalledInService() {
-        verify(activityServiceMock, times(1)).findAllActivities();
+        verify(activityBOServiceMock, times(1)).findAllActivities();
     }
 
     private void thenVerifyCreateActivityHasBeenCalledInService() {
-        verify(activityServiceMock, times(1)).createActivity(any(ActivityDTO.class));
+        verify(activityBOServiceMock, times(1)).createActivity(any(ActivityDTO.class));
     }
 
     private void thenVerifyFindByIdHasBeenCalledInService() {
-        verify(activityServiceMock, times(1)).findById(anyLong());
+        verify(activityBOServiceMock, times(1)).findActivityById(anyLong());
     }
 
     private void thenVerifyDeleteActivityHasBeenCalledInService() {
-        verify(activityServiceMock, times(1)).deleteActivity(anyLong());
+        verify(activityBOServiceMock, times(1)).deleteActivity(anyLong());
     }
 
     private void thenReceivedStatusCodeIs(HttpStatus httpStatus) {

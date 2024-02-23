@@ -2,8 +2,8 @@ package net.pmolinav.configuration.unit;
 
 import net.pmolinav.bookingslib.dto.BookingDTO;
 import net.pmolinav.bookingslib.dto.BookingStatus;
-import net.pmolinav.bookingslib.exception.InternalServerErrorException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
+import net.pmolinav.bookingslib.exception.UnexpectedException;
 import net.pmolinav.bookingslib.model.Booking;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -135,27 +135,25 @@ class BookingControllerTest extends BaseUnitTest {
                 new Booking(2L, 22L, 444L, new Date(), new Date(),
                         BookingStatus.OPEN.name(), new Date(), null));
 
-        when(bookingServiceMock.findAllBookings()).thenReturn(expectedBookings);
+        when(bookingBOServiceMock.findAllBookings()).thenReturn(expectedBookings);
     }
 
     private void whenFindAllBookingsInServiceThrowsNotFoundException() {
-        when(bookingServiceMock.findAllBookings()).thenThrow(new NotFoundException("Not Found"));
+        when(bookingBOServiceMock.findAllBookings()).thenThrow(new NotFoundException("Not Found"));
     }
 
     private void whenFindAllBookingsInServiceThrowsServerException() {
-        when(bookingServiceMock.findAllBookings())
-                .thenThrow(new InternalServerErrorException("Internal Server Error"));
+        when(bookingBOServiceMock.findAllBookings())
+                .thenThrow(new UnexpectedException("Internal Server Error", 500));
     }
 
     private void whenCreateBookingInServiceReturnedAValidBooking() {
-        when(bookingServiceMock.createBooking(any())).thenReturn(new Booking(
-                1L, 22L, 333L, new Date(), new Date(),
-                BookingStatus.OPEN.name(), new Date(), null));
+        when(bookingBOServiceMock.createBooking(any())).thenReturn(1L);
     }
 
     private void whenCreateBookingInServiceThrowsServerException() {
-        when(bookingServiceMock.createBooking(any(BookingDTO.class)))
-                .thenThrow(new InternalServerErrorException("Internal Server Error"));
+        when(bookingBOServiceMock.createBooking(any(BookingDTO.class)))
+                .thenThrow(new UnexpectedException("Internal Server Error", 500));
     }
 
     private void whenFindBookingByIdInServiceReturnedValidBookings() {
@@ -163,31 +161,31 @@ class BookingControllerTest extends BaseUnitTest {
                 new Booking(1L, 22L, 333L, new Date(), new Date(),
                         BookingStatus.OPEN.name(), new Date(), null));
 
-        when(bookingServiceMock.findById(1L)).thenReturn(expectedBookings.get(0));
+        when(bookingBOServiceMock.findBookingById(1L)).thenReturn(expectedBookings.get(0));
     }
 
     private void whenFindBookingByIdInServiceThrowsNotFoundException() {
-        when(bookingServiceMock.findById(1L)).thenThrow(new NotFoundException("Not Found"));
+        when(bookingBOServiceMock.findBookingById(1L)).thenThrow(new NotFoundException("Not Found"));
     }
 
     private void whenFindBookingByIdInServiceThrowsServerException() {
-        when(bookingServiceMock.findById(1L))
-                .thenThrow(new InternalServerErrorException("Internal Server Error"));
+        when(bookingBOServiceMock.findBookingById(1L))
+                .thenThrow(new UnexpectedException("Internal Server Error", 500));
     }
 
     private void whenDeleteBookingInServiceIsOk() {
-        doNothing().when(bookingServiceMock).deleteBooking(anyLong());
+        doNothing().when(bookingBOServiceMock).deleteBooking(anyLong());
     }
 
     private void whenDeleteBookingInServiceThrowsNotFoundException() {
         doThrow(new NotFoundException("Not Found"))
-                .when(bookingServiceMock)
+                .when(bookingBOServiceMock)
                 .deleteBooking(anyLong());
     }
 
     private void whenDeleteBookingInServiceThrowsServerException() {
-        doThrow(new InternalServerErrorException("Internal Server Error"))
-                .when(bookingServiceMock)
+        doThrow(new UnexpectedException("Internal Server Error", 500))
+                .when(bookingBOServiceMock)
                 .deleteBooking(anyLong());
     }
 
@@ -196,7 +194,7 @@ class BookingControllerTest extends BaseUnitTest {
     }
 
     private void andFindBookingByIdIsCalledInController() {
-        result = bookingController.findBookingById(1L);
+        result = bookingController.getBookingById(1L);
     }
 
     private void andCreateBookingIsCalledInController() {
@@ -208,19 +206,19 @@ class BookingControllerTest extends BaseUnitTest {
     }
 
     private void thenVerifyFindAllBookingsHasBeenCalledInService() {
-        verify(bookingServiceMock, times(1)).findAllBookings();
+        verify(bookingBOServiceMock, times(1)).findAllBookings();
     }
 
     private void thenVerifyCreateBookingHasBeenCalledInService() {
-        verify(bookingServiceMock, times(1)).createBooking(any(BookingDTO.class));
+        verify(bookingBOServiceMock, times(1)).createBooking(any(BookingDTO.class));
     }
 
     private void thenVerifyFindByIdHasBeenCalledInService() {
-        verify(bookingServiceMock, times(1)).findById(anyLong());
+        verify(bookingBOServiceMock, times(1)).findBookingById(anyLong());
     }
 
     private void thenVerifyDeleteBookingHasBeenCalledInService() {
-        verify(bookingServiceMock, times(1)).deleteBooking(anyLong());
+        verify(bookingBOServiceMock, times(1)).deleteBooking(anyLong());
     }
 
     private void thenReceivedStatusCodeIs(HttpStatus httpStatus) {

@@ -2,8 +2,8 @@ package net.pmolinav.configuration.unit;
 
 import net.pmolinav.bookingslib.dto.Role;
 import net.pmolinav.bookingslib.dto.UserDTO;
-import net.pmolinav.bookingslib.exception.InternalServerErrorException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
+import net.pmolinav.bookingslib.exception.UnexpectedException;
 import net.pmolinav.bookingslib.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -96,31 +96,7 @@ class UserControllerTest extends BaseUnitTest {
         thenReceivedStatusCodeIs(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    /* FIND USER BY USERNAME */
-    @Test
-    void findUserByUsernameHappyPath() {
-        whenFindUserByUsernameInServiceReturnedValidUser();
-        andFindUserByUsernameIsCalledInController();
-        thenVerifyFindByUsernameHasBeenCalledInService();
-        thenReceivedStatusCodeIs(HttpStatus.OK);
-        thenReceivedResponseBodyAsStringIs(String.valueOf(expectedUsers.get(0)));
-    }
-
-    @Test
-    void findUserUsernameUsernameNotFound() {
-        whenFindUserByUsernameInServiceThrowsNotFoundException();
-        andFindUserByUsernameIsCalledInController();
-        thenVerifyFindByUsernameHasBeenCalledInService();
-        thenReceivedStatusCodeIs(HttpStatus.NOT_FOUND);
-    }
-
-    @Test
-    void findUserUsernameUsernameServerError() {
-        whenFindUserByUsernameInServiceThrowsServerException();
-        andFindUserByUsernameIsCalledInController();
-        thenVerifyFindByUsernameHasBeenCalledInService();
-        thenReceivedStatusCodeIs(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    /* FIND USER BY USERNAME - NOT ALLOWED IN CONTROLLER. ONLY INTERNAL REQUEST*/
 
     /* DELETE USER */
     @Test
@@ -158,26 +134,25 @@ class UserControllerTest extends BaseUnitTest {
                 new User(2L, "someUser", "somePassword", "someName",
                         "some@email.com", Role.USER.name(), new Date(), null));
 
-        when(userServiceMock.findAllUsers()).thenReturn(expectedUsers);
+        when(userBOServiceMock.findAllUsers()).thenReturn(expectedUsers);
     }
 
     private void whenFindAllUsersInServiceThrowsNotFoundException() {
-        when(userServiceMock.findAllUsers()).thenThrow(new NotFoundException("Not Found"));
+        when(userBOServiceMock.findAllUsers()).thenThrow(new NotFoundException("Not Found"));
     }
 
     private void whenFindAllUsersInServiceThrowsServerException() {
-        when(userServiceMock.findAllUsers())
-                .thenThrow(new InternalServerErrorException("Internal Server Error"));
+        when(userBOServiceMock.findAllUsers())
+                .thenThrow(new UnexpectedException("Internal Server Error", 500));
     }
 
     private void whenCreateUserInServiceReturnedAValidUser() {
-        when(userServiceMock.createUser(any())).thenReturn(new User(1L, "someUser", "somePassword", "someName",
-                "some@email.com", Role.USER.name(), new Date(), null));
+        when(userBOServiceMock.createUser(any())).thenReturn(1L);
     }
 
     private void whenCreateUserInServiceThrowsServerException() {
-        when(userServiceMock.createUser(any(UserDTO.class)))
-                .thenThrow(new InternalServerErrorException("Internal Server Error"));
+        when(userBOServiceMock.createUser(any(UserDTO.class)))
+                .thenThrow(new UnexpectedException("Internal Server Error", 500));
     }
 
     private void whenFindUserByIdInServiceReturnedValidUser() {
@@ -185,16 +160,16 @@ class UserControllerTest extends BaseUnitTest {
                 new User(1L, "someUser", "somePassword", "someName",
                         "some@email.com", Role.USER.name(), new Date(), null));
 
-        when(userServiceMock.findById(1L)).thenReturn(expectedUsers.get(0));
+        when(userBOServiceMock.findUserById(1L)).thenReturn(expectedUsers.get(0));
     }
 
     private void whenFindUserByIdInServiceThrowsNotFoundException() {
-        when(userServiceMock.findById(1L)).thenThrow(new NotFoundException("Not Found"));
+        when(userBOServiceMock.findUserById(1L)).thenThrow(new NotFoundException("Not Found"));
     }
 
     private void whenFindUserByIdInServiceThrowsServerException() {
-        when(userServiceMock.findById(1L))
-                .thenThrow(new InternalServerErrorException("Internal Server Error"));
+        when(userBOServiceMock.findUserById(1L))
+                .thenThrow(new UnexpectedException("Internal Server Error", 500));
     }
 
     private void whenFindUserByUsernameInServiceReturnedValidUser() {
@@ -202,31 +177,22 @@ class UserControllerTest extends BaseUnitTest {
                 new User(1L, "someUser", "somePassword", "someName",
                         "some@email.com", Role.USER.name(), new Date(), null));
 
-        when(userServiceMock.findByUsername(eq(expectedUsers.get(0).getUsername()))).thenReturn(expectedUsers.get(0));
-    }
-
-    private void whenFindUserByUsernameInServiceThrowsNotFoundException() {
-        when(userServiceMock.findByUsername(anyString())).thenThrow(new NotFoundException("Not Found"));
-    }
-
-    private void whenFindUserByUsernameInServiceThrowsServerException() {
-        when(userServiceMock.findByUsername(anyString()))
-                .thenThrow(new InternalServerErrorException("Internal Server Error"));
+        when(userBOServiceMock.findUserByUsername(eq(expectedUsers.get(0).getUsername()))).thenReturn(expectedUsers.get(0));
     }
 
     private void whenDeleteUserInServiceIsOk() {
-        doNothing().when(userServiceMock).deleteUser(anyLong());
+        doNothing().when(userBOServiceMock).deleteUser(anyLong());
     }
 
     private void whenDeleteUserInServiceThrowsNotFoundException() {
         doThrow(new NotFoundException("Not Found"))
-                .when(userServiceMock)
+                .when(userBOServiceMock)
                 .deleteUser(anyLong());
     }
 
     private void whenDeleteUserInServiceThrowsServerException() {
-        doThrow(new InternalServerErrorException("Internal Server Error"))
-                .when(userServiceMock)
+        doThrow(new UnexpectedException("Internal Server Error", 500))
+                .when(userBOServiceMock)
                 .deleteUser(anyLong());
     }
 
@@ -235,11 +201,7 @@ class UserControllerTest extends BaseUnitTest {
     }
 
     private void andFindUserByIdIsCalledInController() {
-        result = userController.findUserById(1L);
-    }
-
-    private void andFindUserByUsernameIsCalledInController() {
-        result = userController.findUserByUsername("someUser");
+        result = userController.getUserById(1L);
     }
 
     private void andCreateUserIsCalledInController() {
@@ -251,23 +213,19 @@ class UserControllerTest extends BaseUnitTest {
     }
 
     private void thenVerifyFindAllUsersHasBeenCalledInService() {
-        verify(userServiceMock, times(1)).findAllUsers();
+        verify(userBOServiceMock, times(1)).findAllUsers();
     }
 
     private void thenVerifyCreateUserHasBeenCalledInService() {
-        verify(userServiceMock, times(1)).createUser(any(UserDTO.class));
+        verify(userBOServiceMock, times(1)).createUser(any(UserDTO.class));
     }
 
     private void thenVerifyFindByIdHasBeenCalledInService() {
-        verify(userServiceMock, times(1)).findById(anyLong());
-    }
-
-    private void thenVerifyFindByUsernameHasBeenCalledInService() {
-        verify(userServiceMock, times(1)).findByUsername(anyString());
+        verify(userBOServiceMock, times(1)).findUserById(anyLong());
     }
 
     private void thenVerifyDeleteUserHasBeenCalledInService() {
-        verify(userServiceMock, times(1)).deleteUser(anyLong());
+        verify(userBOServiceMock, times(1)).deleteUser(anyLong());
     }
 
     private void thenReceivedStatusCodeIs(HttpStatus httpStatus) {

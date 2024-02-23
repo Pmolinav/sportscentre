@@ -1,11 +1,11 @@
 package net.pmolinav.configuration.unit;
 
-import net.pmolinav.bookings.controller.ActivityController;
-import net.pmolinav.bookings.controller.BookingController;
-import net.pmolinav.bookings.controller.UserController;
-import net.pmolinav.bookings.service.ActivityService;
-import net.pmolinav.bookings.service.BookingService;
-import net.pmolinav.bookings.service.UserService;
+import net.pmolinav.configuration.controller.ActivityBOController;
+import net.pmolinav.configuration.controller.BookingBOController;
+import net.pmolinav.configuration.controller.UserBOController;
+import net.pmolinav.configuration.service.ActivityBOService;
+import net.pmolinav.configuration.service.BookingBOService;
+import net.pmolinav.configuration.service.UserBOService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -16,17 +16,17 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 class BaseUnitTest {
     @Mock
-    UserService userServiceMock;
+    UserBOService userBOServiceMock;
     @InjectMocks
-    UserController userController;
+    UserBOController userController;
     @Mock
-    ActivityService activityServiceMock;
+    ActivityBOService activityBOServiceMock;
     @InjectMocks
-    ActivityController activityController;
+    ActivityBOController activityController;
     @Mock
-    BookingService bookingServiceMock;
+    BookingBOService bookingBOServiceMock;
     @InjectMocks
-    BookingController bookingController;
+    BookingBOController bookingController;
 
     @BeforeEach
     void setUp() {
