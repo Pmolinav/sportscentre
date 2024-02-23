@@ -1,6 +1,10 @@
 package net.pmolinav.bookingslib.dto;
 
 public enum MDCKeys {
-    requestUid
+    requestUid,
+    userId,
+    activityId,
+    username,
+    activityName
 
 }

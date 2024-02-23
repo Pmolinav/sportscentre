@@ -7,15 +7,16 @@ import lombok.AllArgsConstructor;
 import net.pmolinav.bookingslib.dto.ChangeType;
 import net.pmolinav.bookingslib.dto.UserDTO;
 import net.pmolinav.bookingslib.exception.NotFoundException;
+import net.pmolinav.bookingslib.exception.UnexpectedException;
 import net.pmolinav.bookingslib.model.User;
 import net.pmolinav.configuration.security.WebSecurityConfig;
-import net.pmolinav.configuration.service.UserService;
+import net.pmolinav.configuration.service.UserBOService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @AllArgsConstructor
@@ -27,33 +28,34 @@ import java.util.List;
 public class UserBOController {
 
     @Autowired
-    private UserService userService;
+    private UserBOService userBOService;
 
     //TODO: Validar JSON con @Valid y BindingResult. Añadir validaciones en los DTOs.
     //TODO: Fix tests if necessary
 
     @GetMapping
     @Operation(summary = "Retrieve all users", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<User>> findAllUsers() {
         try {
-            List<User> users = userService.findAllUsers();
+            List<User> users = userBOService.findAllUsers();
             return ResponseEntity.ok(users);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (UnexpectedException e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @PostMapping
     @Operation(summary = "Create a new user", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<Long> createUser(@RequestBody UserDTO userDTO) {
-        String message = validateMandatoryFieldsInRequest(userDTO);
-        if (!StringUtils.hasText(message)) {
+    public ResponseEntity<Long> createUser(@Valid @RequestBody UserDTO userDTO) {
+        try {
             // Encode password before save user.
             userDTO.setPassword(WebSecurityConfig.passwordEncoder().encode(userDTO.getPassword()));
-            Long createdUserId = userService.createUser(userDTO);
+            Long createdUserId = userBOService.createUser(userDTO);
             return new ResponseEntity<>(createdUserId, HttpStatus.CREATED);
-        } else {
-            return ResponseEntity.badRequest().build();
+        } catch (UnexpectedException e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
@@ -61,10 +63,12 @@ public class UserBOController {
     @Operation(summary = "Get a specific user by Id", description = "Bearer token is required to authorize users.")
     public ResponseEntity<User> getUserById(@PathVariable long id) {
         try {
-            User user = userService.findUserById(id);
+            User user = userBOService.findUserById(id);
             return ResponseEntity.ok(user);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (UnexpectedException e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
@@ -101,27 +105,13 @@ public class UserBOController {
     @Operation(summary = "Delete an user by Id", description = "Bearer token is required to authorize users.")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable long id) {
         try {
-            userService.deleteUser(id);
+            userBOService.deleteUser(id);
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (UnexpectedException e) {
+            return ResponseEntity.internalServerError().build();
         }
-    }
-
-    private String validateMandatoryFieldsInRequest(UserDTO userDTO) {
-        StringBuilder messageBuilder = new StringBuilder();
-        if (userDTO == null) {
-            messageBuilder.append("Body is mandatory.");
-        } else if (!StringUtils.hasText(userDTO.getUsername())) {
-            messageBuilder.append("Username is mandatory.");
-        } else if (!StringUtils.hasText(userDTO.getName())) {
-            messageBuilder.append("Name is mandatory.");
-        } else if (!StringUtils.hasText(userDTO.getPassword())) {
-            messageBuilder.append("Password is mandatory.");
-        } else if (!StringUtils.hasText(userDTO.getEmail())) {
-            messageBuilder.append("Email is mandatory.");
-        }
-        return messageBuilder.toString();
     }
 
     private void insertIntoKafka(ChangeType changeType, Object newEntity) {

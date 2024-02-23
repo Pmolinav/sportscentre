@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @FeignClient(name = "BookingService", url = "localhost:8001/bookings")
 public interface BookingClient {
@@ -20,11 +19,11 @@ public interface BookingClient {
     Long createBooking(@RequestBody BookingDTO bookingDTO);
 
     @GetMapping("/{id}")
-    Optional<Booking> getBookingById(@PathVariable long id);
+    Booking findBookingById(@PathVariable long id);
 
     @PutMapping("/{id}")
     Booking updateBooking(@PathVariable long id, @RequestBody BookingUpdateDTO bookingDetails);
 
     @DeleteMapping("/{id}")
-    public HttpStatus deleteBooking(@PathVariable long id);
+    void deleteBooking(@PathVariable long id);
 }
