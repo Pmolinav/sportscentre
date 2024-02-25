@@ -30,8 +30,6 @@ public class BookingBOController {
     //TODO: Fix tests if necessary
     @Autowired
     private BookingBOService bookingBOService;
-    @Autowired
-    private BookingMapper bookingMapper;
 
     @GetMapping
     @Operation(summary = "Retrieve all bookings", description = "Bearer token is required to authorize users.")

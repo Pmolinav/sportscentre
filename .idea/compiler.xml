@@ -18,8 +18,8 @@
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.4.2.Final/mapstruct-processor-1.4.2.Final.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.4.2.Final/mapstruct-1.4.2.Final.jar" />
         </processorPath>
-        <module name="bookigsService" />
-        <module name="msvc-cursos" />
+        <module name="BookingsService" />
+        <module name="ConfigurationBOApi" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -28,9 +28,9 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="bookigsService" options="-parameters" />
+      <module name="BookingsService" options="-parameters" />
+      <module name="ConfigurationBOApi" options="-parameters" />
       <module name="bookings-lib" options="-parameters" />
-      <module name="msvc-cursos" options="-parameters" />
       <module name="msvc-usuarios" options="-parameters" />
     </option>
   </component>

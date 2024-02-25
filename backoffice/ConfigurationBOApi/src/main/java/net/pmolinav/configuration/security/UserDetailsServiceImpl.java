@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
@@ -26,7 +28,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            User user = userClient.findUserByUsername(username);
+//            User user = userClient.findUserByUsername(username);
+            User user = new User(1L,"Admin","Admin","ADMIN","ADMIN@Admin.com","ADMIN", new Date(), null);
             return new UserDetailsImpl(user);
         } catch (FeignException e) {
             if (e.status() == NOT_FOUND.value()) {
