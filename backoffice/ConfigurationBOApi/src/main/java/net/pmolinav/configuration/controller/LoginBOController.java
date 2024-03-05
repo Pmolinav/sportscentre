@@ -37,7 +37,7 @@ public class LoginBOController {
                     .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
             return ResponseEntity.ok()
-                    .header(HttpHeaders.AUTHORIZATION, TokenUtils.createToken(request.getUsername(), request.getPassword(), null))
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + TokenUtils.createToken(request.getUsername(), request.getPassword(), null))
                     .build();
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

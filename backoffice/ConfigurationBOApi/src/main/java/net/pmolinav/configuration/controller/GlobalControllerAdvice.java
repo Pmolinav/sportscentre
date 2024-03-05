@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-@ControllerAdvice(basePackageClasses = ActivityBOController.class)
+@ControllerAdvice
 public class GlobalControllerAdvice {
 
     @ModelAttribute
-    public void setupMdcAndValidateRequestUid(@RequestParam String requestUid) {
+    public void setupMdcAndValidateRequestUid(@Nullable @RequestParam String requestUid) {
         MDC.clear();
         MDC.put(MDCKeys.requestUid.name(), requestUid);
     }
