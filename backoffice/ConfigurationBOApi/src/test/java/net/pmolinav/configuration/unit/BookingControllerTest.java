@@ -190,19 +190,19 @@ class BookingControllerTest extends BaseUnitTest {
     }
 
     private void andFindAllBookingsIsCalledInController() {
-        result = bookingController.findAllBookings();
+        result = bookingController.findAllBookings(this.requestUid);
     }
 
     private void andFindBookingByIdIsCalledInController() {
-        result = bookingController.getBookingById(1L);
+        result = bookingController.getBookingById(this.requestUid, 1L);
     }
 
     private void andCreateBookingIsCalledInController() {
-        result = bookingController.createBooking(bookingDTO);
+        result = bookingController.createBooking(this.requestUid, bookingDTO);
     }
 
     private void andDeleteBookingIsCalledInController() {
-        result = bookingController.deleteBooking(1L);
+        result = bookingController.deleteBooking(this.requestUid, 1L);
     }
 
     private void thenVerifyFindAllBookingsHasBeenCalledInService() {

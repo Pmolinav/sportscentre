@@ -190,19 +190,19 @@ class ActivityControllerTest extends BaseUnitTest {
     }
 
     private void andFindAllActivitiesIsCalledInController() {
-        result = activityController.findAllActivities();
+        result = activityController.findAllActivities(this.requestUid);
     }
 
     private void andFindActivityByIdIsCalledInController() {
-        result = activityController.getActivityById(1L);
+        result = activityController.getActivityById(this.requestUid, 1L);
     }
 
     private void andCreateActivityIsCalledInController() {
-        result = activityController.createActivity(activityDTO);
+        result = activityController.createActivity(this.requestUid, activityDTO);
     }
 
     private void andDeleteActivityIsCalledInController() {
-        result = activityController.deleteActivity(1L);
+        result = activityController.deleteActivity(this.requestUid, 1L);
     }
 
     private void thenVerifyFindAllActivitiesHasBeenCalledInService() {

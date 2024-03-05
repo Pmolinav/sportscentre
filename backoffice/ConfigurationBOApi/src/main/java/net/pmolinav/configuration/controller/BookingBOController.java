@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import net.pmolinav.bookingslib.dto.BookingDTO;
 import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.exception.UnexpectedException;
-import net.pmolinav.bookingslib.mapper.BookingMapper;
 import net.pmolinav.bookingslib.model.Booking;
 import net.pmolinav.configuration.service.BookingBOService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,7 @@ public class BookingBOController {
 
     @GetMapping
     @Operation(summary = "Retrieve all bookings", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<List<Booking>> findAllBookings() {
+    public ResponseEntity<List<Booking>> findAllBookings(@RequestParam String requestUid) {
         try {
             List<Booking> bookings = bookingBOService.findAllBookings();
             return ResponseEntity.ok(bookings);
@@ -46,7 +45,7 @@ public class BookingBOController {
 
     @PostMapping
     @Operation(summary = "Create a new booking", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<Long> createBooking(@Valid @RequestBody BookingDTO bookingDTO) {
+    public ResponseEntity<Long> createBooking(@RequestParam String requestUid, @Valid @RequestBody BookingDTO bookingDTO) {
         String message = validateMandatoryFieldsInRequest(bookingDTO);
         try {
             if (!StringUtils.hasText(message)) {
@@ -62,7 +61,7 @@ public class BookingBOController {
 
     @GetMapping("{id}")
     @Operation(summary = "Get a specific booking by Id", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<Booking> getBookingById(@PathVariable long id) {
+    public ResponseEntity<Booking> getBookingById(@RequestParam String requestUid, @PathVariable long id) {
         try {
             Booking booking = bookingBOService.findBookingById(id);
             return ResponseEntity.ok(booking);
@@ -99,7 +98,7 @@ public class BookingBOController {
 
     @DeleteMapping("{id}")
     @Operation(summary = "Delete a booking by Id", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<HttpStatus> deleteBooking(@PathVariable long id) {
+    public ResponseEntity<HttpStatus> deleteBooking(@RequestParam String requestUid, @PathVariable long id) {
         try {
             bookingBOService.deleteBooking(id);
             return ResponseEntity.ok().build();

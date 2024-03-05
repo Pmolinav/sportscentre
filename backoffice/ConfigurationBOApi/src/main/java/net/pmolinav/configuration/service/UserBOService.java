@@ -1,6 +1,7 @@
 package net.pmolinav.configuration.service;
 
 import feign.FeignException;
+import feign.RetryableException;
 import net.pmolinav.bookingslib.dto.UserDTO;
 import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.exception.UnexpectedException;
@@ -27,12 +28,12 @@ public class UserBOService {
         try {
             return userClient.findAllUsers();
         } catch (FeignException e) {
-            if (e.status() == NOT_FOUND.value()) {
-                logger.warn("No users found", e);
-                throw new NotFoundException("No users found");
-            } else {
+            if (e instanceof RetryableException) {
                 logger.error("Unexpected error while calling service with status code " + e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
+            } else {
+                logger.warn("No users found", e);
+                throw new NotFoundException("No users found");
             }
         }
     }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-@ControllerAdvice
+@ControllerAdvice(basePackageClasses = ActivityBOController.class)
 public class GlobalControllerAdvice {
 
     @ModelAttribute

@@ -32,7 +32,7 @@ public class ActivityBOController {
 
     @GetMapping
     @Operation(summary = "Retrieve all activities", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<List<Activity>> findAllActivities() {
+    public ResponseEntity<List<Activity>> findAllActivities(@RequestParam String requestUid) {
         try {
             List<Activity> activities = activityBOService.findAllActivities();
             return ResponseEntity.ok(activities);
@@ -45,7 +45,7 @@ public class ActivityBOController {
 
     @PostMapping
     @Operation(summary = "Create a new activity", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<Long> createActivity(@Valid @RequestBody ActivityDTO activityDTO) {
+    public ResponseEntity<Long> createActivity(@RequestParam String requestUid, @Valid @RequestBody ActivityDTO activityDTO) {
 //        String message = validateMandatoryFieldsInRequest(activityDTO);
         try {
             Long createdActivityId = activityBOService.createActivity(activityDTO);
@@ -58,7 +58,7 @@ public class ActivityBOController {
 
     @GetMapping("{id}")
     @Operation(summary = "Get a specific activity by Id", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<Activity> getActivityById(@PathVariable long id) {
+    public ResponseEntity<Activity> getActivityById(@RequestParam String requestUid, @PathVariable long id) {
         try {
             Activity activity = activityBOService.findActivityById(id);
             return ResponseEntity.ok(activity);
@@ -98,7 +98,7 @@ public class ActivityBOController {
 
     @DeleteMapping("{id}")
     @Operation(summary = "Delete an activity by Id", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<?> deleteActivity(@PathVariable long id) {
+    public ResponseEntity<?> deleteActivity(@RequestParam String requestUid, @PathVariable long id) {
         try {
             activityBOService.deleteActivity(id);
             return ResponseEntity.ok().build();

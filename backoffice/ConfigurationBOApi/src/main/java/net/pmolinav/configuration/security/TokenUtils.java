@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.util.Collections;
@@ -17,6 +19,8 @@ public class TokenUtils {
     private final static String ACCESS_TOKEN_SECRET = "c7eD5hYnJnVr3uFTh5WTG2XKj6qbBszvuztf8WbCcJY";
     private final static Long ACCESS_TOKEN_VALIDITY_SECONDS = 12345L;
 
+    private static final Logger logger = LoggerFactory.getLogger(TokenUtils.class);
+
     public static String createToken(String name, String username, String role) {
 
         long expirationTime = ACCESS_TOKEN_VALIDITY_SECONDS * 1000L;
@@ -28,6 +32,7 @@ public class TokenUtils {
 
         return Jwts.builder()
                 .setSubject(username)
+                .setIssuedAt(new Date())
                 .setExpiration(expirationDate)
                 .addClaims(extraParams)
                 .signWith(Keys.hmacShaKeyFor(ACCESS_TOKEN_SECRET.getBytes())).compact();
@@ -48,4 +53,5 @@ public class TokenUtils {
             return null;
         }
     }
+
 }

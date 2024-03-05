@@ -28,6 +28,7 @@ class BaseUnitTest {
     @InjectMocks
     BookingBOController bookingController;
 
+    public final String requestUid = "someRequestUid";
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);

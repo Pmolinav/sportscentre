@@ -35,7 +35,7 @@ public class UserBOController {
 
     @GetMapping
     @Operation(summary = "Retrieve all users", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<List<User>> findAllUsers() {
+    public ResponseEntity<List<User>> findAllUsers(@RequestParam String requestUid) {
         try {
             List<User> users = userBOService.findAllUsers();
             return ResponseEntity.ok(users);
@@ -48,7 +48,7 @@ public class UserBOController {
 
     @PostMapping
     @Operation(summary = "Create a new user", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<Long> createUser(@Valid @RequestBody UserDTO userDTO) {
+    public ResponseEntity<Long> createUser(@RequestParam String requestUid, @Valid @RequestBody UserDTO userDTO) {
         try {
             // Encode password before save user.
             userDTO.setPassword(WebSecurityConfig.passwordEncoder().encode(userDTO.getPassword()));
@@ -61,7 +61,7 @@ public class UserBOController {
 
     @GetMapping("{id}")
     @Operation(summary = "Get a specific user by Id", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<User> getUserById(@PathVariable long id) {
+    public ResponseEntity<User> getUserById(@RequestParam String requestUid, @PathVariable long id) {
         try {
             User user = userBOService.findUserById(id);
             return ResponseEntity.ok(user);
@@ -103,7 +103,7 @@ public class UserBOController {
 
     @DeleteMapping("{id}")
     @Operation(summary = "Delete an user by Id", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<HttpStatus> deleteUser(@PathVariable long id) {
+    public ResponseEntity<HttpStatus> deleteUser(@RequestParam String requestUid, @PathVariable long id) {
         try {
             userBOService.deleteUser(id);
             return ResponseEntity.ok().build();

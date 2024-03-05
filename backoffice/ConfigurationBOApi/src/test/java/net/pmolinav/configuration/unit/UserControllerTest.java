@@ -197,19 +197,19 @@ class UserControllerTest extends BaseUnitTest {
     }
 
     private void andFindAllUsersIsCalledInController() {
-        result = userController.findAllUsers();
+        result = userController.findAllUsers(this.requestUid);
     }
 
     private void andFindUserByIdIsCalledInController() {
-        result = userController.getUserById(1L);
+        result = userController.getUserById(this.requestUid, 1L);
     }
 
     private void andCreateUserIsCalledInController() {
-        result = userController.createUser(userDTO);
+        result = userController.createUser(this.requestUid, userDTO);
     }
 
     private void andDeleteUserIsCalledInController() {
-        result = userController.deleteUser(1L);
+        result = userController.deleteUser(this.requestUid, 1L);
     }
 
     private void thenVerifyFindAllUsersHasBeenCalledInService() {
