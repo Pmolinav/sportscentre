@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
 @Service
 public class UserBOService {
     //TODO: Complete all services and log message
@@ -51,12 +49,12 @@ public class UserBOService {
         try {
             return userClient.findUserById(id);
         } catch (FeignException e) {
-            if (e.status() == NOT_FOUND.value()) {
-                logger.warn("User with id " + id + " not found", e);
-                throw new NotFoundException("User " + id + " not found");
-            } else {
+            if (e instanceof RetryableException) {
                 logger.error("Unexpected error while calling service with status code " + e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
+            } else {
+                logger.warn("User with id " + id + " not found", e);
+                throw new NotFoundException("User " + id + " not found");
             }
         }
     }
@@ -65,12 +63,12 @@ public class UserBOService {
         try {
             return userClient.findUserByUsername(username);
         } catch (FeignException e) {
-            if (e.status() == NOT_FOUND.value()) {
-                logger.warn("User with username " + username + " not found", e);
-                throw new NotFoundException("User " + username + " not found");
-            } else {
+            if (e instanceof RetryableException) {
                 logger.error("Unexpected error while calling service with status code " + e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
+            } else {
+                logger.warn("User with username " + username + " not found", e);
+                throw new NotFoundException("User " + username + " not found");
             }
         }
     }
@@ -79,12 +77,12 @@ public class UserBOService {
         try {
             userClient.deleteUser(id);
         } catch (FeignException e) {
-            if (e.status() == NOT_FOUND.value()) {
-                logger.warn("User with id " + id + " not found", e);
-                throw new NotFoundException("User " + id + " not found");
-            } else {
+            if (e instanceof RetryableException) {
                 logger.error("Unexpected error while calling service with status code " + e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
+            } else {
+                logger.warn("User with id " + id + " not found", e);
+                throw new NotFoundException("User " + id + " not found");
             }
         }
     }

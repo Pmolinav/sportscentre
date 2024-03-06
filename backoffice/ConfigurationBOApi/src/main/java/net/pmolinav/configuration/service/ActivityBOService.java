@@ -1,6 +1,7 @@
 package net.pmolinav.configuration.service;
 
 import feign.FeignException;
+import feign.RetryableException;
 import net.pmolinav.bookingslib.dto.ActivityDTO;
 import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.exception.UnexpectedException;
@@ -12,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 public class ActivityBOService {
@@ -27,12 +26,12 @@ public class ActivityBOService {
         try {
             return activityClient.findAllActivities();
         } catch (FeignException e) {
-            if (e.status() == NOT_FOUND.value()) {
-                logger.warn("No activities found", e);
-                throw new NotFoundException("No activities found");
-            } else {
+            if (e instanceof RetryableException) {
                 logger.error("Unexpected error while calling service with status code " + e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
+            } else {
+                logger.warn("No activities found", e);
+                throw new NotFoundException("No activities found");
             }
         }
     }
@@ -50,12 +49,12 @@ public class ActivityBOService {
         try {
             return activityClient.findActivityById(id);
         } catch (FeignException e) {
-            if (e.status() == NOT_FOUND.value()) {
-                logger.warn("Activity with id " + id + " not found", e);
-                throw new NotFoundException("Activity " + id + " not found");
-            } else {
+            if (e instanceof RetryableException) {
                 logger.error("Unexpected error while calling service with status code " + e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
+            } else {
+                logger.warn("Activity with id " + id + " not found", e);
+                throw new NotFoundException("Activity " + id + " not found");
             }
         }
     }
@@ -64,12 +63,12 @@ public class ActivityBOService {
         try {
             activityClient.deleteActivity(id);
         } catch (FeignException e) {
-            if (e.status() == NOT_FOUND.value()) {
-                logger.warn("Activity with id " + id + " not found", e);
-                throw new NotFoundException("Activity " + id + " not found");
-            } else {
+            if (e instanceof RetryableException) {
                 logger.error("Unexpected error while calling service with status code " + e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
+            } else {
+                logger.warn("Activity with id " + id + " not found", e);
+                throw new NotFoundException("Activity " + id + " not found");
             }
         }
     }
