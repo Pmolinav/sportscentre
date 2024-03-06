@@ -1,25 +1,10 @@
-package net.pmolinav.configuration.functional;
+package net.pmolinav.configuration.functionals;
 
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import net.pmolinav.bookingslib.dto.Role;
-import net.pmolinav.bookingslib.model.User;
-import net.pmolinav.configuration.client.UserClient;
 import net.pmolinav.configuration.security.UserDetailsServiceImpl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.Date;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 public abstract class AbstractContainerBaseTest {
@@ -29,7 +14,6 @@ public abstract class AbstractContainerBaseTest {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
-
 
     @BeforeEach
     public void mockLoginSuccessfully() {

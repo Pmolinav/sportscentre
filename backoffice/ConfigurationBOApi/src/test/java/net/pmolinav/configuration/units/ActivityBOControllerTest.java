@@ -1,4 +1,4 @@
-package net.pmolinav.configuration.unit;
+package net.pmolinav.configuration.units;
 
 import net.pmolinav.bookingslib.dto.ActivityDTO;
 import net.pmolinav.bookingslib.dto.ActivityType;
@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-class ActivityControllerTest extends BaseUnitTest {
+class ActivityBOControllerTest extends BaseUnitTest {
 
     ActivityDTO activityDTO;
     List<Activity> expectedActivities;
@@ -190,19 +190,19 @@ class ActivityControllerTest extends BaseUnitTest {
     }
 
     private void andFindAllActivitiesIsCalledInController() {
-        result = activityController.findAllActivities(this.requestUid);
+        result = activityBOController.findAllActivities(this.requestUid);
     }
 
     private void andFindActivityByIdIsCalledInController() {
-        result = activityController.getActivityById(this.requestUid, 1L);
+        result = activityBOController.getActivityById(this.requestUid, 1L);
     }
 
     private void andCreateActivityIsCalledInController() {
-        result = activityController.createActivity(this.requestUid, activityDTO);
+        result = activityBOController.createActivity(this.requestUid, activityDTO);
     }
 
     private void andDeleteActivityIsCalledInController() {
-        result = activityController.deleteActivity(this.requestUid, 1L);
+        result = activityBOController.deleteActivity(this.requestUid, 1L);
     }
 
     private void thenVerifyFindAllActivitiesHasBeenCalledInService() {

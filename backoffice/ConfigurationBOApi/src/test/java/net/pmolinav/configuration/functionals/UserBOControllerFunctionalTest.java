@@ -1,19 +1,18 @@
-package net.pmolinav.configuration.functional;
+package net.pmolinav.configuration.functionals;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.pmolinav.bookingslib.dto.BookingDTO;
-import net.pmolinav.bookingslib.dto.BookingStatus;
-import net.pmolinav.bookingslib.model.Booking;
-import net.pmolinav.configuration.client.BookingClient;
-import net.pmolinav.configuration.mapper.BookingMapper;
+import net.pmolinav.bookingslib.dto.Role;
+import net.pmolinav.bookingslib.dto.UserDTO;
+import net.pmolinav.bookingslib.model.User;
+import net.pmolinav.configuration.client.UserClient;
+import net.pmolinav.configuration.mapper.UserMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,42 +30,43 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @EntityScan("net.pmolinav.bookingslib.model")
-class BookingsControllerFunctionalTest extends AbstractContainerBaseTest {
+class UserBOControllerFunctionalTest extends AbstractContainerBaseTest {
 
+    //TODO: Review how to mock Authorization
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private BookingMapper bookingMapper;
+    private UserMapper userMapper;
     @Autowired
-    private BookingClient bookingClient;
+    private UserClient userClient;
     @Autowired
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    void findAllBookingsNotFound() throws Exception {
-        mockMvc.perform(get("/bookings"))
+    void findAllUsersNotFound() throws Exception {
+        mockMvc.perform(get("/users"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void findAllBookingsHappyPath() throws Exception {
-        MvcResult result = mockMvc.perform(get("/bookings"))
+    void findAllUsersHappyPath() throws Exception {
+        MvcResult result = mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        List<Booking> bookingResponseList = objectMapper.readValue(result.getResponse().getContentAsString(),
-                new TypeReference<List<Booking>>() {
+        List<User> userResponseList = objectMapper.readValue(result.getResponse().getContentAsString(),
+                new TypeReference<List<User>>() {
                 });
 
-        Assertions.assertEquals(2, bookingResponseList.size());
+        Assertions.assertEquals(2, userResponseList.size());
     }
 
     @Test
-    void createBookingHappyPath() throws Exception {
-        BookingDTO requestDto = new BookingDTO(1L, 1L, new Date(100),
-                new Date(3000), BookingStatus.OPEN, new Date(), null);
+    void createUserHappyPath() throws Exception {
+        UserDTO requestDto = new UserDTO("someUser", "somePassword", "someName",
+                "some@email.com", Role.USER, new Date(), new Date());
 
-        MvcResult result = mockMvc.perform(post("/bookings")
+        MvcResult result = mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
@@ -78,37 +78,36 @@ class BookingsControllerFunctionalTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    void findBookingByIdNotFound() throws Exception {
-        mockMvc.perform(get("/bookings/123"))
+    void findUserByIdNotFound() throws Exception {
+        mockMvc.perform(get("/users/123"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void findBookingByIdHappyPath() throws Exception {
-        MvcResult result = mockMvc.perform(get("/bookings/3"))
+    void findUserByIdHappyPath() throws Exception {
+        MvcResult result = mockMvc.perform(get("/users/3"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        Booking bookingResponse = objectMapper.readValue(result.getResponse().getContentAsString(),
-                new TypeReference<Booking>() {
+        User userResponse = objectMapper.readValue(result.getResponse().getContentAsString(),
+                new TypeReference<User>() {
                 });
 
-        Assertions.assertEquals(3L, bookingResponse.getActivityId());
-        Assertions.assertEquals(3L, bookingResponse.getUserId());
+        Assertions.assertEquals(3L, userResponse.getUserId());
     }
 
     @Test
-    void deleteBookingByIdNotFound() throws Exception {
-        mockMvc.perform(delete("/bookings/123"))
+    void deleteUserByIdNotFound() throws Exception {
+        mockMvc.perform(delete("/users/123"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void deleteBookingByIdHappyPath() throws Exception {
-        mockMvc.perform(delete("/bookings/5"))
+    void deleteUserByIdHappyPath() throws Exception {
+        mockMvc.perform(delete("/users/5"))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(delete("/bookings/6"))
+        mockMvc.perform(delete("/users/6"))
                 .andExpect(status().isOk());
     }
 

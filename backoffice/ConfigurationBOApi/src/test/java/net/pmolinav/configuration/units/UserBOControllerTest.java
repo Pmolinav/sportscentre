@@ -1,4 +1,4 @@
-package net.pmolinav.configuration.unit;
+package net.pmolinav.configuration.units;
 
 import net.pmolinav.bookingslib.dto.Role;
 import net.pmolinav.bookingslib.dto.UserDTO;
@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-class UserControllerTest extends BaseUnitTest {
+class UserBOControllerTest extends BaseUnitTest {
 
     UserDTO userDTO;
     List<User> expectedUsers;
@@ -197,19 +197,19 @@ class UserControllerTest extends BaseUnitTest {
     }
 
     private void andFindAllUsersIsCalledInController() {
-        result = userController.findAllUsers(this.requestUid);
+        result = userBOController.findAllUsers(this.requestUid);
     }
 
     private void andFindUserByIdIsCalledInController() {
-        result = userController.getUserById(this.requestUid, 1L);
+        result = userBOController.getUserById(this.requestUid, 1L);
     }
 
     private void andCreateUserIsCalledInController() {
-        result = userController.createUser(this.requestUid, userDTO);
+        result = userBOController.createUser(this.requestUid, userDTO);
     }
 
     private void andDeleteUserIsCalledInController() {
-        result = userController.deleteUser(this.requestUid, 1L);
+        result = userBOController.deleteUser(this.requestUid, 1L);
     }
 
     private void thenVerifyFindAllUsersHasBeenCalledInService() {

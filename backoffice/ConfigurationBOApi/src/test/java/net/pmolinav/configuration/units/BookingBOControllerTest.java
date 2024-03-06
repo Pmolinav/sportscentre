@@ -1,4 +1,4 @@
-package net.pmolinav.configuration.unit;
+package net.pmolinav.configuration.units;
 
 import net.pmolinav.bookingslib.dto.BookingDTO;
 import net.pmolinav.bookingslib.dto.BookingStatus;
@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-class BookingControllerTest extends BaseUnitTest {
+class BookingBOControllerTest extends BaseUnitTest {
 
     BookingDTO bookingDTO;
     List<Booking> expectedBookings;
@@ -190,19 +190,19 @@ class BookingControllerTest extends BaseUnitTest {
     }
 
     private void andFindAllBookingsIsCalledInController() {
-        result = bookingController.findAllBookings(this.requestUid);
+        result = bookingBOController.findAllBookings(this.requestUid);
     }
 
     private void andFindBookingByIdIsCalledInController() {
-        result = bookingController.getBookingById(this.requestUid, 1L);
+        result = bookingBOController.getBookingById(this.requestUid, 1L);
     }
 
     private void andCreateBookingIsCalledInController() {
-        result = bookingController.createBooking(this.requestUid, bookingDTO);
+        result = bookingBOController.createBooking(this.requestUid, bookingDTO);
     }
 
     private void andDeleteBookingIsCalledInController() {
-        result = bookingController.deleteBooking(this.requestUid, 1L);
+        result = bookingBOController.deleteBooking(this.requestUid, 1L);
     }
 
     private void thenVerifyFindAllBookingsHasBeenCalledInService() {

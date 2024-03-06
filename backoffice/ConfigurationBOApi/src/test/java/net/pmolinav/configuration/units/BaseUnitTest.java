@@ -1,7 +1,8 @@
-package net.pmolinav.configuration.unit;
+package net.pmolinav.configuration.units;
 
 import net.pmolinav.configuration.controller.ActivityBOController;
 import net.pmolinav.configuration.controller.BookingBOController;
+import net.pmolinav.configuration.controller.LoginBOController;
 import net.pmolinav.configuration.controller.UserBOController;
 import net.pmolinav.configuration.service.ActivityBOService;
 import net.pmolinav.configuration.service.BookingBOService;
@@ -12,21 +13,28 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.authentication.AuthenticationManager;
 
 @RunWith(MockitoJUnitRunner.class)
 class BaseUnitTest {
+
+    // TODO: Review how to run tests separated with "Run" button.
     @Mock
     UserBOService userBOServiceMock;
     @InjectMocks
-    UserBOController userController;
+    UserBOController userBOController;
     @Mock
     ActivityBOService activityBOServiceMock;
     @InjectMocks
-    ActivityBOController activityController;
+    ActivityBOController activityBOController;
     @Mock
     BookingBOService bookingBOServiceMock;
     @InjectMocks
-    BookingBOController bookingController;
+    BookingBOController bookingBOController;
+    @InjectMocks
+    LoginBOController loginBOController;
+    @Mock
+    AuthenticationManager authenticationManager;
 
     public final String requestUid = "someRequestUid";
     @BeforeEach

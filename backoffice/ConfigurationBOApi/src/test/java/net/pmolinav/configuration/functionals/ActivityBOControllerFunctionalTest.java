@@ -1,4 +1,4 @@
-package net.pmolinav.configuration.functional;
+package net.pmolinav.configuration.functionals;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,8 +38,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @EntityScan("net.pmolinav.bookingslib.model")
-class ActivityControllerFunctionalTest extends AbstractContainerBaseTest {
+class ActivityBOControllerFunctionalTest extends AbstractContainerBaseTest {
 
+    //TODO: Review how to mock Authorization
     @Autowired
     private MockMvc mockMvc;
     @Autowired

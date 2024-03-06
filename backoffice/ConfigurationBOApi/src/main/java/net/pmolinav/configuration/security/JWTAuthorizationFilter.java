@@ -31,22 +31,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             String token = bearerToken.replace("Bearer ", "");
             UsernamePasswordAuthenticationToken usernamePasswordAT = TokenUtils.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAT);
-
-//            // Get user identity and set it on the spring security context
-//            UserDetails userDetails = userRepo
-//                    .findByUsername(jwtTokenUtil.getUsername(token))
-//                    .orElse(null);
-//
-//            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-//                    userDetails, null,
-//                    userDetails == null ? List.of() : userDetails.getAuthorities()
-//            );
-//
-//            authentication
-//                    .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
-//            chain.doFilter(request, response);
         }
 
         filterChain.doFilter(request, response);
