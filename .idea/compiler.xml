@@ -18,8 +18,8 @@
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.4.2.Final/mapstruct-processor-1.4.2.Final.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.4.2.Final/mapstruct-1.4.2.Final.jar" />
         </processorPath>
-        <module name="BookingsService" />
         <module name="ConfigurationBOApi" />
+        <module name="BookingsService" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

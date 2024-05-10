@@ -4,7 +4,7 @@
     <persistence-units>
       <persistence-unit name="Default">
         <packages>
-          <package value="org.aguzman.springcloud.msvc.usuarios" />
+          <package value="net.pmolinav.sportscentre.services.bookingsservice" />
         </packages>
       </persistence-unit>
     </persistence-units>
