@@ -33,6 +33,9 @@ public class UserBOService {
                 logger.warn("No users found", e);
                 throw new NotFoundException("No users found");
             }
+        } catch (Exception e) {
+            logger.error("Unexpected exception occurred while calling service.", e);
+            throw new UnexpectedException(e.getMessage(), 500);
         }
     }
 
@@ -42,6 +45,9 @@ public class UserBOService {
         } catch (FeignException e) {
             logger.error("Unexpected error while calling service with status code " + e.status(), e);
             throw new UnexpectedException(e.getMessage(), e.status());
+        } catch (Exception e) {
+            logger.error("Unexpected exception occurred while calling service.", e);
+            throw new UnexpectedException(e.getMessage(), 500);
         }
     }
 
@@ -56,6 +62,9 @@ public class UserBOService {
                 logger.warn("User with id " + id + " not found", e);
                 throw new NotFoundException("User " + id + " not found");
             }
+        } catch (Exception e) {
+            logger.error("Unexpected exception occurred while calling service.", e);
+            throw new UnexpectedException(e.getMessage(), 500);
         }
     }
 
@@ -70,6 +79,9 @@ public class UserBOService {
                 logger.warn("User with username " + username + " not found", e);
                 throw new NotFoundException("User " + username + " not found");
             }
+        } catch (Exception e) {
+            logger.error("Unexpected exception occurred while calling service.", e);
+            throw new UnexpectedException(e.getMessage(), 500);
         }
     }
 
@@ -84,6 +96,9 @@ public class UserBOService {
                 logger.warn("User with id " + id + " not found", e);
                 throw new NotFoundException("User " + id + " not found");
             }
+        } catch (Exception e) {
+            logger.error("Unexpected exception occurred while calling service.", e);
+            throw new UnexpectedException(e.getMessage(), 500);
         }
     }
 }

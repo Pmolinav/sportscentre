@@ -31,8 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserClient userClient;
     private final JWTAuthorizationFilter jwtAuthorizationFilter;
 
-    public WebSecurityConfig(UserClient userClient,
-                             JWTAuthorizationFilter jwtAuthorizationFilter) {
+    public WebSecurityConfig(UserClient userClient, JWTAuthorizationFilter jwtAuthorizationFilter) {
         super();
 
         this.userClient = userClient;
@@ -48,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(username ->
-                new UserDetailsServiceImpl().loadUserByUsername(username));
+                new UserDetailsServiceImpl(this.userClient).loadUserByUsername(username));
     }
 
     @Override

@@ -33,6 +33,9 @@ public class BookingBOService {
                 logger.warn("No bookings found", e);
                 throw new NotFoundException("No bookings found");
             }
+        } catch (Exception e) {
+            logger.error("Unexpected exception occurred while calling service.", e);
+            throw new UnexpectedException(e.getMessage(), 500);
         }
     }
 
@@ -42,6 +45,9 @@ public class BookingBOService {
         } catch (FeignException e) {
             logger.error("Unexpected error while calling service with status code " + e.status(), e);
             throw new UnexpectedException(e.getMessage(), e.status());
+        } catch (Exception e) {
+            logger.error("Unexpected exception occurred while calling service.", e);
+            throw new UnexpectedException(e.getMessage(), 500);
         }
     }
 
@@ -56,6 +62,9 @@ public class BookingBOService {
                 logger.warn("Booking with id " + id + " not found", e);
                 throw new NotFoundException("Booking " + id + " not found");
             }
+        } catch (Exception e) {
+            logger.error("Unexpected exception occurred while calling service.", e);
+            throw new UnexpectedException(e.getMessage(), 500);
         }
     }
 
@@ -70,6 +79,9 @@ public class BookingBOService {
                 logger.warn("Booking with id " + id + " not found", e);
                 throw new NotFoundException("Booking " + id + " not found");
             }
+        } catch (Exception e) {
+            logger.error("Unexpected exception occurred while calling service.", e);
+            throw new UnexpectedException(e.getMessage(), 500);
         }
     }
 

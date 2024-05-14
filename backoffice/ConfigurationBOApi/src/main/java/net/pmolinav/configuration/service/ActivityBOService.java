@@ -33,6 +33,9 @@ public class ActivityBOService {
                 logger.warn("No activities found", e);
                 throw new NotFoundException("No activities found");
             }
+        } catch (Exception e) {
+            logger.error("Unexpected exception occurred while calling service.", e);
+            throw new UnexpectedException(e.getMessage(), 500);
         }
     }
 
@@ -42,6 +45,9 @@ public class ActivityBOService {
         } catch (FeignException e) {
             logger.error("Unexpected error while calling service with status code " + e.status(), e);
             throw new UnexpectedException(e.getMessage(), e.status());
+        } catch (Exception e) {
+            logger.error("Unexpected exception occurred while calling service.", e);
+            throw new UnexpectedException(e.getMessage(), 500);
         }
     }
 
@@ -56,6 +62,9 @@ public class ActivityBOService {
                 logger.warn("Activity with id " + id + " not found", e);
                 throw new NotFoundException("Activity " + id + " not found");
             }
+        } catch (Exception e) {
+            logger.error("Unexpected exception occurred while calling service.", e);
+            throw new UnexpectedException(e.getMessage(), 500);
         }
     }
 
@@ -64,12 +73,15 @@ public class ActivityBOService {
             activityClient.deleteActivity(id);
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
-                logger.error("Unexpected error while calling service with status code " + e.status(), e);
+                logger.error("Unexpected retryable error while calling service with status code " + e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
             } else {
                 logger.warn("Activity with id " + id + " not found", e);
                 throw new NotFoundException("Activity " + id + " not found");
             }
+        } catch (Exception e) {
+            logger.error("Unexpected exception occurred while calling service.", e);
+            throw new UnexpectedException(e.getMessage(), 500);
         }
     }
 }
