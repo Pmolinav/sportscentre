@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @EntityScan("net.pmolinav.bookingslib.model")
-class UserBOControllerFunctionalTest extends AbstractContainerBaseTest {
+class UserBOControllerFunctionalTest extends AbstractBaseTest {
 
     //TODO: Review how to mock Authorization
     @Autowired

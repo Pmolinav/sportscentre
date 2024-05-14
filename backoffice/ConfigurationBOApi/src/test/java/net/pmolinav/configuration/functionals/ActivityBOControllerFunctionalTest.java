@@ -29,8 +29,9 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,14 +39,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @EntityScan("net.pmolinav.bookingslib.model")
-class ActivityBOControllerFunctionalTest extends AbstractContainerBaseTest {
+class ActivityBOControllerFunctionalTest extends AbstractBaseTest {
 
     //TODO: Review how to mock Authorization
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ActivityMapper activityMapper;
-    @Autowired
+    @MockBean
     private ActivityClient activityClient;
     @Autowired
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -67,14 +68,15 @@ class ActivityBOControllerFunctionalTest extends AbstractContainerBaseTest {
 
         String responseBody = result.getResponse().getContentAsString();
 
-        mockMvc.perform(get("/activities")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+        mockMvc.perform(get("/activities?requestUid=" + requestUid)
+                        .header(HttpHeaders.AUTHORIZATION, authToken))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void findAllActivitiesHappyPath() throws Exception {
-        MvcResult result = mockMvc.perform(get("/activities"))
+        MvcResult result = mockMvc.perform(get("/activities?requestUid=" + requestUid)
+                        .header(HttpHeaders.AUTHORIZATION, authToken))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -92,7 +94,8 @@ class ActivityBOControllerFunctionalTest extends AbstractContainerBaseTest {
         ActivityDTO requestDto = new ActivityDTO(ActivityType.GYM, "Gym", "Gym activity",
                 BigDecimal.valueOf(25), new Date(), null);
 
-        MvcResult result = mockMvc.perform(post("/activities")
+        MvcResult result = mockMvc.perform(post("/activities?requestUid=" + requestUid)
+                        .header(HttpHeaders.AUTHORIZATION, authToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
@@ -105,13 +108,15 @@ class ActivityBOControllerFunctionalTest extends AbstractContainerBaseTest {
 
     @Test
     void findActivityByIdNotFound() throws Exception {
-        mockMvc.perform(get("/activities/123"))
+        mockMvc.perform(get("/activities/123?requestUid=" + requestUid)
+                        .header(HttpHeaders.AUTHORIZATION, authToken))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void findActivityByIdHappyPath() throws Exception {
-        MvcResult result = mockMvc.perform(get("/activities/3"))
+        MvcResult result = mockMvc.perform(get("/activities/3?requestUid=" + requestUid)
+                        .header(HttpHeaders.AUTHORIZATION, authToken))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -124,18 +129,29 @@ class ActivityBOControllerFunctionalTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    void deleteActivityByIdNotFound() throws Exception {
-        mockMvc.perform(delete("/activities/123"))
-                .andExpect(status().isNotFound());
+    void deleteActivityByIdServerError() throws Exception {
+        andActivityDeleteThrowsNonRetryableException();
+
+        mockMvc.perform(delete("/activities/123?requestUid=" + requestUid)
+                        .header(HttpHeaders.AUTHORIZATION, authToken))
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
     void deleteActivityByIdHappyPath() throws Exception {
-        mockMvc.perform(delete("/activities/5"))
-                .andExpect(status().isOk());
+        andActivityIsDeletedOkOnClient();
 
-        mockMvc.perform(delete("/activities/6"))
+        mockMvc.perform(delete("/activities/5?requestUid=" + requestUid)
+                        .header(HttpHeaders.AUTHORIZATION, authToken))
                 .andExpect(status().isOk());
+    }
+
+    private void andActivityIsDeletedOkOnClient() {
+        doNothing().when(this.activityClient).deleteActivity(anyLong());
+    }
+
+    private void andActivityDeleteThrowsNonRetryableException() {
+        doThrow(new RuntimeException("someException")).when(this.activityClient).deleteActivity(anyLong());
     }
 }
 

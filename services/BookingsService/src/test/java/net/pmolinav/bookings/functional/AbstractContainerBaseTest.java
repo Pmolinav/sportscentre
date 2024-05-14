@@ -12,6 +12,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
+/**
+ *  Docker Environment is needed to run functional tests.
+ **/
 @ActiveProfiles("test")
 public abstract class AbstractContainerBaseTest {
     @Value("${database.port}")

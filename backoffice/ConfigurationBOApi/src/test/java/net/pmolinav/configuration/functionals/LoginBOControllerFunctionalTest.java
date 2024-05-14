@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @EntityScan("net.pmolinav.bookingslib.model")
-class LoginBOControllerFunctionalTest extends AbstractContainerBaseTest {
+class LoginBOControllerFunctionalTest extends AbstractBaseTest {
 
     //TODO: Review how to mock Feign Client
     private AuthCredentials request;
