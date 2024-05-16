@@ -1,12 +1,11 @@
-package net.pmolinav.bookings.functional;
+package net.pmolinav.bookings.integration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.pmolinav.bookings.mapper.BookingMapper;
-import net.pmolinav.bookings.repository.BookingRepository;
-import net.pmolinav.bookingslib.dto.BookingDTO;
-import net.pmolinav.bookingslib.dto.BookingStatus;
-import net.pmolinav.bookingslib.model.Booking;
+import net.pmolinav.bookings.repository.UserRepository;
+import net.pmolinav.bookingslib.dto.Role;
+import net.pmolinav.bookingslib.dto.UserDTO;
+import net.pmolinav.bookingslib.model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,46 +33,44 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @EnableJpaRepositories("net.pmolinav.bookings.repository")
 @EntityScan("net.pmolinav.bookingslib.model")
-class BookingsControllerFunctionalTest extends AbstractContainerBaseTest {
+class UsersControllerIntegrationTest extends AbstractContainerBaseTest {
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private BookingMapper bookingMapper;
-    @Autowired
-    private BookingRepository bookingRepository;
+    private UserRepository userRepository;
     @Autowired
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    void findAllBookingsNotFound() throws Exception {
-        mockMvc.perform(get("/bookings"))
+    void findAllUsersNotFound() throws Exception {
+        mockMvc.perform(get("/users"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void findAllBookingsHappyPath() throws Exception {
-        givenSomePreviouslyStoredDataWithIds(1, 2, true, true, true);
+    void findAllUsersHappyPath() throws Exception {
+        givenSomePreviouslyStoredDataWithIds(1, 2, false, true, false);
 
-        MvcResult result = mockMvc.perform(get("/bookings"))
+        MvcResult result = mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        List<Booking> bookingResponseList = objectMapper.readValue(result.getResponse().getContentAsString(),
-                new TypeReference<List<Booking>>() {
+        List<User> userResponseList = objectMapper.readValue(result.getResponse().getContentAsString(),
+                new TypeReference<List<User>>() {
                 });
 
-        Assertions.assertEquals(2, bookingResponseList.size());
+        Assertions.assertEquals(2, userResponseList.size());
     }
 
     @Test
-    void createBookingHappyPath() throws Exception {
-        givenSomePreviouslyStoredDataWithIds(1, 2, true, true, false);
+    void createUserHappyPath() throws Exception {
+        givenSomePreviouslyStoredDataWithIds(1, 2, false, true, false);
 
-        BookingDTO requestDto = new BookingDTO(1L, 1L, new Date(100),
-                new Date(3000), BookingStatus.OPEN, new Date(), null);
+        UserDTO requestDto = new UserDTO("someUser", "somePassword", "someName",
+                "some@email.com", Role.USER, new Date(), new Date());
 
-        MvcResult result = mockMvc.perform(post("/bookings")
+        MvcResult result = mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
@@ -85,41 +82,40 @@ class BookingsControllerFunctionalTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    void findBookingByIdNotFound() throws Exception {
-        mockMvc.perform(get("/bookings/123"))
+    void findUserByIdNotFound() throws Exception {
+        mockMvc.perform(get("/users/123"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void findBookingByIdHappyPath() throws Exception {
-        givenSomePreviouslyStoredDataWithIds(3, 4, true, true, true);
+    void findUserByIdHappyPath() throws Exception {
+        givenSomePreviouslyStoredDataWithIds(3, 4, false, true, false);
 
-        MvcResult result = mockMvc.perform(get("/bookings/3"))
+        MvcResult result = mockMvc.perform(get("/users/3"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        Booking bookingResponse = objectMapper.readValue(result.getResponse().getContentAsString(),
-                new TypeReference<Booking>() {
+        User userResponse = objectMapper.readValue(result.getResponse().getContentAsString(),
+                new TypeReference<User>() {
                 });
 
-        Assertions.assertEquals(3L, bookingResponse.getActivityId());
-        Assertions.assertEquals(3L, bookingResponse.getUserId());
+        Assertions.assertEquals(3L, userResponse.getUserId());
     }
 
     @Test
-    void deleteBookingByIdNotFound() throws Exception {
-        mockMvc.perform(delete("/bookings/123"))
+    void deleteUserByIdNotFound() throws Exception {
+        mockMvc.perform(delete("/users/123"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void deleteBookingByIdHappyPath() throws Exception {
-        givenSomePreviouslyStoredDataWithIds(5, 6, true, true, true);
+    void deleteUserByIdHappyPath() throws Exception {
+        givenSomePreviouslyStoredDataWithIds(5, 6, false, true, false);
 
-        mockMvc.perform(delete("/bookings/5"))
+        mockMvc.perform(delete("/users/5"))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(delete("/bookings/6"))
+        mockMvc.perform(delete("/users/6"))
                 .andExpect(status().isOk());
     }
 

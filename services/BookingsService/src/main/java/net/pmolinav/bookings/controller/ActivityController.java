@@ -1,11 +1,10 @@
 package net.pmolinav.bookings.controller;
 
-import lombok.AllArgsConstructor;
+import net.pmolinav.bookings.service.ActivityService;
 import net.pmolinav.bookingslib.dto.ActivityDTO;
 import net.pmolinav.bookingslib.exception.InternalServerErrorException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.model.Activity;
-import net.pmolinav.bookings.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +12,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@AllArgsConstructor
 //@CrossOrigin("*")
 @RestController
 @RequestMapping("activities")
 public class ActivityController {
 
-    //TODO: Fix tests if necessary
+    private final ActivityService activityService;
 
     @Autowired
-    private ActivityService activityService;
+    public ActivityController(ActivityService activityService) {
+        this.activityService = activityService;
+    }
 
     @GetMapping
     public ResponseEntity<List<Activity>> findAllActivities() {

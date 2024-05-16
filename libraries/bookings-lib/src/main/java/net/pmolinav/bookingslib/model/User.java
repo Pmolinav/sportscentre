@@ -1,15 +1,16 @@
 package net.pmolinav.bookingslib.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 @Entity
 @Table(name = "users")
 public class User {
@@ -52,5 +53,39 @@ public class User {
         }
         this.creationDate = creationDate;
         this.modificationDate = modificationDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(userId, user.userId)
+                && Objects.equals(username, user.username)
+                && Objects.equals(password, user.password)
+                && Objects.equals(name, user.name)
+                && Objects.equals(email, user.email)
+                && Objects.equals(role, user.role)
+                && Objects.equals(creationDate, user.creationDate)
+                && Objects.equals(modificationDate, user.modificationDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, username, password, name, email, role, creationDate, modificationDate);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", role='" + role + '\'' +
+                ", creationDate=" + creationDate +
+                ", modificationDate=" + modificationDate +
+                '}';
     }
 }

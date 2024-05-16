@@ -4,7 +4,6 @@ import net.pmolinav.bookingslib.dto.BookingDTO;
 import net.pmolinav.bookingslib.dto.BookingUpdateDTO;
 import net.pmolinav.bookingslib.model.Booking;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.List;
 public interface BookingClient {
 
     @GetMapping("/")
-    List<Booking> getAllBookings();
+    List<Booking> findAllBookings();
 
     @PostMapping("/")
     Long createBooking(@RequestBody BookingDTO bookingDTO);

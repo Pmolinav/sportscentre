@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import net.pmolinav.bookingslib.dto.ChangeType;
 import net.pmolinav.bookingslib.dto.UserDTO;
 import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.exception.UnexpectedException;
@@ -114,7 +113,4 @@ public class UserBOController {
         }
     }
 
-    private void insertIntoKafka(ChangeType changeType, Object newEntity) {
-        //TODO: Complete insert into Kafka
-    }
 }

@@ -1,16 +1,18 @@
 package net.pmolinav.bookingslib.model;
 
-import lombok.*;
-import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-@ToString
 @Entity
 @Table(name = "history")
 public class History {
@@ -33,4 +35,31 @@ public class History {
     @Column(name = "finalEntity")
     private String finalEntity;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        History history = (History) o;
+        return Objects.equals(id, history.id)
+                && Objects.equals(creationDate, history.creationDate)
+                && Objects.equals(changeType, history.changeType)
+                && Objects.equals(originalEntity, history.originalEntity)
+                && Objects.equals(finalEntity, history.finalEntity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, creationDate, changeType, originalEntity, finalEntity);
+    }
+
+    @Override
+    public String toString() {
+        return "History{" +
+                "id=" + id +
+                ", creationDate=" + creationDate +
+                ", changeType='" + changeType + '\'' +
+                ", originalEntity='" + originalEntity + '\'' +
+                ", finalEntity='" + finalEntity + '\'' +
+                '}';
+    }
 }

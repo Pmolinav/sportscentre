@@ -1,8 +1,7 @@
-package net.pmolinav.bookings.functional;
+package net.pmolinav.bookings.integration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.pmolinav.bookings.mapper.ActivityMapper;
 import net.pmolinav.bookings.repository.ActivityRepository;
 import net.pmolinav.bookingslib.dto.ActivityDTO;
 import net.pmolinav.bookingslib.dto.ActivityType;
@@ -35,12 +34,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @EnableJpaRepositories("net.pmolinav.bookings.repository")
 @EntityScan("net.pmolinav.bookingslib.model")
-class ActivityControllerFunctionalTest extends AbstractContainerBaseTest {
+class ActivityControllerIntegrationTest extends AbstractContainerBaseTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private ActivityMapper activityMapper;
     @Autowired
     private ActivityRepository activityRepository;
     @Autowired

@@ -1,10 +1,10 @@
 package net.pmolinav.bookings.service;
 
-import net.pmolinav.bookings.mapper.UserMapper;
 import net.pmolinav.bookings.repository.UserRepository;
 import net.pmolinav.bookingslib.dto.UserDTO;
 import net.pmolinav.bookingslib.exception.InternalServerErrorException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
+import net.pmolinav.bookingslib.mapper.UserMapper;
 import net.pmolinav.bookingslib.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +22,12 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    private final UserMapper userMapper;
+
     @Autowired
-    private UserMapper userMapper;
+    public UserService(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
 
     @Transactional(readOnly = true)
     public List<User> findAllUsers() {

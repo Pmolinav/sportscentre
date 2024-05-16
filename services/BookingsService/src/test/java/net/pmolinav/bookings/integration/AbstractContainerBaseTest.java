@@ -1,4 +1,4 @@
-package net.pmolinav.bookings.functional;
+package net.pmolinav.bookings.integration;
 
 
 import net.pmolinav.bookings.security.WebSecurityConfig;
@@ -13,7 +13,7 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 
 /**
- *  Docker Environment is needed to run functional tests.
+ *  Docker Environment is needed to run integration tests.
  **/
 @ActiveProfiles("test")
 public abstract class AbstractContainerBaseTest {

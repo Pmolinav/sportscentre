@@ -1,14 +1,16 @@
 package net.pmolinav.bookingslib.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 @Entity
 @Table(name = "bookings")
 public class Booking {
@@ -49,7 +51,7 @@ public class Booking {
     @ManyToOne
     private Activity activity;
 
-    public Booking(long bookingId, long userId, long activityId, Date startTime, Date endTime, String status, Date creationDate, Date modificationDate) {
+    public Booking(Long bookingId, Long userId, Long activityId, Date startTime, Date endTime, String status, Date creationDate, Date modificationDate) {
         this.bookingId = bookingId;
         this.userId = userId;
         this.activityId = activityId;
@@ -60,5 +62,39 @@ public class Booking {
         }
         this.creationDate = creationDate;
         this.modificationDate = modificationDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Booking booking = (Booking) o;
+        return Objects.equals(bookingId, booking.bookingId)
+                && Objects.equals(userId, booking.userId)
+                && Objects.equals(activityId, booking.activityId)
+                && Objects.equals(startTime, booking.startTime)
+                && Objects.equals(endTime, booking.endTime)
+                && Objects.equals(status, booking.status)
+                && Objects.equals(creationDate, booking.creationDate)
+                && Objects.equals(modificationDate, booking.modificationDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(bookingId, userId, activityId, startTime, endTime, status, creationDate, modificationDate);
+    }
+
+    @Override
+    public String toString() {
+        return "Booking{" +
+                "bookingId=" + bookingId +
+                ", userId=" + userId +
+                ", activityId=" + activityId +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", status='" + status + '\'' +
+                ", creationDate=" + creationDate +
+                ", modificationDate=" + modificationDate +
+                '}';
     }
 }

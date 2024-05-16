@@ -1,15 +1,11 @@
-package net.pmolinav.configuration.functionals;
+package net.pmolinav.configuration.integration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.pmolinav.bookingslib.dto.ActivityDTO;
 import net.pmolinav.bookingslib.dto.ActivityType;
-import net.pmolinav.bookingslib.dto.Role;
 import net.pmolinav.bookingslib.model.Activity;
-import net.pmolinav.bookingslib.model.User;
 import net.pmolinav.configuration.client.ActivityClient;
-import net.pmolinav.configuration.client.UserClient;
-import net.pmolinav.configuration.mapper.ActivityMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.math.BigDecimal;
@@ -30,7 +25,6 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,42 +33,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @EntityScan("net.pmolinav.bookingslib.model")
-class ActivityBOControllerFunctionalTest extends AbstractBaseTest {
+class ActivityBOControllerIntegrationTest extends AbstractBaseTest {
 
-    //TODO: Review how to mock Authorization
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ActivityMapper activityMapper;
     @MockBean
     private ActivityClient activityClient;
     @Autowired
     private final ObjectMapper objectMapper = new ObjectMapper();
-    @MockBean
-    private static UserClient userClient;
+
+    private List<Activity> expectedActivities;
 
     @Test
-    void findAllActivitiesNotFound() throws Exception {
-        when(userClient.findUserByUsername(anyString()))
-                .thenReturn(new User(1L, username, password, "someUser",
-                        "some@email.com", Role.ADMIN.name(), new Date(), null));
-
-        String userRequest = "{\"username\": \"" + username + "\", \"password\": \"" + password + "\"}";
-        MvcResult result = mockMvc.perform(post("/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(userRequest))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String responseBody = result.getResponse().getContentAsString();
+    void findAllActivitiesInternalServerError() throws Exception {
+        andFindAllActivitiesThrowsNonRetryableException();
 
         mockMvc.perform(get("/activities?requestUid=" + requestUid)
                         .header(HttpHeaders.AUTHORIZATION, authToken))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
     void findAllActivitiesHappyPath() throws Exception {
+        andFindAllActivitiesReturnedValidActivities();
+
         MvcResult result = mockMvc.perform(get("/activities?requestUid=" + requestUid)
                         .header(HttpHeaders.AUTHORIZATION, authToken))
                 .andExpect(status().isOk())
@@ -84,13 +64,27 @@ class ActivityBOControllerFunctionalTest extends AbstractBaseTest {
                 new TypeReference<List<Activity>>() {
                 });
 
-        Assertions.assertEquals(2, activityResponseList.size());
-        Assertions.assertEquals(ActivityType.FOOTBALL.name(), activityResponseList.get(0).getType());
-        Assertions.assertEquals(ActivityType.TENNIS.name(), activityResponseList.get(1).getType());
+        Assertions.assertEquals(expectedActivities, activityResponseList);
+    }
+
+    @Test
+    void createActivityServerError() throws Exception {
+        andCreateActivityThrowsNonRetryableException();
+
+        ActivityDTO requestDto = new ActivityDTO(ActivityType.GYM, "Gym", "Gym activity",
+                BigDecimal.valueOf(25), new Date(), null);
+
+        mockMvc.perform(post("/activities?requestUid=" + requestUid)
+                        .header(HttpHeaders.AUTHORIZATION, authToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
     void createActivityHappyPath() throws Exception {
+        andCreateActivityReturnedValidId();
+
         ActivityDTO requestDto = new ActivityDTO(ActivityType.GYM, "Gym", "Gym activity",
                 BigDecimal.valueOf(25), new Date(), null);
 
@@ -107,14 +101,18 @@ class ActivityBOControllerFunctionalTest extends AbstractBaseTest {
     }
 
     @Test
-    void findActivityByIdNotFound() throws Exception {
+    void findActivityByIdServerError() throws Exception {
+        andFindActivityByIdThrowsNonRetryableException();
+
         mockMvc.perform(get("/activities/123?requestUid=" + requestUid)
                         .header(HttpHeaders.AUTHORIZATION, authToken))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
     void findActivityByIdHappyPath() throws Exception {
+        andFindActivityByIdReturnedActivity();
+
         MvcResult result = mockMvc.perform(get("/activities/3?requestUid=" + requestUid)
                         .header(HttpHeaders.AUTHORIZATION, authToken))
                 .andExpect(status().isOk())
@@ -124,12 +122,11 @@ class ActivityBOControllerFunctionalTest extends AbstractBaseTest {
                 new TypeReference<Activity>() {
                 });
 
-        Assertions.assertEquals(ActivityType.FOOTBALL.name(), activityResponse.getType());
-        Assertions.assertEquals(BigDecimal.valueOf(25).longValue(), activityResponse.getPrice().longValue());
+        Assertions.assertEquals(expectedActivities.get(0), activityResponse);
     }
 
     @Test
-    void deleteActivityByIdServerError() throws Exception {
+    void deleteActivityByIdInternalServerError() throws Exception {
         andActivityDeleteThrowsNonRetryableException();
 
         mockMvc.perform(delete("/activities/123?requestUid=" + requestUid)
@@ -152,6 +149,36 @@ class ActivityBOControllerFunctionalTest extends AbstractBaseTest {
 
     private void andActivityDeleteThrowsNonRetryableException() {
         doThrow(new RuntimeException("someException")).when(this.activityClient).deleteActivity(anyLong());
+    }
+
+    private void andFindActivityByIdReturnedActivity() {
+        this.expectedActivities = List.of(new Activity(1L, ActivityType.FOOTBALL.name(), "someActivity",
+                "someDescription", BigDecimal.TEN, new Date(), null));
+
+        when(this.activityClient.findActivityById(anyLong())).thenReturn(this.expectedActivities.get(0));
+    }
+
+    private void andFindActivityByIdThrowsNonRetryableException() {
+        doThrow(new RuntimeException("someException")).when(this.activityClient).findActivityById(anyLong());
+    }
+
+    private void andCreateActivityReturnedValidId() {
+        when(this.activityClient.createActivity(any(ActivityDTO.class))).thenReturn(1L);
+    }
+
+    private void andCreateActivityThrowsNonRetryableException() {
+        doThrow(new RuntimeException("someException")).when(this.activityClient).createActivity(any(ActivityDTO.class));
+    }
+
+    private void andFindAllActivitiesReturnedValidActivities() {
+        this.expectedActivities = List.of(new Activity(1L, ActivityType.FOOTBALL.name(), "someActivity",
+                "someDescription", BigDecimal.TEN, new Date(), null));
+
+        when(this.activityClient.findAllActivities()).thenReturn(this.expectedActivities);
+    }
+
+    private void andFindAllActivitiesThrowsNonRetryableException() {
+        doThrow(new RuntimeException("someException")).when(this.activityClient).findAllActivities();
     }
 }
 

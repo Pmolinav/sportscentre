@@ -1,17 +1,19 @@
 package net.pmolinav.bookingslib.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-@ToString
 @Entity
 @Table(name = "activities")
 public class Activity {
@@ -41,4 +43,22 @@ public class Activity {
     @Column(name = "modificationDate")
     private Date modificationDate;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Activity activity = (Activity) o;
+        return Objects.equals(activityId, activity.activityId)
+                && Objects.equals(type, activity.type)
+                && Objects.equals(name, activity.name)
+                && Objects.equals(description, activity.description)
+                && Objects.equals(price, activity.price)
+                && Objects.equals(creationDate, activity.creationDate)
+                && Objects.equals(modificationDate, activity.modificationDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(activityId, type, name, description, price, creationDate, modificationDate);
+    }
 }

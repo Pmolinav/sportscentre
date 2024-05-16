@@ -24,7 +24,7 @@ public class BookingBOService {
 
     public List<Booking> findAllBookings() {
         try {
-            return bookingClient.getAllBookings();
+            return bookingClient.findAllBookings();
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
                 logger.error("Unexpected error while calling service with status code " + e.status(), e);

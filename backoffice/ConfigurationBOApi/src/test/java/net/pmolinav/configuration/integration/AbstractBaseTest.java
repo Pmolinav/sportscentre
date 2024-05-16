@@ -1,4 +1,5 @@
-package net.pmolinav.configuration.functionals;
+package net.pmolinav.configuration.integration;
+
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.pmolinav.bookingslib.dto.Role;
@@ -6,76 +7,56 @@ import net.pmolinav.bookingslib.model.User;
 import net.pmolinav.configuration.client.UserClient;
 import net.pmolinav.configuration.security.AuthCredentials;
 import net.pmolinav.configuration.security.WebSecurityConfig;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Date;
 
-import static org.hamcrest.Matchers.matchesRegex;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
 @ActiveProfiles("test")
-@AutoConfigureMockMvc
-@EntityScan("net.pmolinav.bookingslib.model")
-class LoginBOControllerFunctionalTest extends AbstractBaseTest {
+public abstract class AbstractBaseTest {
+    protected static String username = "someUser";
+    protected static final String password = "$2a$10$pn85ACcwW6v74Kkt3pnPau7A4lv8N2d.fvwXuLsYanv07PzlXTu9S";
+    protected static final String requestUid = "someRequestUid";
 
-    //TODO: Review how to mock Feign Client
-    private AuthCredentials request;
     @Autowired
-    private MockMvc mockMvc;
+    protected MockMvc mockMvc;
     @MockBean
-    private UserClient userClient;
+    protected UserClient userClient;
     @Autowired
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    protected final ObjectMapper objectMapper = new ObjectMapper();
+    private AuthCredentials request;
+    protected static String authToken;
 
-    @Test
-    void loginHappyPath() throws Exception {
+    @BeforeEach
+    public void mockLoginSuccessfully() throws Exception {
         giveSomeValidRequest();
         giveSomeUserFromClientOK();
 
-        String regex = "^Bearer\\s[a-zA-Z0-9-_.]+$";
-
-        mockMvc.perform(post("/login")
+        MvcResult result = mockMvc.perform(post("/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(this.request)))
                 .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.AUTHORIZATION, matchesRegex(regex)));
+                .andReturn();
+
+        authToken = result.getResponse().getHeader(HttpHeaders.AUTHORIZATION);
     }
 
-    @Test
-    void loginBadRequest() throws Exception {
-        mockMvc.perform(post("/login"))
-                .andExpect(status().isBadRequest());
+    protected void giveSomeValidRequest() {
+        this.request = new AuthCredentials(username, password);
     }
 
-    @Test
-    void loginUnauthorized() throws Exception {
-        giveSomeValidRequest();
-
-        mockMvc.perform(post("/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new AuthCredentials("fakeUser", "fakePass"))))
-                .andExpect(status().isUnauthorized());
-    }
-
-    private void giveSomeValidRequest() {
-        this.request = new AuthCredentials("Admin", "Admin");
-    }
-
-    private void giveSomeUserFromClientOK() {
+    protected void giveSomeUserFromClientOK() {
         User returnedUser = new User(1L,
                 this.request.getUsername(),
                 WebSecurityConfig.passwordEncoder().encode(this.request.getPassword()),

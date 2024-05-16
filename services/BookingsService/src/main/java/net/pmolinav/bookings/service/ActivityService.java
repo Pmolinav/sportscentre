@@ -1,10 +1,10 @@
 package net.pmolinav.bookings.service;
 
-import net.pmolinav.bookings.mapper.ActivityMapper;
 import net.pmolinav.bookings.repository.ActivityRepository;
 import net.pmolinav.bookingslib.dto.ActivityDTO;
 import net.pmolinav.bookingslib.exception.InternalServerErrorException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
+import net.pmolinav.bookingslib.mapper.ActivityMapper;
 import net.pmolinav.bookingslib.model.Activity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +22,12 @@ public class ActivityService {
 
     @Autowired
     private ActivityRepository activityRepository;
+    private final ActivityMapper activityMapper;
+
     @Autowired
-    private ActivityMapper activityMapper;
+    public ActivityService(ActivityMapper activityMapper) {
+        this.activityMapper = activityMapper;
+    }
 
     @Transactional(readOnly = true)
     public List<Activity> findAllActivities() {
