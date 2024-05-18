@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 public class UserService {
-    //TODO: Complete all services
+
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
@@ -39,6 +39,7 @@ public class UserService {
             throw new InternalServerErrorException(e.getMessage());
         }
         if (CollectionUtils.isEmpty(usersList)) {
+            logger.warn("No users were found in repository.");
             throw new NotFoundException("No users found in repository.");
         } else {
             return usersList;

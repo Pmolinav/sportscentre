@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 public class BookingService {
-    //TODO: Complete all services
+
     private static final Logger logger = LoggerFactory.getLogger(BookingService.class);
 
     @Autowired
@@ -39,6 +39,7 @@ public class BookingService {
             throw new InternalServerErrorException(e.getMessage());
         }
         if (CollectionUtils.isEmpty(bookingsList)) {
+            logger.warn("No bookings were found in repository.");
             throw new NotFoundException("No bookings found in repository.");
         } else {
             return bookingsList;

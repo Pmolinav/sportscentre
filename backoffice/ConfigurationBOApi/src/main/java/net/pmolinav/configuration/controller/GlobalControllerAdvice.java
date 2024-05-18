@@ -19,7 +19,6 @@ public class GlobalControllerAdvice {
 
     @ModelAttribute
     public void setupMdcAndValidateRequestUid(@Nullable @RequestParam String requestUid) {
-        MDC.clear();
         MDC.put(MDCKeys.requestUid.name(), requestUid);
     }
 
@@ -33,7 +32,7 @@ public class GlobalControllerAdvice {
         String controllerName = getControllerName();
         Logger logger = LoggerFactory.getLogger(controllerName);
 
-        logger.error("Unexpected error while executing controller" + controllerName + ": " + e.getMessage(), e);
+        logger.error("Unexpected error while executing controller {}: {}", controllerName, e.getMessage(), e);
     }
 
     private String getControllerName() {

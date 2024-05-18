@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 public class BookingBOService {
-    //TODO: Complete all services and log message
+
     private static final Logger logger = LoggerFactory.getLogger(ActivityBOService.class);
 
     @Autowired
@@ -27,7 +27,7 @@ public class BookingBOService {
             return bookingClient.findAllBookings();
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
-                logger.error("Unexpected error while calling service with status code " + e.status(), e);
+                logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
             } else {
                 logger.warn("No bookings found", e);
@@ -43,7 +43,7 @@ public class BookingBOService {
         try {
             return bookingClient.createBooking(bookingDTO);
         } catch (FeignException e) {
-            logger.error("Unexpected error while calling service with status code " + e.status(), e);
+            logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
             throw new UnexpectedException(e.getMessage(), e.status());
         } catch (Exception e) {
             logger.error("Unexpected exception occurred while calling service.", e);
@@ -56,10 +56,10 @@ public class BookingBOService {
             return bookingClient.findBookingById(id);
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
-                logger.error("Unexpected error while calling service with status code " + e.status(), e);
+                logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
             } else {
-                logger.warn("Booking with id " + id + " not found", e);
+                logger.warn("Booking with id {} not found.", id, e);
                 throw new NotFoundException("Booking " + id + " not found");
             }
         } catch (Exception e) {
@@ -73,10 +73,10 @@ public class BookingBOService {
             bookingClient.deleteBooking(id);
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
-                logger.error("Unexpected error while calling service with status code " + e.status(), e);
+                logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
             } else {
-                logger.warn("Booking with id " + id + " not found", e);
+                logger.warn("Booking with id {} not found.", id, e);
                 throw new NotFoundException("Booking " + id + " not found");
             }
         } catch (Exception e) {

@@ -33,10 +33,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             return new UserDetailsImpl(user);
         } catch (FeignException e) {
             if (e.status() == NOT_FOUND.value()) {
-                logger.error("User with username " + username + " not found", e);
+                logger.error("User with username {} not found.", username, e);
                 throw new NotFoundException("User " + username + " not found");
             } else {
-                logger.error("Unexpected error while calling service with status code " + e.status(), e);
+                logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
             }
         }

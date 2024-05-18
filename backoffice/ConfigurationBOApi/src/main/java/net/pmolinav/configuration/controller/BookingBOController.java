@@ -26,7 +26,6 @@ import java.util.List;
 @Tag(name = "4. Booking", description = "The Booking Controller. Contains all the operations that can be performed on a booking.")
 public class BookingBOController {
 
-    //TODO: Fix tests if necessary
     @Autowired
     private BookingBOService bookingBOService;
 

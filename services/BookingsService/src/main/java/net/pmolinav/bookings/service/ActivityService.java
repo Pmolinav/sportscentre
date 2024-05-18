@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 public class ActivityService {
-    //TODO: Complete all services
+
     private static final Logger logger = LoggerFactory.getLogger(ActivityService.class);
 
     @Autowired
@@ -39,8 +39,10 @@ public class ActivityService {
             throw new InternalServerErrorException(e.getMessage());
         }
         if (CollectionUtils.isEmpty(activityList)) {
+            logger.warn("No activities were found in repository.");
             throw new NotFoundException("No activities found in repository.");
         } else {
+            logger.debug("Activities are returned OK from repository.");
             return activityList;
         }
     }

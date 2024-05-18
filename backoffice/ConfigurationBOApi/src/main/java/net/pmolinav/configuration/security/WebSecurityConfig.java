@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    //    private static final Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
     @Autowired
     private final UserClient userClient;
     private final JWTAuthorizationFilter jwtAuthorizationFilter;

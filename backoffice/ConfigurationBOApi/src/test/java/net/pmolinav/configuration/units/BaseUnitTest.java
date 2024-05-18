@@ -18,7 +18,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 @RunWith(MockitoJUnitRunner.class)
 class BaseUnitTest {
 
-    // TODO: Review how to run tests separated with "Run" button.
     @Mock
     UserBOService userBOServiceMock;
     @InjectMocks

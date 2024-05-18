@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 public class UserBOService {
-    //TODO: Complete all services and log message
+
     private static final Logger logger = LoggerFactory.getLogger(ActivityBOService.class);
 
     @Autowired
@@ -27,10 +27,10 @@ public class UserBOService {
             return userClient.findAllUsers();
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
-                logger.error("Unexpected error while calling service with status code " + e.status(), e);
+                logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
             } else {
-                logger.warn("No users found", e);
+                logger.warn("No users found.", e);
                 throw new NotFoundException("No users found");
             }
         } catch (Exception e) {
@@ -43,7 +43,7 @@ public class UserBOService {
         try {
             return userClient.createUser(userDTO);
         } catch (FeignException e) {
-            logger.error("Unexpected error while calling service with status code " + e.status(), e);
+            logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
             throw new UnexpectedException(e.getMessage(), e.status());
         } catch (Exception e) {
             logger.error("Unexpected exception occurred while calling service.", e);
@@ -56,10 +56,10 @@ public class UserBOService {
             return userClient.findUserById(id);
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
-                logger.error("Unexpected error while calling service with status code " + e.status(), e);
+                logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
             } else {
-                logger.warn("User with id " + id + " not found", e);
+                logger.warn("User with id {} not found.", id, e);
                 throw new NotFoundException("User " + id + " not found");
             }
         } catch (Exception e) {
@@ -73,10 +73,10 @@ public class UserBOService {
             return userClient.findUserByUsername(username);
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
-                logger.error("Unexpected error while calling service with status code " + e.status(), e);
+                logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
             } else {
-                logger.warn("User with username " + username + " not found", e);
+                logger.warn("User with username {} not found.", username, e);
                 throw new NotFoundException("User " + username + " not found");
             }
         } catch (Exception e) {
@@ -90,10 +90,10 @@ public class UserBOService {
             userClient.deleteUser(id);
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
-                logger.error("Unexpected error while calling service with status code " + e.status(), e);
+                logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
             } else {
-                logger.warn("User with id " + id + " not found", e);
+                logger.warn("User with id {} not found.", id, e);
                 throw new NotFoundException("User " + id + " not found");
             }
         } catch (Exception e) {

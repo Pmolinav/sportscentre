@@ -1,6 +1,5 @@
 package net.pmolinav.configuration.units;
 
-import net.pmolinav.bookingslib.dto.UserDTO;
 import net.pmolinav.bookingslib.exception.UnexpectedException;
 import net.pmolinav.configuration.security.AuthCredentials;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import static org.mockito.Mockito.*;
 
 class LoginBOControllerTest extends BaseUnitTest {
 
-    UserDTO userDTO;
     ResponseEntity<?> result;
 
     /* LOGIN */

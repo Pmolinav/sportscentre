@@ -25,8 +25,6 @@ import java.util.List;
 @Tag(name = "3. Activity", description = "The Activity Controller. Contains all the operations that can be performed on an activity.")
 public class ActivityBOController {
 
-    //TODO: Fix tests if necessary
-
     @Autowired
     private ActivityBOService activityBOService;
 

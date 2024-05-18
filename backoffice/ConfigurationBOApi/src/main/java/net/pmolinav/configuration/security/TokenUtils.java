@@ -4,8 +4,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import net.pmolinav.bookingslib.dto.MDCKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.util.Collections;
@@ -19,19 +21,19 @@ public class TokenUtils {
     private final static String ACCESS_TOKEN_SECRET = "c7eD5hYnJnVr3uFTh5WTG2XKj6qbBszvuztf8WbCcJY";
     private final static Long ACCESS_TOKEN_VALIDITY_SECONDS = 12345L;
 
-    private static final Logger logger = LoggerFactory.getLogger(TokenUtils.class);
-
-    public static String createToken(String name, String username, String role) {
+    public static String createToken(String username, String password, String role) {
 
         long expirationTime = ACCESS_TOKEN_VALIDITY_SECONDS * 1000L;
         Date expirationDate = new Date(System.currentTimeMillis() + expirationTime);
 
         Map<String, Object> extraParams = new HashMap<>();
-        extraParams.put("name", name);
+        extraParams.put("username", username);
         extraParams.put("role", role);
 
+        MDC.put(MDCKeys.username.name(), username);
+
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(password)
                 .setIssuedAt(new Date())
                 .setExpiration(expirationDate)
                 .addClaims(extraParams)
@@ -46,9 +48,9 @@ public class TokenUtils {
                     .parseClaimsJws(token)
                     .getBody();
 
-            String username = claims.getSubject();
+            String password = claims.getSubject();
 
-            return new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+            return new UsernamePasswordAuthenticationToken(password, null, Collections.emptyList());
         } catch (JwtException e) {
             return null;
         }

@@ -30,7 +30,6 @@ public class UserBOController {
     private UserBOService userBOService;
 
     //TODO: Validar JSON con @Valid y BindingResult. Añadir validaciones en los DTOs.
-    //TODO: Fix tests if necessary
 
     @GetMapping
     @Operation(summary = "Retrieve all users", description = "Bearer token is required to authorize users.")

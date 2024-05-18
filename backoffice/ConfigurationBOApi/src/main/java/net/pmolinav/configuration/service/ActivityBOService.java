@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 public class ActivityBOService {
-    //TODO: Complete all services and log message
+
     private static final Logger logger = LoggerFactory.getLogger(ActivityBOService.class);
 
     @Autowired
@@ -27,10 +27,10 @@ public class ActivityBOService {
             return activityClient.findAllActivities();
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
-                logger.error("Unexpected error while calling service with status code " + e.status(), e);
+                logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
             } else {
-                logger.warn("No activities found", e);
+                logger.warn("No activities found.", e);
                 throw new NotFoundException("No activities found");
             }
         } catch (Exception e) {
@@ -43,7 +43,7 @@ public class ActivityBOService {
         try {
             return activityClient.createActivity(activityDTO);
         } catch (FeignException e) {
-            logger.error("Unexpected error while calling service with status code " + e.status(), e);
+            logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
             throw new UnexpectedException(e.getMessage(), e.status());
         } catch (Exception e) {
             logger.error("Unexpected exception occurred while calling service.", e);
@@ -56,10 +56,10 @@ public class ActivityBOService {
             return activityClient.findActivityById(id);
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
-                logger.error("Unexpected error while calling service with status code " + e.status(), e);
+                logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
             } else {
-                logger.warn("Activity with id " + id + " not found", e);
+                logger.warn("Activity with id {} not found.", id, e);
                 throw new NotFoundException("Activity " + id + " not found");
             }
         } catch (Exception e) {
@@ -73,10 +73,10 @@ public class ActivityBOService {
             activityClient.deleteActivity(id);
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
-                logger.error("Unexpected retryable error while calling service with status code " + e.status(), e);
+                logger.error("Unexpected retryable error while calling service with status code {}.", e.status(), e);
                 throw new UnexpectedException(e.getMessage(), e.status());
             } else {
-                logger.warn("Activity with id " + id + " not found", e);
+                logger.warn("Activity with id {} not found.", id, e);
                 throw new NotFoundException("Activity " + id + " not found");
             }
         } catch (Exception e) {
