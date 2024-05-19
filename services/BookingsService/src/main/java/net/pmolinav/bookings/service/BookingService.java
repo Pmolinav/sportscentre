@@ -63,10 +63,10 @@ public class BookingService {
             return bookingRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException(String.format("Booking with id %s does not exist.", id)));
         } catch (NotFoundException e) {
-            logger.error("Booking with id " + id + " was not found.", e);
+            logger.error("Booking with id {} was not found.", id, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while searching booking with id " + id + " in repository.", e);
+            logger.error("Unexpected error while searching booking with id {} in repository.", id, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -79,10 +79,10 @@ public class BookingService {
 
             bookingRepository.delete(booking);
         } catch (NotFoundException e) {
-            logger.error("Booking with id " + id + " was not found.", e);
+            logger.error("Booking with id {} was not found.", id, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while removing booking with id " + id + " in repository.", e);
+            logger.error("Unexpected error while removing booking with id {} in repository.", id, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }

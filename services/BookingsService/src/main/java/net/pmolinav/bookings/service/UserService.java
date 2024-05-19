@@ -63,10 +63,10 @@ public class UserService {
             return userRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException(String.format("User with id %s does not exist.", id)));
         } catch (NotFoundException e) {
-            logger.error("User with id " + id + " was not found.", e);
+            logger.error("User with id {} was not found.", id, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while searching user with id " + id + " in repository.", e);
+            logger.error("Unexpected error while searching user with id {} in repository.", id, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -77,10 +77,10 @@ public class UserService {
             return userRepository.findByUsername(username)
                     .orElseThrow(() -> new NotFoundException(String.format("User with username %s does not exist.", username)));
         } catch (NotFoundException e) {
-            logger.error("User with username " + username + " was not found.", e);
+            logger.error("User with username {} was not found.", username, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while searching user with username " + username + " in repository.", e);
+            logger.error("Unexpected error while searching user with username {} in repository.", username, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -93,10 +93,10 @@ public class UserService {
 
             userRepository.delete(user);
         } catch (NotFoundException e) {
-            logger.error("User with id " + id + " was not found.", e);
+            logger.error("User with id {} was not found.", id, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while removing user with id " + id + " in repository.", e);
+            logger.error("Unexpected error while removing user with id {} in repository.", id, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }

@@ -64,10 +64,10 @@ public class ActivityService {
             return activityRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException(String.format("Activity with id %s does not exist.", id)));
         } catch (NotFoundException e) {
-            logger.error("Activity with id " + id + " was not found.", e);
+            logger.error("Activity with id {} was not found.", id, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while searching activity with id " + id + " in repository.", e);
+            logger.error("Unexpected error while searching activity with id {} in repository.", id, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -80,10 +80,10 @@ public class ActivityService {
 
             activityRepository.delete(activity);
         } catch (NotFoundException e) {
-            logger.error("Activity with id " + id + " was not found.", e);
+            logger.error("Activity with id {} was not found.", id, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while removing activity with id " + id + " in repository.", e);
+            logger.error("Unexpected error while removing activity with id {} in repository.", id, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
