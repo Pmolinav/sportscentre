@@ -2,7 +2,7 @@ package net.pmolinav.configuration.security;
 
 import feign.FeignException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
-import net.pmolinav.bookingslib.exception.UnexpectedException;
+import net.pmolinav.bookingslib.exception.CustomStatusException;
 import net.pmolinav.bookingslib.model.User;
 import net.pmolinav.configuration.client.UserClient;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 throw new NotFoundException("User " + username + " not found");
             } else {
                 logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
-                throw new UnexpectedException(e.getMessage(), e.status());
+                throw new CustomStatusException(e.getMessage(), e.status());
             }
         }
 

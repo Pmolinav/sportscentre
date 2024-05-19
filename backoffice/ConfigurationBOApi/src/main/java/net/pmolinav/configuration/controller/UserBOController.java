@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import net.pmolinav.bookingslib.dto.UserDTO;
 import net.pmolinav.bookingslib.exception.NotFoundException;
-import net.pmolinav.bookingslib.exception.UnexpectedException;
+import net.pmolinav.bookingslib.exception.CustomStatusException;
 import net.pmolinav.bookingslib.model.User;
 import net.pmolinav.configuration.security.WebSecurityConfig;
 import net.pmolinav.configuration.service.UserBOService;
@@ -39,7 +39,7 @@ public class UserBOController {
             return ResponseEntity.ok(users);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
-        } catch (UnexpectedException e) {
+        } catch (CustomStatusException e) {
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -52,7 +52,7 @@ public class UserBOController {
             userDTO.setPassword(WebSecurityConfig.passwordEncoder().encode(userDTO.getPassword()));
             Long createdUserId = userBOService.createUser(userDTO);
             return new ResponseEntity<>(createdUserId, HttpStatus.CREATED);
-        } catch (UnexpectedException e) {
+        } catch (CustomStatusException e) {
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -65,7 +65,7 @@ public class UserBOController {
             return ResponseEntity.ok(user);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
-        } catch (UnexpectedException e) {
+        } catch (CustomStatusException e) {
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -107,7 +107,7 @@ public class UserBOController {
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
-        } catch (UnexpectedException e) {
+        } catch (CustomStatusException e) {
             return ResponseEntity.internalServerError().build();
         }
     }

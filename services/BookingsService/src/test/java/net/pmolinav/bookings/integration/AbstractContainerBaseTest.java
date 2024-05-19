@@ -28,7 +28,7 @@ public abstract class AbstractContainerBaseTest {
     static {
         postgresContainer = new PostgreSQLContainer<>("postgres:latest")
                 .withExposedPorts(DB_PORT)
-                .withDatabaseName("bookings")
+                .withDatabaseName("sportscentre")
                 .withUsername("postgres")
                 .withPassword("mysecretpassword");
 

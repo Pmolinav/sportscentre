@@ -6,9 +6,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import net.pmolinav.bookingslib.dto.BookingDTO;
 import net.pmolinav.bookingslib.exception.NotFoundException;
-import net.pmolinav.bookingslib.exception.UnexpectedException;
+import net.pmolinav.bookingslib.exception.CustomStatusException;
 import net.pmolinav.bookingslib.model.Booking;
 import net.pmolinav.configuration.service.BookingBOService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,8 @@ import java.util.List;
 @Tag(name = "4. Booking", description = "The Booking Controller. Contains all the operations that can be performed on a booking.")
 public class BookingBOController {
 
+    private static final Logger logger = LoggerFactory.getLogger(BookingBOController.class);
+
     @Autowired
     private BookingBOService bookingBOService;
 
@@ -37,7 +41,7 @@ public class BookingBOController {
             return ResponseEntity.ok(bookings);
         } catch (NotFoundException notFoundException) {
             return ResponseEntity.notFound().build();
-        } catch (UnexpectedException e) {
+        } catch (CustomStatusException e) {
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -53,7 +57,7 @@ public class BookingBOController {
             } else {
                 return ResponseEntity.badRequest().build();
             }
-        } catch (UnexpectedException e) {
+        } catch (CustomStatusException e) {
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -66,7 +70,7 @@ public class BookingBOController {
             return ResponseEntity.ok(booking);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
-        } catch (UnexpectedException e) {
+        } catch (CustomStatusException e) {
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -103,7 +107,7 @@ public class BookingBOController {
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
-        } catch (UnexpectedException e) {
+        } catch (CustomStatusException e) {
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -111,8 +115,11 @@ public class BookingBOController {
     private String validateMandatoryFieldsInRequest(BookingDTO bookingDTO) {
         StringBuilder messageBuilder = new StringBuilder();
         if (bookingDTO.getUserId() == 0 || bookingDTO.getActivityId() == 0) {
+            logger.error("User and activity ids are mandatory to associate the booking correctly. " +
+                    "UserId: {}. ActivityId: {}", bookingDTO.getUserId(), bookingDTO.getActivityId());
             messageBuilder.append("User and activity ids are mandatory to associate the booking correctly.");
         } else if (bookingDTO.getStartTime().compareTo(bookingDTO.getEndTime()) >= 0) {
+            logger.error("End time must be greater than start time.");
             messageBuilder.append("End time must be greater than start time.");
         }
         return messageBuilder.toString();

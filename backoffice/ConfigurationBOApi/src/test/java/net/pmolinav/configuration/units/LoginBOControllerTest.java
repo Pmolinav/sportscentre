@@ -1,6 +1,6 @@
 package net.pmolinav.configuration.units;
 
-import net.pmolinav.bookingslib.exception.UnexpectedException;
+import net.pmolinav.bookingslib.exception.CustomStatusException;
 import net.pmolinav.configuration.security.AuthCredentials;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -58,7 +58,7 @@ class LoginBOControllerTest extends BaseUnitTest {
 
     private void whenAuthenticateThrowsUnexpectedException() {
         when(authenticationManager.authenticate(any(Authentication.class)))
-                .thenThrow(new UnexpectedException("Internal Server Error", 500));
+                .thenThrow(new CustomStatusException("Internal Server Error", 500));
     }
 
     private void andLoginsIsCalledInController() {

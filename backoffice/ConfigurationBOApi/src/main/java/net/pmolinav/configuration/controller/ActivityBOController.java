@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import net.pmolinav.bookingslib.dto.ActivityDTO;
 import net.pmolinav.bookingslib.exception.NotFoundException;
-import net.pmolinav.bookingslib.exception.UnexpectedException;
+import net.pmolinav.bookingslib.exception.CustomStatusException;
 import net.pmolinav.bookingslib.model.Activity;
 import net.pmolinav.configuration.service.ActivityBOService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +31,8 @@ public class ActivityBOController {
     @GetMapping
     @Operation(summary = "Retrieve all activities", description = "Bearer token is required to authorize users.")
     public ResponseEntity<List<Activity>> findAllActivities(@RequestParam String requestUid) {
-        try {
-            List<Activity> activities = activityBOService.findAllActivities();
-            return ResponseEntity.ok(activities);
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (UnexpectedException e) {
-            return ResponseEntity.internalServerError().build();
-        }
+        List<Activity> activities = activityBOService.findAllActivities();
+        return ResponseEntity.ok(activities);
     }
 
     @PostMapping
@@ -48,7 +42,7 @@ public class ActivityBOController {
         try {
             Long createdActivityId = activityBOService.createActivity(activityDTO);
             return new ResponseEntity<>(createdActivityId, HttpStatus.CREATED);
-        } catch (UnexpectedException e) {
+        } catch (CustomStatusException e) {
             return ResponseEntity.internalServerError().build();
         }
 
@@ -62,7 +56,7 @@ public class ActivityBOController {
             return ResponseEntity.ok(activity);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
-        } catch (UnexpectedException e) {
+        } catch (CustomStatusException e) {
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -102,7 +96,7 @@ public class ActivityBOController {
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
-        } catch (UnexpectedException e) {
+        } catch (CustomStatusException e) {
             return ResponseEntity.internalServerError().build();
         }
     }

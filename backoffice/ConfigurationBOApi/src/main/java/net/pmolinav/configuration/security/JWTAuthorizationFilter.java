@@ -45,6 +45,8 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
+        // TODO: Revisar por qué cuando una petición va OK luego siempre funciona aunque cambie
+        // el token y coja uno que no es válido.
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             String token = bearerToken.replace("Bearer ", "");
             UsernamePasswordAuthenticationToken usernamePasswordAT = TokenUtils.getAuthentication(token);

@@ -16,7 +16,7 @@ import java.util.Objects;
 public class Booking {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bookingId")
     private Long bookingId;
 

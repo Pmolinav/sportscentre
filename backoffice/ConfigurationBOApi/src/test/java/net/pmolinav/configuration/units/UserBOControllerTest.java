@@ -3,7 +3,7 @@ package net.pmolinav.configuration.units;
 import net.pmolinav.bookingslib.dto.Role;
 import net.pmolinav.bookingslib.dto.UserDTO;
 import net.pmolinav.bookingslib.exception.NotFoundException;
-import net.pmolinav.bookingslib.exception.UnexpectedException;
+import net.pmolinav.bookingslib.exception.CustomStatusException;
 import net.pmolinav.bookingslib.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -143,7 +143,7 @@ class UserBOControllerTest extends BaseUnitTest {
 
     private void whenFindAllUsersInServiceThrowsServerException() {
         when(userBOServiceMock.findAllUsers())
-                .thenThrow(new UnexpectedException("Internal Server Error", 500));
+                .thenThrow(new CustomStatusException("Internal Server Error", 500));
     }
 
     private void whenCreateUserInServiceReturnedAValidUser() {
@@ -152,7 +152,7 @@ class UserBOControllerTest extends BaseUnitTest {
 
     private void whenCreateUserInServiceThrowsServerException() {
         when(userBOServiceMock.createUser(any(UserDTO.class)))
-                .thenThrow(new UnexpectedException("Internal Server Error", 500));
+                .thenThrow(new CustomStatusException("Internal Server Error", 500));
     }
 
     private void whenFindUserByIdInServiceReturnedValidUser() {
@@ -169,7 +169,7 @@ class UserBOControllerTest extends BaseUnitTest {
 
     private void whenFindUserByIdInServiceThrowsServerException() {
         when(userBOServiceMock.findUserById(1L))
-                .thenThrow(new UnexpectedException("Internal Server Error", 500));
+                .thenThrow(new CustomStatusException("Internal Server Error", 500));
     }
 
     private void whenFindUserByUsernameInServiceReturnedValidUser() {
@@ -191,7 +191,7 @@ class UserBOControllerTest extends BaseUnitTest {
     }
 
     private void whenDeleteUserInServiceThrowsServerException() {
-        doThrow(new UnexpectedException("Internal Server Error", 500))
+        doThrow(new CustomStatusException("Internal Server Error", 500))
                 .when(userBOServiceMock)
                 .deleteUser(anyLong());
     }

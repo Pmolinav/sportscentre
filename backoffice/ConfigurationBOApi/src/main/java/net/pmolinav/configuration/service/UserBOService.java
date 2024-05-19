@@ -3,8 +3,9 @@ package net.pmolinav.configuration.service;
 import feign.FeignException;
 import feign.RetryableException;
 import net.pmolinav.bookingslib.dto.UserDTO;
+import net.pmolinav.bookingslib.exception.CustomStatusException;
+import net.pmolinav.bookingslib.exception.InternalServerErrorException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
-import net.pmolinav.bookingslib.exception.UnexpectedException;
 import net.pmolinav.bookingslib.model.User;
 import net.pmolinav.configuration.client.UserClient;
 import org.slf4j.Logger;
@@ -28,14 +29,14 @@ public class UserBOService {
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
                 logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
-                throw new UnexpectedException(e.getMessage(), e.status());
+                throw new CustomStatusException(e.getMessage(), e.status());
             } else {
                 logger.warn("No users found.", e);
                 throw new NotFoundException("No users found");
             }
         } catch (Exception e) {
             logger.error("Unexpected exception occurred while calling service.", e);
-            throw new UnexpectedException(e.getMessage(), 500);
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 
@@ -44,10 +45,10 @@ public class UserBOService {
             return userClient.createUser(userDTO);
         } catch (FeignException e) {
             logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
-            throw new UnexpectedException(e.getMessage(), e.status());
+            throw new CustomStatusException(e.getMessage(), e.status());
         } catch (Exception e) {
             logger.error("Unexpected exception occurred while calling service.", e);
-            throw new UnexpectedException(e.getMessage(), 500);
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 
@@ -57,14 +58,14 @@ public class UserBOService {
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
                 logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
-                throw new UnexpectedException(e.getMessage(), e.status());
+                throw new CustomStatusException(e.getMessage(), e.status());
             } else {
                 logger.warn("User with id {} not found.", id, e);
                 throw new NotFoundException("User " + id + " not found");
             }
         } catch (Exception e) {
             logger.error("Unexpected exception occurred while calling service.", e);
-            throw new UnexpectedException(e.getMessage(), 500);
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 
@@ -74,14 +75,14 @@ public class UserBOService {
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
                 logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
-                throw new UnexpectedException(e.getMessage(), e.status());
+                throw new CustomStatusException(e.getMessage(), e.status());
             } else {
                 logger.warn("User with username {} not found.", username, e);
                 throw new NotFoundException("User " + username + " not found");
             }
         } catch (Exception e) {
             logger.error("Unexpected exception occurred while calling service.", e);
-            throw new UnexpectedException(e.getMessage(), 500);
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 
@@ -91,14 +92,14 @@ public class UserBOService {
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
                 logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
-                throw new UnexpectedException(e.getMessage(), e.status());
+                throw new CustomStatusException(e.getMessage(), e.status());
             } else {
                 logger.warn("User with id {} not found.", id, e);
                 throw new NotFoundException("User " + id + " not found");
             }
         } catch (Exception e) {
             logger.error("Unexpected exception occurred while calling service.", e);
-            throw new UnexpectedException(e.getMessage(), 500);
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 }

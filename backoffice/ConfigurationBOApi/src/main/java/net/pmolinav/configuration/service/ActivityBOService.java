@@ -3,8 +3,9 @@ package net.pmolinav.configuration.service;
 import feign.FeignException;
 import feign.RetryableException;
 import net.pmolinav.bookingslib.dto.ActivityDTO;
+import net.pmolinav.bookingslib.exception.CustomStatusException;
+import net.pmolinav.bookingslib.exception.InternalServerErrorException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
-import net.pmolinav.bookingslib.exception.UnexpectedException;
 import net.pmolinav.bookingslib.model.Activity;
 import net.pmolinav.configuration.client.ActivityClient;
 import org.slf4j.Logger;
@@ -28,14 +29,14 @@ public class ActivityBOService {
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
                 logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
-                throw new UnexpectedException(e.getMessage(), e.status());
+                throw new CustomStatusException(e.getMessage(), e.status());
             } else {
                 logger.warn("No activities found.", e);
                 throw new NotFoundException("No activities found");
             }
         } catch (Exception e) {
             logger.error("Unexpected exception occurred while calling service.", e);
-            throw new UnexpectedException(e.getMessage(), 500);
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 
@@ -44,10 +45,10 @@ public class ActivityBOService {
             return activityClient.createActivity(activityDTO);
         } catch (FeignException e) {
             logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
-            throw new UnexpectedException(e.getMessage(), e.status());
+            throw new CustomStatusException(e.getMessage(), e.status());
         } catch (Exception e) {
             logger.error("Unexpected exception occurred while calling service.", e);
-            throw new UnexpectedException(e.getMessage(), 500);
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 
@@ -57,14 +58,14 @@ public class ActivityBOService {
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
                 logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
-                throw new UnexpectedException(e.getMessage(), e.status());
+                throw new CustomStatusException(e.getMessage(), e.status());
             } else {
                 logger.warn("Activity with id {} not found.", id, e);
                 throw new NotFoundException("Activity " + id + " not found");
             }
         } catch (Exception e) {
             logger.error("Unexpected exception occurred while calling service.", e);
-            throw new UnexpectedException(e.getMessage(), 500);
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 
@@ -74,14 +75,14 @@ public class ActivityBOService {
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
                 logger.error("Unexpected retryable error while calling service with status code {}.", e.status(), e);
-                throw new UnexpectedException(e.getMessage(), e.status());
+                throw new CustomStatusException(e.getMessage(), e.status());
             } else {
                 logger.warn("Activity with id {} not found.", id, e);
                 throw new NotFoundException("Activity " + id + " not found");
             }
         } catch (Exception e) {
             logger.error("Unexpected exception occurred while calling service.", e);
-            throw new UnexpectedException(e.getMessage(), 500);
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 }

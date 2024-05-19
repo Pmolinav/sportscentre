@@ -3,7 +3,7 @@ package net.pmolinav.configuration.units;
 import net.pmolinav.bookingslib.dto.BookingDTO;
 import net.pmolinav.bookingslib.dto.BookingStatus;
 import net.pmolinav.bookingslib.exception.NotFoundException;
-import net.pmolinav.bookingslib.exception.UnexpectedException;
+import net.pmolinav.bookingslib.exception.CustomStatusException;
 import net.pmolinav.bookingslib.model.Booking;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -144,7 +144,7 @@ class BookingBOControllerTest extends BaseUnitTest {
 
     private void whenFindAllBookingsInServiceThrowsServerException() {
         when(bookingBOServiceMock.findAllBookings())
-                .thenThrow(new UnexpectedException("Internal Server Error", 500));
+                .thenThrow(new CustomStatusException("Internal Server Error", 500));
     }
 
     private void whenCreateBookingInServiceReturnedAValidBooking() {
@@ -153,7 +153,7 @@ class BookingBOControllerTest extends BaseUnitTest {
 
     private void whenCreateBookingInServiceThrowsServerException() {
         when(bookingBOServiceMock.createBooking(any(BookingDTO.class)))
-                .thenThrow(new UnexpectedException("Internal Server Error", 500));
+                .thenThrow(new CustomStatusException("Internal Server Error", 500));
     }
 
     private void whenFindBookingByIdInServiceReturnedValidBookings() {
@@ -170,7 +170,7 @@ class BookingBOControllerTest extends BaseUnitTest {
 
     private void whenFindBookingByIdInServiceThrowsServerException() {
         when(bookingBOServiceMock.findBookingById(1L))
-                .thenThrow(new UnexpectedException("Internal Server Error", 500));
+                .thenThrow(new CustomStatusException("Internal Server Error", 500));
     }
 
     private void whenDeleteBookingInServiceIsOk() {
@@ -184,7 +184,7 @@ class BookingBOControllerTest extends BaseUnitTest {
     }
 
     private void whenDeleteBookingInServiceThrowsServerException() {
-        doThrow(new UnexpectedException("Internal Server Error", 500))
+        doThrow(new CustomStatusException("Internal Server Error", 500))
                 .when(bookingBOServiceMock)
                 .deleteBooking(anyLong());
     }

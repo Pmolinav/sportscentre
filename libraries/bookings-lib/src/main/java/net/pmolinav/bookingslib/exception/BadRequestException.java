@@ -1,8 +1,10 @@
 package net.pmolinav.bookingslib.exception;
 
-public class BadRequestException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class BadRequestException extends CustomStatusException {
 
     public BadRequestException(String message) {
-        super(message);
+        super(message, HttpStatus.BAD_REQUEST);
     }
 }

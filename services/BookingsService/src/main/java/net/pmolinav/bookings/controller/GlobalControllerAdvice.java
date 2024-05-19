@@ -1,6 +1,6 @@
 package net.pmolinav.bookings.controller;
 
-import net.pmolinav.bookingslib.exception.UnexpectedException;
+import net.pmolinav.bookingslib.exception.CustomStatusException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +12,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
-    @ExceptionHandler(UnexpectedException.class)
-    public ResponseEntity<String> handleUnexpectedException(UnexpectedException e) {
+    @ExceptionHandler(CustomStatusException.class)
+    public ResponseEntity<String> handleUnexpectedException(CustomStatusException e) {
         logError(e);
         return ResponseEntity.status(e.getStatusCode()).build();
     }
