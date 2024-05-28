@@ -19,6 +19,7 @@
         <module>backoffice/ConfigurationBOApi</module>
         <module>libraries/bookings-lib</module>
         <module>services/BookingsService</module>
+        <module>tests/SystemTests</module>
     </modules>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

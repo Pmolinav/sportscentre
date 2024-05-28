@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="SystemTests" />
       </profile>
       <profile name="Annotation profile for ConfigurationBOApi" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -48,6 +49,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="BookingsService" options="-parameters" />
       <module name="ConfigurationBOApi" options="-parameters" />
+      <module name="SystemTests" options="-parameters" />
       <module name="bookings-lib" options="-parameters" />
       <module name="msvc-usuarios" options="-parameters" />
     </option>

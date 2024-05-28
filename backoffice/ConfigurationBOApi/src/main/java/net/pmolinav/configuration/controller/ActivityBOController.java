@@ -38,7 +38,6 @@ public class ActivityBOController {
     @PostMapping
     @Operation(summary = "Create a new activity", description = "Bearer token is required to authorize users.")
     public ResponseEntity<Long> createActivity(@RequestParam String requestUid, @Valid @RequestBody ActivityDTO activityDTO) {
-//        String message = validateMandatoryFieldsInRequest(activityDTO);
         try {
             Long createdActivityId = activityBOService.createActivity(activityDTO);
             return new ResponseEntity<>(createdActivityId, HttpStatus.CREATED);
