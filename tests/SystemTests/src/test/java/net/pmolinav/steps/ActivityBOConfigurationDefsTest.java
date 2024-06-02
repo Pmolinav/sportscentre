@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 
 public class ActivityBOConfigurationDefsTest extends BaseSystemTest {
 
-    private final String localURL = "http://localhost:8082";
+    private final String localURL = "http://localhost:8002";
 
     @When("^try to create a new activity with data$")
     public void tryToCreateANewActivity(DataTable dataTable) {
@@ -32,7 +32,7 @@ public class ActivityBOConfigurationDefsTest extends BaseSystemTest {
                         objectMapper.writeValueAsString(new ActivityDTO(ActivityType.valueOf(row.get("type")),
                                 row.get("name"),
                                 row.get("description"),
-                                new BigDecimal(row.get("prize")),
+                                new BigDecimal(row.get("price")),
                                 row.get("creation_date") != null ? new Date(Long.parseLong(row.get("creation_date")))
                                         : new Date(Instant.now().toEpochMilli() + 10000),
                                 row.get("modification_date") != null ? new Date(Long.parseLong(row.get("modification_date")))
@@ -40,6 +40,7 @@ public class ActivityBOConfigurationDefsTest extends BaseSystemTest {
                         )));
             }
         } catch (Exception e) {
+            e.printStackTrace();
             fail();
         }
     }
@@ -66,6 +67,7 @@ public class ActivityBOConfigurationDefsTest extends BaseSystemTest {
             lastActivity = dbConnector.getActivityByName(name);
             assertNotNull(lastActivity);
         } catch (SQLException e) {
+            e.printStackTrace();
             fail();
         }
     }

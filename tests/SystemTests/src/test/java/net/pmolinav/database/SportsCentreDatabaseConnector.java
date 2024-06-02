@@ -46,27 +46,19 @@ public class SportsCentreDatabaseConnector {
             preparedStatement.setDate(7, new java.sql.Date(user.getModificationDate().getTime()));
 
             preparedStatement.executeUpdate();
-            connection.commit();
         } catch (SQLException e) {
-            connection.rollback();
             e.printStackTrace();
             throw new SQLException("Unexpected error occurred while trying to insert user.", e);
-        } finally {
-            connection.close();
         }
     }
 
     public void deleteUsers() throws SQLException {
-        String query = "DELETE FROM user";
+        String query = "DELETE FROM users";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.executeUpdate();
-            connection.commit();
         } catch (SQLException e) {
-            connection.rollback();
             e.printStackTrace();
             throw new SQLException("Unexpected error occurred while trying to delete users.", e);
-        } finally {
-            connection.close();
         }
     }
 
@@ -97,8 +89,6 @@ public class SportsCentreDatabaseConnector {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new SQLException("Unexpected error occurred while trying to get user.", e);
-        } finally {
-            connection.close();
         }
     }
 
@@ -108,19 +98,15 @@ public class SportsCentreDatabaseConnector {
         String query = "DELETE FROM activities";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.executeUpdate();
-            connection.commit();
         } catch (SQLException e) {
-            connection.rollback();
             e.printStackTrace();
             throw new SQLException("Unexpected error occurred while trying to delete activities.", e);
-        } finally {
-            connection.close();
         }
     }
 
     public Activity getActivityByName(String name) throws SQLException {
-        String query = "SELECT activity_id, type, name, description, prize, creation_date, modification_date" +
-                " FROM users WHERE name = ?";
+        String query = "SELECT activity_id, type, name, description, price, creation_date, modification_date" +
+                " FROM activities WHERE name = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             // Set query params.
@@ -132,20 +118,18 @@ public class SportsCentreDatabaseConnector {
                 String dbType = resultSet.getString("type");
                 String dbName = resultSet.getString("name");
                 String dbDescription = resultSet.getString("description");
-                BigDecimal dbPrize = resultSet.getBigDecimal("prize");
+                BigDecimal dbprice = resultSet.getBigDecimal("price");
                 Date dbCreationDate = resultSet.getDate("creation_date");
                 Date dbModificationDate = resultSet.getDate("modification_date");
 
                 return new Activity(dbActivityId, dbType, dbName, dbDescription,
-                        dbPrize, dbCreationDate, dbModificationDate);
+                        dbprice, dbCreationDate, dbModificationDate);
             } else {
                 return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new SQLException("Unexpected error occurred while trying to get activity.", e);
-        } finally {
-            connection.close();
         }
     }
 
@@ -155,13 +139,9 @@ public class SportsCentreDatabaseConnector {
         String query = "DELETE FROM bookings";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.executeUpdate();
-            connection.commit();
         } catch (SQLException e) {
-            connection.rollback();
             e.printStackTrace();
             throw new SQLException("Unexpected error occurred while trying to delete bookings.", e);
-        } finally {
-            connection.close();
         }
     }
 
@@ -192,8 +172,6 @@ public class SportsCentreDatabaseConnector {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new SQLException("Unexpected error occurred while trying to get booking.", e);
-        } finally {
-            connection.close();
         }
     }
 }

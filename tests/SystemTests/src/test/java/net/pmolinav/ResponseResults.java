@@ -14,9 +14,16 @@ import java.util.stream.Collectors;
 
 public class ResponseResults {
     private final ClientHttpResponse response;
-    private final int status;
+    private int status;
     private final String body;
     private final Map<String, String> headers;
+
+    public ResponseResults(ClientHttpResponse response, int status, String body, Map<String, String> headers) {
+        this.response = response;
+        this.status = status;
+        this.body = body;
+        this.headers = headers;
+    }
 
     public ResponseResults(final ClientHttpResponse response) throws IOException {
         this.response = response;
@@ -43,6 +50,10 @@ public class ResponseResults {
         return status;
     }
 
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     public String getBody() {
         return body;
     }
@@ -52,7 +63,11 @@ public class ResponseResults {
     }
 
     public String getHeader(String key) {
-        return headers.get(key);
+        if (headers == null) {
+            return null;
+        } else {
+            return headers.get(key);
+        }
     }
 
     @Override

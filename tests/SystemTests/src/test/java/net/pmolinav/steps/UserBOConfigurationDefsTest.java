@@ -22,13 +22,12 @@ import static org.junit.Assert.*;
 
 public class UserBOConfigurationDefsTest extends BaseSystemTest {
 
-    private final String localURL = "http://localhost:8082";
+    private final String localURL = "http://localhost:8002";
 
     @Given("the following users have been stored previously$")
     public void storeUsersInDatabase(DataTable dataTable) {
         List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
         try {
-            dbConnector = new SportsCentreDatabaseConnector();
             // Insert each requested player
             for (Map<String, String> row : rows) {
                 dbConnector.insertUser(new User(null,
@@ -45,6 +44,7 @@ public class UserBOConfigurationDefsTest extends BaseSystemTest {
                 );
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             fail();
         }
     }
@@ -67,6 +67,7 @@ public class UserBOConfigurationDefsTest extends BaseSystemTest {
                         )));
             }
         } catch (Exception e) {
+            e.printStackTrace();
             fail();
         }
     }
@@ -93,6 +94,7 @@ public class UserBOConfigurationDefsTest extends BaseSystemTest {
             lastUser = dbConnector.getUserByUsername(username);
             assertNotNull(lastUser);
         } catch (SQLException e) {
+            e.printStackTrace();
             fail();
         }
     }

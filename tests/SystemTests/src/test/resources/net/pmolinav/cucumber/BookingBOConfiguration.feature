@@ -10,13 +10,13 @@ Feature: BookingBOConfiguration
     When try to create a new user with data
       | username | password    | name     | email          | role  |
       | newUser  | newPassword | someName | some@email.com | ADMIN |
-    Then received status code is 200
+    Then received status code is 201
     Then an user with username newUser has been stored successfully
     # Create new user previously to store a valid activityId
     When try to create a new activity with data
-      | type | name             | description                          | prize |
+      | type | name             | description                          | price |
       | GYM  | New Gym activity | Some description of the GYM activity | 5.20  |
-    Then received status code is 200
+    Then received status code is 201
     Then an activity with name New Gym activity has been stored successfully
 
   Scenario: Create a new booking unauthorized
@@ -28,23 +28,23 @@ Feature: BookingBOConfiguration
 
   Scenario: Create a new booking successfully
     When try to create a new booking with data
-      | start_time | end_time | status |
-      | 123456     | 1234567  | OPEN   |
-    Then received status code is 200
+      | status |
+      | OPEN   |
+    Then received status code is 201
     Then a booking with status OPEN has been stored successfully
 
   Scenario: Create a new booking request
     When try to create a new booking with data
-      | start_time | end_time | status    | creation_date | modification_date |
-      | 123456     | 1234567  | CANCELLED | 123456        | 123456            |
+      | start_time | end_time | status    |
+      | 123456     | 1234567  | CANCELLED |
     Then received status code is 400
 
   Scenario: Get all bookings successfully
     When try to create a new booking with data
-      | start_time | end_time | status   |
-      | 123456     | 1234567  | FINISHED |
-      | 1234567    | 12345678 | OPEN     |
-    Then received status code is 200
+      | status   |
+      | FINISHED |
+      | OPEN     |
+    Then received status code is 201
     Then a booking with status OPEN has been stored successfully
     Then a booking with status FINISHED has been stored successfully
     When try to get all bookings
@@ -52,20 +52,20 @@ Feature: BookingBOConfiguration
     Then a list of bookings with statuses FINISHED,OPEN are returned in response
 
   Scenario: Get booking by bookingId successfully
-    When try to create a new user with data
-      | start_time | end_time | status |
-      | 1234567    | 12345678 | OPEN   |
-    Then received status code is 200
+    When try to create a new booking with data
+      | status |
+      | OPEN   |
+    Then received status code is 201
     Then a booking with status OPEN has been stored successfully
     When try to get a booking by bookingId
     Then received status code is 200
     Then a booking with status OPEN is returned in response
 
   Scenario: Delete booking by bookingId successfully
-    When try to create a new user with data
-      | start_time | end_time   | status    |
-      | 123456789  | 1234567890 | CANCELLED |
-    Then received status code is 200
+    When try to create a new booking with data
+      | status    |
+      | CANCELLED |
+    Then received status code is 201
     Then a booking with status CANCELLED has been stored successfully
     When try to delete a booking by bookingId
     Then received status code is 200

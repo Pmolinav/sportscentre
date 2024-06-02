@@ -18,13 +18,13 @@ Feature: UserBOConfiguration
     When try to create a new user with data
       | username | password    | name     | email         | role  |
       | newUser  | newPassword | someName | new@email.com | ADMIN |
-    Then received status code is 200
+    Then received status code is 201
     Then an user with username newUser has been stored successfully
 
   Scenario: Create a new user bad request
     When try to create a new user with data
-      | username | password    | name     | email         | role  | creation_date | modification_date |
-      | newUser  | newPassword | someName | new@email.com | ADMIN | 123456        | 123456            |
+      | username | password    | email         | role  | creation_date | modification_date |
+      | newUser  | newPassword | new@email.com | ADMIN | 123456        | 123456            |
     Then received status code is 400
 
   Scenario: Get all users successfully
@@ -32,7 +32,7 @@ Feature: UserBOConfiguration
       | username  | password      | name      | email           | role  |
       | newUser   | newPassword   | someName  | new@email.com   | ADMIN |
       | otherUser | otherPassword | otherName | other@email.com | ADMIN |
-    Then received status code is 200
+    Then received status code is 201
     Then an user with username newUser has been stored successfully
     Then an user with username otherUser has been stored successfully
     When try to get all users
@@ -43,7 +43,7 @@ Feature: UserBOConfiguration
     When try to create a new user with data
       | username | password    | name     | email          | role  |
       | newUser  | newPassword | someName | some@email.com | ADMIN |
-    Then received status code is 200
+    Then received status code is 201
     Then an user with username newUser has been stored successfully
     When try to get an user by userId
     Then received status code is 200
@@ -53,7 +53,7 @@ Feature: UserBOConfiguration
     When try to create a new user with data
       | username | password    | name     | email          | role  |
       | newUser  | newPassword | someName | some@email.com | ADMIN |
-    Then received status code is 200
+    Then received status code is 201
     Then an user with username newUser has been stored successfully
     When try to delete an user by userId
     Then received status code is 200

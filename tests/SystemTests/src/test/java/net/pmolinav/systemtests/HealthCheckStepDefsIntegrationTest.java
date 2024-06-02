@@ -20,12 +20,12 @@ public class HealthCheckStepDefsIntegrationTest extends BaseSystemTest {
 
     @When("^the client calls /v1/status")
     public void checkV1Status() throws Throwable {
-        statusResponse = doGet("http://localhost:8082/v1/status");
+        statusResponse = doGet("http://localhost:8002/v1/status");
     }
 
     @When("^the client calls /v2/status")
     public void checkV2Status() throws Throwable {
-        statusResponse = doGet("http://localhost:8082/v2/status");
+        statusResponse = doGet("http://localhost:8002/v2/status");
     }
 
     @Then("^the client receives (\\d+) status code$")

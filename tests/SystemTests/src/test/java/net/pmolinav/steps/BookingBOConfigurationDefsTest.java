@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 
 public class BookingBOConfigurationDefsTest extends BaseSystemTest {
 
-    private final String localURL = "http://localhost:8082";
+    private final String localURL = "http://localhost:8002";
 
 
     @When("^try to create a new booking with data$")
@@ -31,8 +31,10 @@ public class BookingBOConfigurationDefsTest extends BaseSystemTest {
                 executePost(localURL + "/bookings",
                         objectMapper.writeValueAsString(new BookingDTO(lastUser.getUserId(),
                                 lastActivity.getActivityId(),
-                                new Date(Long.parseLong(row.get("start_time"))),
-                                new Date(Long.parseLong(row.get("end_time"))),
+                                row.get("start_time") != null ? new Date(Long.parseLong(row.get("start_time")))
+                                        : new Date(Instant.now().toEpochMilli() + 10000),
+                                row.get("start_time") != null ? new Date(Long.parseLong(row.get("end_time")))
+                                        : new Date(Instant.now().toEpochMilli() + 50000),
                                 BookingStatus.valueOf(row.get("status")),
                                 row.get("creation_date") != null ? new Date(Long.parseLong(row.get("creation_date")))
                                         : new Date(Instant.now().toEpochMilli() + 10000),
@@ -41,6 +43,7 @@ public class BookingBOConfigurationDefsTest extends BaseSystemTest {
                         )));
             }
         } catch (Exception e) {
+            e.printStackTrace();
             fail();
         }
     }
@@ -67,6 +70,7 @@ public class BookingBOConfigurationDefsTest extends BaseSystemTest {
             lastBooking = dbConnector.getBookingByStatus(status);
             assertNotNull(lastBooking);
         } catch (SQLException e) {
+            e.printStackTrace();
             fail();
         }
     }
