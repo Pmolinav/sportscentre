@@ -1,4 +1,4 @@
-package net.pmolinav.bookings;
+package net.pmolinav.bookingslib;
 
 import net.pmolinav.bookingslib.dto.*;
 import net.pmolinav.bookingslib.mapper.ActivityMapper;
