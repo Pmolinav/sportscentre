@@ -10,50 +10,50 @@ Feature: ActivityBOConfiguration
   Scenario: Create a new activity unauthorized
     Given invalid auth token
     When try to create a new activity with data
-      | type | name             | description                          | price |
-      | GYM  | New Gym activity | Some description of the GYM activity | 520   |
+      | name | description                          | price |
+      | GYM  | Some description of the GYM activity | 520   |
     Then received status code is 401
 
   Scenario: Create a new activity successfully
     When try to create a new activity with data
-      | type | name             | description                          | price |
-      | GYM  | New Gym activity | Some description of the GYM activity | 520   |
+      | name | description                          | price |
+      | GYM  | Some description of the GYM activity | 520   |
     Then received status code is 201
-    Then an activity with name New Gym activity has been stored successfully
+    Then an activity with name GYM has been stored successfully
 
   Scenario: Create a new activity bad request
     When try to create a new activity with data
-      | type | description                          | price |
-      | GYM  | Some description of the GYM activity | 520   |
+      | name | description                          | price |
+      | GYM  | Some description of the GYM activity | 0     |
     Then received status code is 400
 
   Scenario: Get all activities successfully
     When try to create a new activity with data
-      | type     | name                  | description                               | price |
-      | GYM      | New Gym activity      | Some description of the GYM activity      | 520   |
-      | FOOTBALL | New Football activity | Some description of the FOOTBALL activity | 10.50 |
+      | name     | description                               | price |
+      | GYM      | Some description of the GYM activity      | 520   |
+      | FOOTBALL | Some description of the FOOTBALL activity | 1050  |
     Then received status code is 201
-    Then an activity with name New Gym activity has been stored successfully
-    Then an activity with name New Football activity has been stored successfully
+    Then an activity with name GYM has been stored successfully
+    Then an activity with name FOOTBALL has been stored successfully
     When try to get all activities
     Then received status code is 200
-    Then a list of activities with names New Gym activity,New Football activity are returned in response
+    Then a list of activities with names GYM,FOOTBALL are returned in response
 
-  Scenario: Get activity by activityId successfully
+  Scenario: Get activity by activity name successfully
     When try to create a new activity with data
-      | type | name             | description                          | price |
-      | GYM  | New Gym activity | Some description of the GYM activity | 520   |
+      | name | description                          | price |
+      | GYM  | Some description of the GYM activity | 520   |
     Then received status code is 201
-    Then an activity with name New Gym activity has been stored successfully
-    When try to get an activity by activityId
+    Then an activity with name GYM has been stored successfully
+    When try to get an activity by activity name
     Then received status code is 200
-    Then an activity with name New Gym activity is returned in response
+    Then an activity with name GYM is returned in response
 
-  Scenario: Delete activity by activityId successfully
+  Scenario: Delete activity by activity name successfully
     When try to create a new activity with data
-      | type | name             | description                          | price |
-      | GYM  | New Gym activity | Some description of the GYM activity | 520   |
+      | name | description                          | price |
+      | GYM  | Some description of the GYM activity | 520   |
     Then received status code is 201
-    Then an activity with name New Gym activity has been stored successfully
-    When try to delete an activity by activityId
+    Then an activity with name GYM has been stored successfully
+    When try to delete an activity by activity name
     Then received status code is 200

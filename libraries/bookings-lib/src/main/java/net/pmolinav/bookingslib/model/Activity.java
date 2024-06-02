@@ -18,15 +18,8 @@ import java.util.Objects;
 public class Activity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "activityId")
-    private Long activityId;
-
-    @Column(name = "type", nullable = false)
-    private String type;
-
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "activityName", nullable = false, unique = true)
+    private String activityName;
 
     @Column(name = "description")
     private String description;
@@ -47,15 +40,13 @@ public class Activity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Activity activity = (Activity) o;
-        return Objects.equals(activityId, activity.activityId)
-                && Objects.equals(type, activity.type)
-                && Objects.equals(name, activity.name)
+        return Objects.equals(activityName, activity.activityName)
                 && Objects.equals(description, activity.description)
                 && Objects.equals(price, activity.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(activityId, type, name, description, price);
+        return Objects.hash(activityName, description, price);
     }
 }

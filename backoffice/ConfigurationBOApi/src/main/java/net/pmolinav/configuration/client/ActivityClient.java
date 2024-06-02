@@ -14,14 +14,14 @@ public interface ActivityClient {
     List<Activity> findAllActivities();
 
     @PostMapping("/")
-    Long createActivity(@RequestBody ActivityDTO activityDTO);
+    String createActivity(@RequestBody ActivityDTO activityDTO);
 
-    @GetMapping("/{id}")
-    Activity findActivityById(@PathVariable long id);
+    @GetMapping("/{name}")
+    Activity findActivityByName(@PathVariable String name);
 
 //    @PutMapping("/{id}")
 //    Activity updateActivity(@PathVariable long id, @RequestBody ActivityUpdateDTO activityDetails);
 
-    @DeleteMapping("/{id}")
-    void deleteActivity(@PathVariable long id);
+    @DeleteMapping("/{name}")
+    void deleteActivity(@PathVariable String name);
 }

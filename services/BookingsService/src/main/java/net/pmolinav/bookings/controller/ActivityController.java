@@ -37,20 +37,20 @@ public class ActivityController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createActivity(@RequestBody ActivityDTO activityDTO) {
+    public ResponseEntity<String> createActivity(@RequestBody ActivityDTO activityDTO) {
         try {
             Activity createdActivity = activityService.createActivity(activityDTO);
-            return new ResponseEntity<>(createdActivity.getActivityId(), HttpStatus.CREATED);
+            return new ResponseEntity<>(createdActivity.getActivityName(), HttpStatus.CREATED);
         } catch (InternalServerErrorException e) {
             return ResponseEntity.internalServerError().build();
         }
 
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<Activity> findActivityById(@PathVariable long id) {
+    @GetMapping("{name}")
+    public ResponseEntity<Activity> findActivityByName(@PathVariable String name) {
         try {
-            Activity activity = activityService.findById(id);
+            Activity activity = activityService.findByName(name);
             return ResponseEntity.ok(activity);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -86,10 +86,10 @@ public class ActivityController {
 //        }
 //    }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteActivity(@PathVariable long id) {
+    @DeleteMapping("{name}")
+    public ResponseEntity<?> deleteActivity(@PathVariable String name) {
         try {
-            activityService.deleteActivity(id);
+            activityService.deleteActivity(name);
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();

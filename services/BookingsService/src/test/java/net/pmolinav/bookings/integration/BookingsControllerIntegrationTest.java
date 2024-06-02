@@ -2,10 +2,10 @@ package net.pmolinav.bookings.integration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.pmolinav.bookings.repository.BookingRepository;
 import net.pmolinav.bookingslib.dto.BookingDTO;
 import net.pmolinav.bookingslib.dto.BookingStatus;
 import net.pmolinav.bookingslib.model.Booking;
-import net.pmolinav.bookings.repository.BookingRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +67,7 @@ class BookingsControllerIntegrationTest extends AbstractContainerBaseTest {
     void createBookingHappyPath() throws Exception {
         givenSomePreviouslyStoredDataWithIds(1, 2, true, true, false);
 
-        BookingDTO requestDto = new BookingDTO(1L, 1L, new Date(100),
+        BookingDTO requestDto = new BookingDTO(1L, "FOOTBALL", new Date(100),
                 new Date(3000), BookingStatus.OPEN);
 
         MvcResult result = mockMvc.perform(post("/bookings")
@@ -91,7 +91,7 @@ class BookingsControllerIntegrationTest extends AbstractContainerBaseTest {
     void findBookingByIdHappyPath() throws Exception {
         givenSomePreviouslyStoredDataWithIds(3, 4, true, true, true);
 
-        MvcResult result = mockMvc.perform(get("/bookings/3"))
+        MvcResult result = mockMvc.perform(get("/bookings/4"))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -99,7 +99,7 @@ class BookingsControllerIntegrationTest extends AbstractContainerBaseTest {
                 new TypeReference<Booking>() {
                 });
 
-        Assertions.assertEquals(3L, bookingResponse.getActivityId());
+        Assertions.assertEquals("FOOTBALL", bookingResponse.getActivityName());
         Assertions.assertEquals(3L, bookingResponse.getUserId());
     }
 
@@ -113,10 +113,10 @@ class BookingsControllerIntegrationTest extends AbstractContainerBaseTest {
     void deleteBookingByIdHappyPath() throws Exception {
         givenSomePreviouslyStoredDataWithIds(5, 6, true, true, true);
 
-        mockMvc.perform(delete("/bookings/5"))
+        mockMvc.perform(delete("/bookings/6"))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(delete("/bookings/6"))
+        mockMvc.perform(delete("/bookings/7"))
                 .andExpect(status().isOk());
     }
 

@@ -70,7 +70,7 @@ class BookingBOControllerIntegrationTest extends AbstractBaseTest {
     void createBookingBadRequest() throws Exception {
         andCreateBookingThrowsNonRetryableException();
 
-        BookingDTO requestDto = new BookingDTO(1L, 1L, new Date(9999999999999L),
+        BookingDTO requestDto = new BookingDTO(1L, "Pool", new Date(9999999999999L),
                 new Date(9999999990000L), BookingStatus.OPEN);
 
         mockMvc.perform(post("/bookings?requestUid=" + requestUid)
@@ -84,7 +84,7 @@ class BookingBOControllerIntegrationTest extends AbstractBaseTest {
     void createBookingServerError() throws Exception {
         andCreateBookingThrowsNonRetryableException();
 
-        BookingDTO requestDto = new BookingDTO(1L, 1L, new Date(9999999990000L),
+        BookingDTO requestDto = new BookingDTO(1L, "Pool", new Date(9999999990000L),
                 new Date(9999999999999L), BookingStatus.OPEN);
 
         mockMvc.perform(post("/bookings?requestUid=" + requestUid)
@@ -98,7 +98,7 @@ class BookingBOControllerIntegrationTest extends AbstractBaseTest {
     void createBookingHappyPath() throws Exception {
         andCreateBookingReturnedValidId();
 
-        BookingDTO requestDto = new BookingDTO(1L, 1L, new Date(9999999990000L),
+        BookingDTO requestDto = new BookingDTO(1L, "Pool", new Date(9999999990000L),
                 new Date(9999999999999L), BookingStatus.OPEN);
 
         MvcResult result = mockMvc.perform(post("/bookings?requestUid=" + requestUid)
@@ -165,7 +165,7 @@ class BookingBOControllerIntegrationTest extends AbstractBaseTest {
     }
 
     private void andFindBookingByIdReturnedBooking() {
-        this.expectedBookings = List.of(new Booking(1L, 22L, 333L,
+        this.expectedBookings = List.of(new Booking(1L, 22L, "Pool",
                 new Date(), new Date(), BookingStatus.OPEN.name(), new Date(), null));
 
         when(this.bookingClient.findBookingById(anyLong())).thenReturn(this.expectedBookings.get(0));
@@ -184,7 +184,7 @@ class BookingBOControllerIntegrationTest extends AbstractBaseTest {
     }
 
     private void andFindAllBookingsReturnedValidBookings() {
-        this.expectedBookings = List.of(new Booking(1L, 22L, 333L,
+        this.expectedBookings = List.of(new Booking(1L, 22L, "Pool",
                 new Date(), new Date(), BookingStatus.OPEN.name(), new Date(), null));
 
         when(this.bookingClient.findAllBookings()).thenReturn(this.expectedBookings);

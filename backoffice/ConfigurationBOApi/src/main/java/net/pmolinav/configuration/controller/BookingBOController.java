@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import net.pmolinav.bookingslib.dto.BookingDTO;
-import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.exception.CustomStatusException;
+import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.model.Booking;
 import net.pmolinav.configuration.service.BookingBOService;
 import org.slf4j.Logger;
@@ -114,11 +114,7 @@ public class BookingBOController {
 
     private String validateMandatoryFieldsInRequest(BookingDTO bookingDTO) {
         StringBuilder messageBuilder = new StringBuilder();
-        if (bookingDTO.getUserId() == 0 || bookingDTO.getActivityId() == 0) {
-            logger.error("User and activity ids are mandatory to associate the booking correctly. " +
-                    "UserId: {}. ActivityId: {}", bookingDTO.getUserId(), bookingDTO.getActivityId());
-            messageBuilder.append("User and activity ids are mandatory to associate the booking correctly.");
-        } else if (bookingDTO.getStartTime().compareTo(bookingDTO.getEndTime()) >= 0) {
+        if (bookingDTO.getStartTime().compareTo(bookingDTO.getEndTime()) >= 0) {
             logger.error("End time must be greater than start time.");
             messageBuilder.append("End time must be greater than start time.");
         }

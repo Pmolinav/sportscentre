@@ -23,8 +23,8 @@ public class Booking {
     @Column(name = "userId", nullable = false)
     private Long userId;
 
-    @Column(name = "activityId", nullable = false)
-    private Long activityId;
+    @Column(name = "activityName", nullable = false)
+    private String activityName;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "startTime", nullable = false)
@@ -51,10 +51,10 @@ public class Booking {
     @ManyToOne
     private Activity activity;
 
-    public Booking(Long bookingId, Long userId, Long activityId, Date startTime, Date endTime, String status, Date creationDate, Date modificationDate) {
+    public Booking(Long bookingId, Long userId, String activityName, Date startTime, Date endTime, String status, Date creationDate, Date modificationDate) {
         this.bookingId = bookingId;
         this.userId = userId;
-        this.activityId = activityId;
+        this.activityName = activityName;
         this.startTime = startTime;
         this.endTime = endTime;
         if (status != null) {
@@ -71,7 +71,7 @@ public class Booking {
         Booking booking = (Booking) o;
         return Objects.equals(bookingId, booking.bookingId)
                 && Objects.equals(userId, booking.userId)
-                && Objects.equals(activityId, booking.activityId)
+                && Objects.equals(activityName, booking.activityName)
                 && Objects.equals(startTime, booking.startTime)
                 && Objects.equals(endTime, booking.endTime)
                 && Objects.equals(status, booking.status);
@@ -79,7 +79,7 @@ public class Booking {
 
     @Override
     public int hashCode() {
-        return Objects.hash(bookingId, userId, activityId, startTime, endTime, status);
+        return Objects.hash(bookingId, userId, activityName, startTime, endTime, status);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class Booking {
         return "Booking{" +
                 "bookingId=" + bookingId +
                 ", userId=" + userId +
-                ", activityId=" + activityId +
+                ", activityName=" + activityName +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 ", status='" + status + '\'' +

@@ -2,9 +2,7 @@ package net.pmolinav.bookingslib.dto;
 
 import lombok.*;
 
-import javax.validation.constraints.Future;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import java.util.Date;
 
 @Getter
@@ -15,10 +13,11 @@ import java.util.Date;
 @ToString
 public class BookingDTO {
     @Positive(message = "User ID must be positive.")
+    @Min(value = 1, message = "User ID cannot be less than 1")
     private long userId;
 
-    @Positive(message = "Activity ID must be positive.")
-    private long activityId;
+    @NotBlank(message = "Activity name is mandatory.")
+    private String activityName;
 
     @NotNull(message = "Start time is mandatory.")
     @Future(message = "Start time must be in the future.")

@@ -3,7 +3,6 @@ package net.pmolinav.configuration.integration;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.pmolinav.bookingslib.dto.ActivityDTO;
-import net.pmolinav.bookingslib.dto.ActivityType;
 import net.pmolinav.bookingslib.model.Activity;
 import net.pmolinav.configuration.client.ActivityClient;
 import org.junit.jupiter.api.Assertions;
@@ -23,7 +22,6 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -70,8 +68,7 @@ class ActivityBOControllerIntegrationTest extends AbstractBaseTest {
     void createActivityServerError() throws Exception {
         andCreateActivityThrowsNonRetryableException();
 
-        ActivityDTO requestDto = new ActivityDTO(ActivityType.GYM, "Gym",
-                "Gym activity", 25);
+        ActivityDTO requestDto = new ActivityDTO("Gym", "Gym activity", 25);
 
         mockMvc.perform(post("/activities?requestUid=" + requestUid)
                         .header(HttpHeaders.AUTHORIZATION, authToken)
@@ -82,10 +79,9 @@ class ActivityBOControllerIntegrationTest extends AbstractBaseTest {
 
     @Test
     void createActivityHappyPath() throws Exception {
-        andCreateActivityReturnedValidId();
+        andCreateActivityReturnedValidName();
 
-        ActivityDTO requestDto = new ActivityDTO(ActivityType.GYM, "Gym",
-                "Gym activity", 25);
+        ActivityDTO requestDto = new ActivityDTO("Gym", "Gym activity", 25);
 
         MvcResult result = mockMvc.perform(post("/activities?requestUid=" + requestUid)
                         .header(HttpHeaders.AUTHORIZATION, authToken)
@@ -101,7 +97,7 @@ class ActivityBOControllerIntegrationTest extends AbstractBaseTest {
 
     @Test
     void findActivityByIdServerError() throws Exception {
-        andFindActivityByIdThrowsNonRetryableException();
+        andFindActivityByNameThrowsNonRetryableException();
 
         mockMvc.perform(get("/activities/123?requestUid=" + requestUid)
                         .header(HttpHeaders.AUTHORIZATION, authToken))
@@ -110,7 +106,7 @@ class ActivityBOControllerIntegrationTest extends AbstractBaseTest {
 
     @Test
     void findActivityByIdHappyPath() throws Exception {
-        andFindActivityByIdReturnedActivity();
+        andFindActivityByNameReturnedActivity();
 
         MvcResult result = mockMvc.perform(get("/activities/3?requestUid=" + requestUid)
                         .header(HttpHeaders.AUTHORIZATION, authToken))
@@ -143,26 +139,26 @@ class ActivityBOControllerIntegrationTest extends AbstractBaseTest {
     }
 
     private void andActivityIsDeletedOkOnClient() {
-        doNothing().when(this.activityClient).deleteActivity(anyLong());
+        doNothing().when(this.activityClient).deleteActivity(anyString());
     }
 
     private void andActivityDeleteThrowsNonRetryableException() {
-        doThrow(new RuntimeException("someException")).when(this.activityClient).deleteActivity(anyLong());
+        doThrow(new RuntimeException("someException")).when(this.activityClient).deleteActivity(anyString());
     }
 
-    private void andFindActivityByIdReturnedActivity() {
-        this.expectedActivities = List.of(new Activity(1L, ActivityType.FOOTBALL.name(), "someActivity",
+    private void andFindActivityByNameReturnedActivity() {
+        this.expectedActivities = List.of(new Activity("someActivity",
                 "someDescription", 100, new Date(), null));
 
-        when(this.activityClient.findActivityById(anyLong())).thenReturn(this.expectedActivities.get(0));
+        when(this.activityClient.findActivityByName(anyString())).thenReturn(this.expectedActivities.get(0));
     }
 
-    private void andFindActivityByIdThrowsNonRetryableException() {
-        doThrow(new RuntimeException("someException")).when(this.activityClient).findActivityById(anyLong());
+    private void andFindActivityByNameThrowsNonRetryableException() {
+        doThrow(new RuntimeException("someException")).when(this.activityClient).findActivityByName(anyString());
     }
 
-    private void andCreateActivityReturnedValidId() {
-        when(this.activityClient.createActivity(any(ActivityDTO.class))).thenReturn(1L);
+    private void andCreateActivityReturnedValidName() {
+        when(this.activityClient.createActivity(any(ActivityDTO.class))).thenReturn("someActivity");
     }
 
     private void andCreateActivityThrowsNonRetryableException() {
@@ -170,7 +166,7 @@ class ActivityBOControllerIntegrationTest extends AbstractBaseTest {
     }
 
     private void andFindAllActivitiesReturnedValidActivities() {
-        this.expectedActivities = List.of(new Activity(1L, ActivityType.FOOTBALL.name(), "someActivity",
+        this.expectedActivities = List.of(new Activity("someActivity",
                 "someDescription", 100, new Date(), null));
 
         when(this.activityClient.findAllActivities()).thenReturn(this.expectedActivities);

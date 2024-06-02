@@ -12,12 +12,12 @@ Feature: BookingBOConfiguration
       | newUser  | newPassword | someName | some@email.com | ADMIN |
     Then received status code is 201
     Then an user with username newUser has been stored successfully
-    # Create new user previously to store a valid activityId
+    # Create new activity previously to store a valid activity name
     When try to create a new activity with data
-      | type | name             | description                          | price |
-      | GYM  | New Gym activity | Some description of the GYM activity | 5.20  |
+      | name | description                          | price |
+      | GYM  | Some description of the GYM activity | 520   |
     Then received status code is 201
-    Then an activity with name New Gym activity has been stored successfully
+    Then an activity with name GYM has been stored successfully
 
   Scenario: Create a new booking unauthorized
     Given invalid auth token
@@ -35,8 +35,8 @@ Feature: BookingBOConfiguration
 
   Scenario: Create a new booking request
     When try to create a new booking with data
-      | status   |
-      | INVENTED |
+      | status   | start_time |
+      | FINISHED | 1234       |
     Then received status code is 400
 
   Scenario: Get all bookings successfully

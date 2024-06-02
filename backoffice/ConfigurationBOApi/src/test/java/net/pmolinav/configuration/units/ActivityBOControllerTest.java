@@ -1,7 +1,6 @@
 package net.pmolinav.configuration.units;
 
 import net.pmolinav.bookingslib.dto.ActivityDTO;
-import net.pmolinav.bookingslib.dto.ActivityType;
 import net.pmolinav.bookingslib.exception.CustomStatusException;
 import net.pmolinav.bookingslib.exception.InternalServerErrorException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
@@ -17,7 +16,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 class ActivityBOControllerTest extends BaseUnitTest {
@@ -53,7 +51,7 @@ class ActivityBOControllerTest extends BaseUnitTest {
     /* CREATE ACTIVITY */
     @Test
     void createActivityHappyPath() {
-        givenValidActivityDTOForRequest(ActivityType.FOOTBALL, "someActivity", "someDescription", 100);
+        givenValidActivityDTOForRequest("someActivity", "someDescription", 100);
         whenCreateActivityInServiceReturnedAValidActivity();
         andCreateActivityIsCalledInController();
         thenVerifyCreateActivityHasBeenCalledInService();
@@ -63,7 +61,7 @@ class ActivityBOControllerTest extends BaseUnitTest {
 
     @Test
     void createActivityServerError() {
-        givenValidActivityDTOForRequest(ActivityType.PADDLE, "someActivity", "someDescription", 100);
+        givenValidActivityDTOForRequest("someActivity", "someDescription", 100);
         whenCreateActivityInServiceThrowsServerException();
         andCreateActivityIsCalledInController();
         thenVerifyCreateActivityHasBeenCalledInService();
@@ -73,26 +71,26 @@ class ActivityBOControllerTest extends BaseUnitTest {
     /* FIND ACTIVITY BY ID */
     @Test
     void findActivityByIdHappyPath() {
-        whenFindActivityByIdInServiceReturnedValidActivities();
+        whenFindActivityByNameInServiceReturnedValidActivities();
         andFindActivityByIdIsCalledInController();
-        thenVerifyFindByIdHasBeenCalledInService();
+        thenVerifyFindByNameHasBeenCalledInService();
         thenReceivedStatusCodeIs(HttpStatus.OK);
         thenReceivedResponseBodyAsStringIs(String.valueOf(expectedActivities.get(0)));
     }
 
     @Test
     void findActivityByIdNotFound() {
-        whenFindActivityByIdInServiceThrowsNotFoundException();
+        whenFindActivityByNameInServiceThrowsNotFoundException();
         andFindActivityByIdIsCalledInController();
-        thenVerifyFindByIdHasBeenCalledInService();
+        thenVerifyFindByNameHasBeenCalledInService();
         thenReceivedStatusCodeIs(HttpStatus.NOT_FOUND);
     }
 
     @Test
     void findActivityByIdServerError() {
-        whenFindActivityByIdInServiceThrowsServerException();
+        whenFindActivityByNameInServiceThrowsServerException();
         andFindActivityByIdIsCalledInController();
-        thenVerifyFindByIdHasBeenCalledInService();
+        thenVerifyFindByNameHasBeenCalledInService();
         thenReceivedStatusCodeIs(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -121,18 +119,16 @@ class ActivityBOControllerTest extends BaseUnitTest {
         thenReceivedStatusCodeIs(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private void givenValidActivityDTOForRequest(ActivityType type, String name, String description, Integer price) {
-        activityDTO = new ActivityDTO(type, name, description, price);
+    private void givenValidActivityDTOForRequest(String name, String description, Integer price) {
+        activityDTO = new ActivityDTO(name, description, price);
     }
 
     private void whenFindAllActivitiesInServiceReturnedValidActivities() {
         expectedActivities = List.of(
-                new Activity(
-                        1L, ActivityType.FOOTBALL.name(), "someActivity",
-                        "someDescription", 100, new Date(), null),
-                new Activity(
-                        2L, ActivityType.GYM.name(), "otherActivity",
-                        "otherDescription", 10, new Date(), null));
+                new Activity("someActivity", "someDescription",
+                        100, new Date(), null),
+                new Activity("otherActivity", "otherDescription",
+                        10, new Date(), null));
 
         when(activityBOServiceMock.findAllActivities()).thenReturn(expectedActivities);
     }
@@ -147,7 +143,7 @@ class ActivityBOControllerTest extends BaseUnitTest {
     }
 
     private void whenCreateActivityInServiceReturnedAValidActivity() {
-        when(activityBOServiceMock.createActivity(any())).thenReturn(1L);
+        when(activityBOServiceMock.createActivity(any())).thenReturn("someActivity");
     }
 
     private void whenCreateActivityInServiceThrowsServerException() {
@@ -155,37 +151,37 @@ class ActivityBOControllerTest extends BaseUnitTest {
                 .thenThrow(new CustomStatusException("Internal Server Error", 500));
     }
 
-    private void whenFindActivityByIdInServiceReturnedValidActivities() {
+    private void whenFindActivityByNameInServiceReturnedValidActivities() {
         expectedActivities = List.of(
-                new Activity(1L, ActivityType.FOOTBALL.name(), "someActivity",
-                        "someDescription", 100, new Date(), null));
+                new Activity("someActivity", "someDescription",
+                        100, new Date(), null));
 
-        when(activityBOServiceMock.findActivityById(1L)).thenReturn(expectedActivities.get(0));
+        when(activityBOServiceMock.findActivityByName("someActivity")).thenReturn(expectedActivities.get(0));
     }
 
-    private void whenFindActivityByIdInServiceThrowsNotFoundException() {
-        when(activityBOServiceMock.findActivityById(1L)).thenThrow(new NotFoundException("Not Found"));
+    private void whenFindActivityByNameInServiceThrowsNotFoundException() {
+        when(activityBOServiceMock.findActivityByName("someActivity")).thenThrow(new NotFoundException("Not Found"));
     }
 
-    private void whenFindActivityByIdInServiceThrowsServerException() {
-        when(activityBOServiceMock.findActivityById(1L))
+    private void whenFindActivityByNameInServiceThrowsServerException() {
+        when(activityBOServiceMock.findActivityByName("someActivity"))
                 .thenThrow(new CustomStatusException("Internal Server Error", 500));
     }
 
     private void whenDeleteActivityInServiceIsOk() {
-        doNothing().when(activityBOServiceMock).deleteActivity(anyLong());
+        doNothing().when(activityBOServiceMock).deleteActivity(anyString());
     }
 
     private void whenDeleteActivityInServiceThrowsNotFoundException() {
         doThrow(new NotFoundException("Not Found"))
                 .when(activityBOServiceMock)
-                .deleteActivity(anyLong());
+                .deleteActivity(anyString());
     }
 
     private void whenDeleteActivityInServiceThrowsServerException() {
         doThrow(new CustomStatusException("Internal Server Error", 500))
                 .when(activityBOServiceMock)
-                .deleteActivity(anyLong());
+                .deleteActivity(anyString());
     }
 
     private void andFindAllActivitiesIsCalledInController() {
@@ -193,7 +189,7 @@ class ActivityBOControllerTest extends BaseUnitTest {
     }
 
     private void andFindActivityByIdIsCalledInController() {
-        result = activityBOController.getActivityById(this.requestUid, 1L);
+        result = activityBOController.getActivityByName(this.requestUid, "someActivity");
     }
 
     private void andCreateActivityIsCalledInController() {
@@ -201,7 +197,7 @@ class ActivityBOControllerTest extends BaseUnitTest {
     }
 
     private void andDeleteActivityIsCalledInController() {
-        result = activityBOController.deleteActivity(this.requestUid, 1L);
+        result = activityBOController.deleteActivity(this.requestUid, "someActivity");
     }
 
     private void thenVerifyFindAllActivitiesHasBeenCalledInService() {
@@ -212,12 +208,12 @@ class ActivityBOControllerTest extends BaseUnitTest {
         verify(activityBOServiceMock, times(1)).createActivity(any(ActivityDTO.class));
     }
 
-    private void thenVerifyFindByIdHasBeenCalledInService() {
-        verify(activityBOServiceMock, times(1)).findActivityById(anyLong());
+    private void thenVerifyFindByNameHasBeenCalledInService() {
+        verify(activityBOServiceMock, times(1)).findActivityByName(anyString());
     }
 
     private void thenVerifyDeleteActivityHasBeenCalledInService() {
-        verify(activityBOServiceMock, times(1)).deleteActivity(anyLong());
+        verify(activityBOServiceMock, times(1)).deleteActivity(anyString());
     }
 
     private void thenReceivedStatusCodeIs(HttpStatus httpStatus) {

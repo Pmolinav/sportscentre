@@ -4,7 +4,6 @@ import net.pmolinav.bookingslib.model.Activity;
 import net.pmolinav.bookingslib.model.Booking;
 import net.pmolinav.bookingslib.model.User;
 
-import java.math.BigDecimal;
 import java.sql.*;
 
 public class SportsCentreDatabaseConnector {
@@ -105,8 +104,8 @@ public class SportsCentreDatabaseConnector {
     }
 
     public Activity getActivityByName(String name) throws SQLException {
-        String query = "SELECT activity_id, type, name, description, price, creation_date, modification_date" +
-                " FROM activities WHERE name = ?";
+        String query = "SELECT activity_name, description, price, creation_date, modification_date" +
+                " FROM activities WHERE activity_name = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             // Set query params.
@@ -114,16 +113,13 @@ public class SportsCentreDatabaseConnector {
             ResultSet resultSet = preparedStatement.executeQuery();
             // Extract data from result set.
             if (resultSet.next()) {
-                long dbActivityId = resultSet.getLong("activity_id");
-                String dbType = resultSet.getString("type");
-                String dbName = resultSet.getString("name");
+                String dbName = resultSet.getString("activity_name");
                 String dbDescription = resultSet.getString("description");
                 Integer dbPrice = resultSet.getInt("price");
                 Date dbCreationDate = resultSet.getDate("creation_date");
                 Date dbModificationDate = resultSet.getDate("modification_date");
 
-                return new Activity(dbActivityId, dbType, dbName, dbDescription,
-                        dbPrice, dbCreationDate, dbModificationDate);
+                return new Activity(dbName, dbDescription, dbPrice, dbCreationDate, dbModificationDate);
             } else {
                 return null;
             }
@@ -146,7 +142,7 @@ public class SportsCentreDatabaseConnector {
     }
 
     public Booking getBookingByStatus(String status) throws SQLException {
-        String query = "SELECT booking_id, user_id, activity_id, start_time, end_time, status, creation_date, modification_date" +
+        String query = "SELECT booking_id, user_id, activity_name, start_time, end_time, status, creation_date, modification_date" +
                 " FROM bookings WHERE status = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -157,14 +153,14 @@ public class SportsCentreDatabaseConnector {
             if (resultSet.next()) {
                 long dbBookingId = resultSet.getLong("booking_id");
                 long dbUserId = resultSet.getLong("user_id");
-                long dbActivityId = resultSet.getLong("activity_id");
+                String dbActivityName = resultSet.getString("activity_name");
                 Date dbStartTime = resultSet.getDate("start_time");
                 Date dbEndTime = resultSet.getDate("end_time");
                 String dbStatus = resultSet.getString("status");
                 Date dbCreationDate = resultSet.getDate("creation_date");
                 Date dbModificationDate = resultSet.getDate("modification_date");
 
-                return new Booking(dbBookingId, dbUserId, dbActivityId, dbStartTime, dbEndTime,
+                return new Booking(dbBookingId, dbUserId, dbActivityName, dbStartTime, dbEndTime,
                         dbStatus, dbCreationDate, dbModificationDate);
             } else {
                 return null;

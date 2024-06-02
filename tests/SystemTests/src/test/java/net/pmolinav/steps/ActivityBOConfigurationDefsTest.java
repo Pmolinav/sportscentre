@@ -6,11 +6,9 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import net.pmolinav.bookingslib.dto.ActivityDTO;
-import net.pmolinav.bookingslib.dto.ActivityType;
 import net.pmolinav.bookingslib.model.Activity;
 import net.pmolinav.database.SportsCentreDatabaseConnector;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +25,7 @@ public class ActivityBOConfigurationDefsTest extends BaseSystemTest {
         try {
             for (Map<String, String> row : rows) {
                 executePost(localURL + "/activities",
-                        objectMapper.writeValueAsString(new ActivityDTO(ActivityType.valueOf(row.get("type")),
+                        objectMapper.writeValueAsString(new ActivityDTO(
                                 row.get("name"),
                                 row.get("description"),
                                 Integer.parseInt(row.get("price"))
@@ -44,14 +42,14 @@ public class ActivityBOConfigurationDefsTest extends BaseSystemTest {
         executeGet(localURL + "/activities");
     }
 
-    @When("^try to get an activity by activityId$")
-    public void tryToGetAnActivityByActivityId() {
-        executeGet(localURL + "/activities/" + lastActivity.getActivityId());
+    @When("^try to get an activity by activity name$")
+    public void tryToGetAnActivityByActivityName() {
+        executeGet(localURL + "/activities/" + lastActivity.getActivityName());
     }
 
-    @When("^try to delete an activity by activityId$")
-    public void tryToDeleteAnActivityByActivityId() {
-        executeDelete(localURL + "/activities/" + lastActivity.getActivityId());
+    @When("^try to delete an activity by activity name$")
+    public void tryToDeleteAnActivityByActivityName() {
+        executeDelete(localURL + "/activities/" + lastActivity.getActivityName());
     }
 
     @Then("an activity with name (.*) has been stored successfully$")
@@ -73,7 +71,7 @@ public class ActivityBOConfigurationDefsTest extends BaseSystemTest {
         });
         assertNotNull(obtainedActivities);
         for (String name : namesList) {
-            assertTrue(obtainedActivities.stream().anyMatch(activity -> activity.getName().equals(name)));
+            assertTrue(obtainedActivities.stream().anyMatch(activity -> activity.getActivityName().equals(name)));
         }
     }
 
@@ -81,7 +79,7 @@ public class ActivityBOConfigurationDefsTest extends BaseSystemTest {
     public void anActivityWithNameIsReturned(String name) throws JsonProcessingException {
         Activity obtainedActivity = objectMapper.readValue(latestResponse.getBody(), Activity.class);
         assertNotNull(obtainedActivity);
-        assertEquals(name, obtainedActivity.getName());
+        assertEquals(name, obtainedActivity.getActivityName());
     }
 
 }

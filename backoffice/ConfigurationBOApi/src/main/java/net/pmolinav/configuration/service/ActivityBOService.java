@@ -40,7 +40,7 @@ public class ActivityBOService {
         }
     }
 
-    public Long createActivity(ActivityDTO activityDTO) {
+    public String createActivity(ActivityDTO activityDTO) {
         try {
             return activityClient.createActivity(activityDTO);
         } catch (FeignException e) {
@@ -52,16 +52,16 @@ public class ActivityBOService {
         }
     }
 
-    public Activity findActivityById(long id) {
+    public Activity findActivityByName(String name) {
         try {
-            return activityClient.findActivityById(id);
+            return activityClient.findActivityByName(name);
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
                 logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
                 throw new CustomStatusException(e.getMessage(), e.status());
             } else {
-                logger.warn("Activity with id {} not found.", id, e);
-                throw new NotFoundException("Activity " + id + " not found");
+                logger.warn("Activity with name {} not found.", name, e);
+                throw new NotFoundException("Activity " + name + " not found");
             }
         } catch (Exception e) {
             logger.error("Unexpected exception occurred while calling service.", e);
@@ -69,16 +69,16 @@ public class ActivityBOService {
         }
     }
 
-    public void deleteActivity(Long id) {
+    public void deleteActivity(String name) {
         try {
-            activityClient.deleteActivity(id);
+            activityClient.deleteActivity(name);
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
                 logger.error("Unexpected retryable error while calling service with status code {}.", e.status(), e);
                 throw new CustomStatusException(e.getMessage(), e.status());
             } else {
-                logger.warn("Activity with id {} not found.", id, e);
-                throw new NotFoundException("Activity " + id + " not found");
+                logger.warn("Activity with id {} not found.", name, e);
+                throw new NotFoundException("Activity " + name + " not found");
             }
         } catch (Exception e) {
             logger.error("Unexpected exception occurred while calling service.", e);

@@ -59,31 +59,31 @@ public class ActivityService {
     }
 
     @Transactional(readOnly = true)
-    public Activity findById(long id) {
+    public Activity findByName(String name) {
         try {
-            return activityRepository.findById(id)
-                    .orElseThrow(() -> new NotFoundException(String.format("Activity with id %s does not exist.", id)));
+            return activityRepository.findById(name)
+                    .orElseThrow(() -> new NotFoundException(String.format("Activity with name %s does not exist.", name)));
         } catch (NotFoundException e) {
-            logger.error("Activity with id {} was not found.", id, e);
+            logger.error("Activity with name {} was not found.", name, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while searching activity with id {} in repository.", id, e);
+            logger.error("Unexpected error while searching activity with name {} in repository.", name, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
 
     @Transactional
-    public void deleteActivity(Long id) {
+    public void deleteActivity(String name) {
         try {
-            Activity activity = activityRepository.findById(id)
-                    .orElseThrow(() -> new NotFoundException(String.format("Activity with id %s does not exist.", id)));
+            Activity activity = activityRepository.findById(name)
+                    .orElseThrow(() -> new NotFoundException(String.format("Activity with name %s does not exist.", name)));
 
             activityRepository.delete(activity);
         } catch (NotFoundException e) {
-            logger.error("Activity with id {} was not found.", id, e);
+            logger.error("Activity with name {} was not found.", name, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while removing activity with id {} in repository.", id, e);
+            logger.error("Unexpected error while removing activity with name {} in repository.", name, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }

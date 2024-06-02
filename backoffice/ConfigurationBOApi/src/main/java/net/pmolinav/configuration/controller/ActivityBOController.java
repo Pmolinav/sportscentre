@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import net.pmolinav.bookingslib.dto.ActivityDTO;
-import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.exception.CustomStatusException;
+import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.model.Activity;
 import net.pmolinav.configuration.service.ActivityBOService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +37,9 @@ public class ActivityBOController {
 
     @PostMapping
     @Operation(summary = "Create a new activity", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<Long> createActivity(@RequestParam String requestUid, @Valid @RequestBody ActivityDTO activityDTO) {
+    public ResponseEntity<String> createActivity(@RequestParam String requestUid, @Valid @RequestBody ActivityDTO activityDTO) {
         try {
-            Long createdActivityId = activityBOService.createActivity(activityDTO);
+            String createdActivityId = activityBOService.createActivity(activityDTO);
             return new ResponseEntity<>(createdActivityId, HttpStatus.CREATED);
         } catch (CustomStatusException e) {
             return ResponseEntity.internalServerError().build();
@@ -47,11 +47,11 @@ public class ActivityBOController {
 
     }
 
-    @GetMapping("{id}")
-    @Operation(summary = "Get a specific activity by Id", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<Activity> getActivityById(@RequestParam String requestUid, @PathVariable long id) {
+    @GetMapping("{name}")
+    @Operation(summary = "Get a specific activity by name", description = "Bearer token is required to authorize users.")
+    public ResponseEntity<Activity> getActivityByName(@RequestParam String requestUid, @PathVariable String name) {
         try {
-            Activity activity = activityBOService.findActivityById(id);
+            Activity activity = activityBOService.findActivityByName(name);
             return ResponseEntity.ok(activity);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -87,11 +87,11 @@ public class ActivityBOController {
 //        }
 //    }
 
-    @DeleteMapping("{id}")
-    @Operation(summary = "Delete an activity by Id", description = "Bearer token is required to authorize users.")
-    public ResponseEntity<?> deleteActivity(@RequestParam String requestUid, @PathVariable long id) {
+    @DeleteMapping("{name}")
+    @Operation(summary = "Delete an activity by name", description = "Bearer token is required to authorize users.")
+    public ResponseEntity<?> deleteActivity(@RequestParam String requestUid, @PathVariable String name) {
         try {
-            activityBOService.deleteActivity(id);
+            activityBOService.deleteActivity(name);
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();

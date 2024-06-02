@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.pmolinav.bookings.repository.ActivityRepository;
 import net.pmolinav.bookingslib.dto.ActivityDTO;
-import net.pmolinav.bookingslib.dto.ActivityType;
 import net.pmolinav.bookingslib.model.Activity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -60,14 +59,13 @@ class ActivityControllerIntegrationTest extends AbstractContainerBaseTest {
                 });
 
         Assertions.assertEquals(2, activityResponseList.size());
-        Assertions.assertEquals(ActivityType.FOOTBALL.name(), activityResponseList.get(0).getType());
-        Assertions.assertEquals(ActivityType.TENNIS.name(), activityResponseList.get(1).getType());
+        Assertions.assertEquals("FOOTBALL", activityResponseList.get(0).getActivityName());
+        Assertions.assertEquals("TENNIS", activityResponseList.get(1).getActivityName());
     }
 
     @Test
     void createActivityHappyPath() throws Exception {
-        ActivityDTO requestDto = new ActivityDTO(ActivityType.GYM, "Gym",
-                "Gym activity", 25);
+        ActivityDTO requestDto = new ActivityDTO("GYM", "Gym activity", 25);
 
         MvcResult result = mockMvc.perform(post("/activities")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -77,20 +75,20 @@ class ActivityControllerIntegrationTest extends AbstractContainerBaseTest {
 
         String responseBody = result.getResponse().getContentAsString();
 
-        assertThat(responseBody, matchesPattern("\\d+"));
+        assertThat(responseBody, matchesPattern("\\w+"));
     }
 
     @Test
-    void findActivityByIdNotFound() throws Exception {
+    void findActivityByNameNotFound() throws Exception {
         mockMvc.perform(get("/activities/123"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void findActivityByIdHappyPath() throws Exception {
+    void findActivityByNameHappyPath() throws Exception {
         givenSomePreviouslyStoredDataWithIds(3, 4, true, false, false);
 
-        MvcResult result = mockMvc.perform(get("/activities/3"))
+        MvcResult result = mockMvc.perform(get("/activities/FOOTBALL"))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -98,7 +96,7 @@ class ActivityControllerIntegrationTest extends AbstractContainerBaseTest {
                 new TypeReference<Activity>() {
                 });
 
-        Assertions.assertEquals(ActivityType.FOOTBALL.name(), activityResponse.getType());
+        Assertions.assertEquals("FOOTBALL", activityResponse.getActivityName());
         Assertions.assertEquals(25, activityResponse.getPrice());
     }
 
@@ -112,10 +110,10 @@ class ActivityControllerIntegrationTest extends AbstractContainerBaseTest {
     void deleteActivityByIdHappyPath() throws Exception {
         givenSomePreviouslyStoredDataWithIds(5, 6, true, false, false);
 
-        mockMvc.perform(delete("/activities/5"))
+        mockMvc.perform(delete("/activities/FOOTBALL"))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(delete("/activities/6"))
+        mockMvc.perform(delete("/activities/TENNIS"))
                 .andExpect(status().isOk());
     }
 }

@@ -30,10 +30,10 @@ public class BookingBOConfigurationDefsTest extends BaseSystemTest {
             for (Map<String, String> row : rows) {
                 executePost(localURL + "/bookings",
                         objectMapper.writeValueAsString(new BookingDTO(lastUser.getUserId(),
-                                lastActivity.getActivityId(),
+                                lastActivity.getActivityName(),
                                 row.get("start_time") != null ? new Date(Long.parseLong(row.get("start_time")))
                                         : new Date(Instant.now().toEpochMilli() + 10000),
-                                row.get("start_time") != null ? new Date(Long.parseLong(row.get("end_time")))
+                                row.get("end_time") != null ? new Date(Long.parseLong(row.get("end_time")))
                                         : new Date(Instant.now().toEpochMilli() + 50000),
                                 BookingStatus.valueOf(row.get("status"))
                         )));

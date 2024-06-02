@@ -53,7 +53,7 @@ class BookingBOControllerTest extends BaseUnitTest {
     /* CREATE BOOKING */
     @Test
     void createBookingHappyPath() {
-        givenValidBookingDTOForRequest(1L, 2L, new Date(),
+        givenValidBookingDTOForRequest(1L, "Pool", new Date(),
                 new Date(System.currentTimeMillis() + 50000000), BookingStatus.OPEN);
         whenCreateBookingInServiceReturnedAValidBooking();
         andCreateBookingIsCalledInController();
@@ -64,7 +64,7 @@ class BookingBOControllerTest extends BaseUnitTest {
 
     @Test
     void createBookingServerError() {
-        givenValidBookingDTOForRequest(1L, 2L, new Date(),
+        givenValidBookingDTOForRequest(1L, "Pool", new Date(),
                 new Date(System.currentTimeMillis() + 50000000), BookingStatus.OPEN);
         whenCreateBookingInServiceReturnedAValidBooking();
         whenCreateBookingInServiceThrowsServerException();
@@ -124,15 +124,15 @@ class BookingBOControllerTest extends BaseUnitTest {
         thenReceivedStatusCodeIs(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private void givenValidBookingDTOForRequest(long userId, long activityId, Date startTime, Date endTime, BookingStatus status) {
-        bookingDTO = new BookingDTO(userId, activityId, startTime, endTime, status);
+    private void givenValidBookingDTOForRequest(long userId, String activityName, Date startTime, Date endTime, BookingStatus status) {
+        bookingDTO = new BookingDTO(userId, activityName, startTime, endTime, status);
     }
 
     private void whenFindAllBookingsInServiceReturnedValidBookings() {
         expectedBookings = List.of(
-                new Booking(1L, 22L, 333L, new Date(), new Date(),
+                new Booking(1L, 22L, "Pool", new Date(), new Date(),
                         BookingStatus.OPEN.name(), new Date(), null),
-                new Booking(2L, 22L, 444L, new Date(), new Date(),
+                new Booking(2L, 22L, "Gym", new Date(), new Date(),
                         BookingStatus.OPEN.name(), new Date(), null));
 
         when(bookingBOServiceMock.findAllBookings()).thenReturn(expectedBookings);
@@ -158,7 +158,7 @@ class BookingBOControllerTest extends BaseUnitTest {
 
     private void whenFindBookingByIdInServiceReturnedValidBookings() {
         expectedBookings = List.of(
-                new Booking(1L, 22L, 333L, new Date(), new Date(),
+                new Booking(1L, 22L, "Pool", new Date(), new Date(),
                         BookingStatus.OPEN.name(), new Date(), null));
 
         when(bookingBOServiceMock.findBookingById(1L)).thenReturn(expectedBookings.get(0));

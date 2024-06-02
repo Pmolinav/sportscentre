@@ -21,10 +21,10 @@ class MappersTests {
 
     @Test
     void activityDTOToActivityEntityTest() {
-        ActivityDTO activityDTO = new ActivityDTO(ActivityType.POOL, "Pool",
+        ActivityDTO activityDTO = new ActivityDTO("Pool",
                 "Pool activity", 25);
 
-        Activity expectedActivity = new Activity(null, ActivityType.POOL.name(), "Pool",
+        Activity expectedActivity = new Activity("Pool",
                 "Pool activity", 25, null, null);
 
         Activity activity = activityMapper.activityDTOToActivityEntity(activityDTO);
@@ -34,11 +34,11 @@ class MappersTests {
 
     @Test
     void activityEntityTOActivityDTOTest() {
-        Activity activity = new Activity(null, ActivityType.POOL.name(), "Pool",
-                "Pool activity", 25, new Date(1L), new Date(3L));
+        Activity activity = new Activity("Gym",
+                "Gym activity", 25, new Date(1L), new Date(3L));
 
-        ActivityDTO expectedActivityDTO = new ActivityDTO(ActivityType.POOL, "Pool",
-                "Pool activity", 25);
+        ActivityDTO expectedActivityDTO = new ActivityDTO("Gym",
+                "Gym activity", 25);
 
         ActivityDTO activityDTO = activityMapper.activityEntityTOActivityDTO(activity);
 
@@ -47,10 +47,10 @@ class MappersTests {
 
     @Test
     void bookingDTOToBookingEntityTest() {
-        BookingDTO bookingDTO = new BookingDTO(22L, 333L, new Date(1),
+        BookingDTO bookingDTO = new BookingDTO(22L, "Gym", new Date(1),
                 new Date(1), BookingStatus.CANCELLED);
 
-        Booking expectedBooking = new Booking(null, 22L, 333L,
+        Booking expectedBooking = new Booking(null, 22L, "Gym",
                 new Date(1), new Date(1), BookingStatus.CANCELLED.name(), new Date(1), null);
 
 
@@ -61,10 +61,10 @@ class MappersTests {
 
     @Test
     void bookingEntityTOBookingDTOTest() {
-        Booking booking = new Booking(1L, 22L, 333L,
+        Booking booking = new Booking(1L, 22L, "Gym",
                 new Date(1), new Date(1), BookingStatus.CANCELLED.name(), new Date(1), null);
 
-        BookingDTO expectedBookingDTO = new BookingDTO(22L, 333L, new Date(1),
+        BookingDTO expectedBookingDTO = new BookingDTO(22L, "Gym", new Date(1),
                 new Date(1), BookingStatus.CANCELLED);
 
         BookingDTO bookingDTO = bookingMapper.bookingEntityTOBookingDTO(booking);
