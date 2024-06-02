@@ -9,7 +9,6 @@ import net.pmolinav.bookingslib.model.Booking;
 import net.pmolinav.bookingslib.model.User;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,10 +22,10 @@ class MappersTests {
     @Test
     void activityDTOToActivityEntityTest() {
         ActivityDTO activityDTO = new ActivityDTO(ActivityType.POOL, "Pool",
-                "Pool activity", BigDecimal.valueOf(25), new Date(1L), new Date(3L));
+                "Pool activity", 25);
 
         Activity expectedActivity = new Activity(null, ActivityType.POOL.name(), "Pool",
-                "Pool activity", BigDecimal.valueOf(25), new Date(1L), new Date(3L));
+                "Pool activity", 25, null, null);
 
         Activity activity = activityMapper.activityDTOToActivityEntity(activityDTO);
 
@@ -36,10 +35,10 @@ class MappersTests {
     @Test
     void activityEntityTOActivityDTOTest() {
         Activity activity = new Activity(null, ActivityType.POOL.name(), "Pool",
-                "Pool activity", BigDecimal.valueOf(25), new Date(1L), new Date(3L));
+                "Pool activity", 25, new Date(1L), new Date(3L));
 
         ActivityDTO expectedActivityDTO = new ActivityDTO(ActivityType.POOL, "Pool",
-                "Pool activity", BigDecimal.valueOf(25), new Date(1L), new Date(3L));
+                "Pool activity", 25);
 
         ActivityDTO activityDTO = activityMapper.activityEntityTOActivityDTO(activity);
 
@@ -49,7 +48,7 @@ class MappersTests {
     @Test
     void bookingDTOToBookingEntityTest() {
         BookingDTO bookingDTO = new BookingDTO(22L, 333L, new Date(1),
-                new Date(1), BookingStatus.CANCELLED, new Date(1), null);
+                new Date(1), BookingStatus.CANCELLED);
 
         Booking expectedBooking = new Booking(null, 22L, 333L,
                 new Date(1), new Date(1), BookingStatus.CANCELLED.name(), new Date(1), null);
@@ -66,7 +65,7 @@ class MappersTests {
                 new Date(1), new Date(1), BookingStatus.CANCELLED.name(), new Date(1), null);
 
         BookingDTO expectedBookingDTO = new BookingDTO(22L, 333L, new Date(1),
-                new Date(1), BookingStatus.CANCELLED, new Date(1), null);
+                new Date(1), BookingStatus.CANCELLED);
 
         BookingDTO bookingDTO = bookingMapper.bookingEntityTOBookingDTO(booking);
 
@@ -76,7 +75,7 @@ class MappersTests {
     @Test
     void userDTOToUserEntityTest() {
         UserDTO userDTO = new UserDTO("someUser", "somePassword", "someName",
-                "some@email.com", Role.USER, new Date(1L), null);
+                "some@email.com", Role.USER);
 
         User expectedUser = new User(null, "someUser", "somePassword", "someName",
                 "some@email.com", Role.USER.name(), new Date(1L), null);
@@ -92,7 +91,7 @@ class MappersTests {
                 "some@email.com", Role.USER.name(), new Date(1L), null);
 
         UserDTO expectedUserDTO = new UserDTO("someUser", "somePassword", "someName",
-                "some@email.com", Role.USER, new Date(1L), null);
+                "some@email.com", Role.USER);
 
         UserDTO userDTO = userMapper.userEntityToUserDTO(user);
 

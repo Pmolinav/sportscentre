@@ -125,7 +125,7 @@ class BookingControllerTest extends BaseUnitTest {
     }
 
     private void givenValidBookingDTOForRequest(long userId, long activityId, Date startTime, Date endTime, BookingStatus status) {
-        bookingDTO = new BookingDTO(userId, activityId, startTime, endTime, status, new Date(), null);
+        bookingDTO = new BookingDTO(userId, activityId, startTime, endTime, status);
     }
 
     private void whenFindAllBookingsInServiceReturnedValidBookings() {

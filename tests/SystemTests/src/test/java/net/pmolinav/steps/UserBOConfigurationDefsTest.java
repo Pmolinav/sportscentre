@@ -13,7 +13,6 @@ import net.pmolinav.database.SportsCentreDatabaseConnector;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.SQLException;
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -59,11 +58,7 @@ public class UserBOConfigurationDefsTest extends BaseSystemTest {
                                 row.get("password"),
                                 row.get("name"),
                                 row.get("email"),
-                                Role.valueOf(row.get("role")),
-                                row.get("creation_date") != null ? new Date(Long.parseLong(row.get("creation_date")))
-                                        : new Date(Instant.now().toEpochMilli() + 10000),
-                                row.get("modification_date") != null ? new Date(Long.parseLong(row.get("modification_date")))
-                                        : new Date(Instant.now().toEpochMilli() + 10000)
+                                Role.valueOf(row.get("role"))
                         )));
             }
         } catch (Exception e) {

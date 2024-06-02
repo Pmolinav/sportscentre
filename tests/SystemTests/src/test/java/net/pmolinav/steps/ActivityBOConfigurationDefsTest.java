@@ -12,8 +12,6 @@ import net.pmolinav.database.SportsCentreDatabaseConnector;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -32,11 +30,7 @@ public class ActivityBOConfigurationDefsTest extends BaseSystemTest {
                         objectMapper.writeValueAsString(new ActivityDTO(ActivityType.valueOf(row.get("type")),
                                 row.get("name"),
                                 row.get("description"),
-                                new BigDecimal(row.get("price")),
-                                row.get("creation_date") != null ? new Date(Long.parseLong(row.get("creation_date")))
-                                        : new Date(Instant.now().toEpochMilli() + 10000),
-                                row.get("modification_date") != null ? new Date(Long.parseLong(row.get("modification_date")))
-                                        : new Date(Instant.now().toEpochMilli() + 10000)
+                                Integer.parseInt(row.get("price"))
                         )));
             }
         } catch (Exception e) {

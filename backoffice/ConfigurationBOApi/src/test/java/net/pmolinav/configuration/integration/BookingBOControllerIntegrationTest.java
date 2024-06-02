@@ -71,7 +71,7 @@ class BookingBOControllerIntegrationTest extends AbstractBaseTest {
         andCreateBookingThrowsNonRetryableException();
 
         BookingDTO requestDto = new BookingDTO(1L, 1L, new Date(9999999999999L),
-                new Date(9999999990000L), BookingStatus.OPEN, new Date(), new Date());
+                new Date(9999999990000L), BookingStatus.OPEN);
 
         mockMvc.perform(post("/bookings?requestUid=" + requestUid)
                         .header(HttpHeaders.AUTHORIZATION, authToken)
@@ -85,7 +85,7 @@ class BookingBOControllerIntegrationTest extends AbstractBaseTest {
         andCreateBookingThrowsNonRetryableException();
 
         BookingDTO requestDto = new BookingDTO(1L, 1L, new Date(9999999990000L),
-                new Date(9999999999999L), BookingStatus.OPEN, new Date(), new Date());
+                new Date(9999999999999L), BookingStatus.OPEN);
 
         mockMvc.perform(post("/bookings?requestUid=" + requestUid)
                         .header(HttpHeaders.AUTHORIZATION, authToken)
@@ -99,7 +99,7 @@ class BookingBOControllerIntegrationTest extends AbstractBaseTest {
         andCreateBookingReturnedValidId();
 
         BookingDTO requestDto = new BookingDTO(1L, 1L, new Date(9999999990000L),
-                new Date(9999999999999L), BookingStatus.OPEN, new Date(), new Date());
+                new Date(9999999999999L), BookingStatus.OPEN);
 
         MvcResult result = mockMvc.perform(post("/bookings?requestUid=" + requestUid)
                         .header(HttpHeaders.AUTHORIZATION, authToken)

@@ -1,13 +1,12 @@
 package net.pmolinav.bookingslib.dto;
 
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -25,13 +24,7 @@ public class ActivityDTO {
 
     private String description;
 
-    @DecimalMin(value = "0.01", message = "Activity price is mandatory and must be greater than zero.")
-    private BigDecimal price;
-
-    @DateTimeFormat(pattern = "dd-MM-yyyy'T'HH:mm:ss") // Date format
-    private Date creationDate;
-
-    @DateTimeFormat(pattern = "dd-MM-yyyy'T'HH:mm:ss") // Date format
-    private Date modificationDate;
+    @Min(value = 1, message = "Activity price is mandatory and must be an integer greater than zero.")
+    private Integer price;
 
 }

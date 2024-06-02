@@ -118,12 +118,12 @@ public class SportsCentreDatabaseConnector {
                 String dbType = resultSet.getString("type");
                 String dbName = resultSet.getString("name");
                 String dbDescription = resultSet.getString("description");
-                BigDecimal dbprice = resultSet.getBigDecimal("price");
+                Integer dbPrice = resultSet.getInt("price");
                 Date dbCreationDate = resultSet.getDate("creation_date");
                 Date dbModificationDate = resultSet.getDate("modification_date");
 
                 return new Activity(dbActivityId, dbType, dbName, dbDescription,
-                        dbprice, dbCreationDate, dbModificationDate);
+                        dbPrice, dbCreationDate, dbModificationDate);
             } else {
                 return null;
             }

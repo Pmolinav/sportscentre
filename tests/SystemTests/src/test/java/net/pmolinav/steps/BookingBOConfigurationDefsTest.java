@@ -35,11 +35,7 @@ public class BookingBOConfigurationDefsTest extends BaseSystemTest {
                                         : new Date(Instant.now().toEpochMilli() + 10000),
                                 row.get("start_time") != null ? new Date(Long.parseLong(row.get("end_time")))
                                         : new Date(Instant.now().toEpochMilli() + 50000),
-                                BookingStatus.valueOf(row.get("status")),
-                                row.get("creation_date") != null ? new Date(Long.parseLong(row.get("creation_date")))
-                                        : new Date(Instant.now().toEpochMilli() + 10000),
-                                row.get("modification_date") != null ? new Date(Long.parseLong(row.get("modification_date")))
-                                        : new Date(Instant.now().toEpochMilli() + 10000)
+                                BookingStatus.valueOf(row.get("status"))
                         )));
             }
         } catch (Exception e) {

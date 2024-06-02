@@ -2,8 +2,8 @@ package net.pmolinav.configuration.units;
 
 import net.pmolinav.bookingslib.dto.Role;
 import net.pmolinav.bookingslib.dto.UserDTO;
-import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.exception.CustomStatusException;
+import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -124,7 +124,7 @@ class UserBOControllerTest extends BaseUnitTest {
     }
 
     private void givenValidUserDTOForRequest(String username, String password, String name, String email, Role role) {
-        userDTO = new UserDTO(username, password, name, email, role, new Date(), null);
+        userDTO = new UserDTO(username, password, name, email, role);
     }
 
     private void whenFindAllUsersInServiceReturnedValidUsers() {

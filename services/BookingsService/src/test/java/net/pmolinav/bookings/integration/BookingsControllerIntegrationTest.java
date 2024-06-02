@@ -2,10 +2,10 @@ package net.pmolinav.bookings.integration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.pmolinav.bookings.repository.BookingRepository;
 import net.pmolinav.bookingslib.dto.BookingDTO;
 import net.pmolinav.bookingslib.dto.BookingStatus;
 import net.pmolinav.bookingslib.model.Booking;
+import net.pmolinav.bookings.repository.BookingRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +68,7 @@ class BookingsControllerIntegrationTest extends AbstractContainerBaseTest {
         givenSomePreviouslyStoredDataWithIds(1, 2, true, true, false);
 
         BookingDTO requestDto = new BookingDTO(1L, 1L, new Date(100),
-                new Date(3000), BookingStatus.OPEN, new Date(), null);
+                new Date(3000), BookingStatus.OPEN);
 
         MvcResult result = mockMvc.perform(post("/bookings")
                         .contentType(MediaType.APPLICATION_JSON)

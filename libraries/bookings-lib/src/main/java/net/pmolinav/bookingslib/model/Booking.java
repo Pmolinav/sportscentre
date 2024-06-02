@@ -74,14 +74,12 @@ public class Booking {
                 && Objects.equals(activityId, booking.activityId)
                 && Objects.equals(startTime, booking.startTime)
                 && Objects.equals(endTime, booking.endTime)
-                && Objects.equals(status, booking.status)
-                && Objects.equals(creationDate, booking.creationDate)
-                && Objects.equals(modificationDate, booking.modificationDate);
+                && Objects.equals(status, booking.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bookingId, userId, activityId, startTime, endTime, status, creationDate, modificationDate);
+        return Objects.hash(bookingId, userId, activityId, startTime, endTime, status);
     }
 
     @Override

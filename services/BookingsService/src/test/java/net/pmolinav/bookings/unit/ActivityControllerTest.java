@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -54,7 +53,7 @@ class ActivityControllerTest extends BaseUnitTest {
     /* CREATE ACTIVITY */
     @Test
     void createActivityHappyPath() {
-        givenValidActivityDTOForRequest(ActivityType.FOOTBALL, "someActivity", "someDescription", BigDecimal.TEN);
+        givenValidActivityDTOForRequest(ActivityType.FOOTBALL, "someActivity", "someDescription", 100);
         whenCreateActivityInServiceReturnedAValidActivity();
         andCreateActivityIsCalledInController();
         thenVerifyCreateActivityHasBeenCalledInService();
@@ -64,7 +63,7 @@ class ActivityControllerTest extends BaseUnitTest {
 
     @Test
     void createActivityServerError() {
-        givenValidActivityDTOForRequest(ActivityType.PADDLE, "someActivity", "someDescription", BigDecimal.TEN);
+        givenValidActivityDTOForRequest(ActivityType.PADDLE, "someActivity", "someDescription", 100);
         whenCreateActivityInServiceThrowsServerException();
         andCreateActivityIsCalledInController();
         thenVerifyCreateActivityHasBeenCalledInService();
@@ -122,18 +121,18 @@ class ActivityControllerTest extends BaseUnitTest {
         thenReceivedStatusCodeIs(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private void givenValidActivityDTOForRequest(ActivityType type, String name, String description, BigDecimal price) {
-        activityDTO = new ActivityDTO(type, name, description, price, new Date(), null);
+    private void givenValidActivityDTOForRequest(ActivityType type, String name, String description, Integer price) {
+        activityDTO = new ActivityDTO(type, name, description, price);
     }
 
     private void whenFindAllActivitiesInServiceReturnedValidActivities() {
         expectedActivities = List.of(
                 new Activity(
                         1L, ActivityType.FOOTBALL.name(), "someActivity",
-                        "someDescription", BigDecimal.TEN, new Date(), null),
+                        "someDescription", 100, new Date(), null),
                 new Activity(
                         2L, ActivityType.GYM.name(), "otherActivity",
-                        "otherDescription", BigDecimal.ONE, new Date(), null));
+                        "otherDescription", 10, new Date(), null));
 
         when(activityServiceMock.findAllActivities()).thenReturn(expectedActivities);
     }
@@ -150,7 +149,7 @@ class ActivityControllerTest extends BaseUnitTest {
     private void whenCreateActivityInServiceReturnedAValidActivity() {
         when(activityServiceMock.createActivity(any())).thenReturn(new Activity(
                 1L, activityDTO.getType().name(), activityDTO.getName(),
-                activityDTO.getDescription(), BigDecimal.TEN, new Date(), null));
+                activityDTO.getDescription(), 100, new Date(), null));
     }
 
     private void whenCreateActivityInServiceThrowsServerException() {
@@ -161,7 +160,7 @@ class ActivityControllerTest extends BaseUnitTest {
     private void whenFindActivityByIdInServiceReturnedValidActivities() {
         expectedActivities = List.of(
                 new Activity(1L, ActivityType.FOOTBALL.name(), "someActivity",
-                        "someDescription", BigDecimal.TEN, new Date(), null));
+                        "someDescription", 100, new Date(), null));
 
         when(activityServiceMock.findById(1L)).thenReturn(expectedActivities.get(0));
     }

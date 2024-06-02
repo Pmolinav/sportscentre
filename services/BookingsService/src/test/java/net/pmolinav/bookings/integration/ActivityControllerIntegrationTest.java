@@ -19,8 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -68,8 +66,8 @@ class ActivityControllerIntegrationTest extends AbstractContainerBaseTest {
 
     @Test
     void createActivityHappyPath() throws Exception {
-        ActivityDTO requestDto = new ActivityDTO(ActivityType.GYM, "Gym", "Gym activity",
-                BigDecimal.valueOf(25), new Date(), null);
+        ActivityDTO requestDto = new ActivityDTO(ActivityType.GYM, "Gym",
+                "Gym activity", 25);
 
         MvcResult result = mockMvc.perform(post("/activities")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -101,7 +99,7 @@ class ActivityControllerIntegrationTest extends AbstractContainerBaseTest {
                 });
 
         Assertions.assertEquals(ActivityType.FOOTBALL.name(), activityResponse.getType());
-        Assertions.assertEquals(BigDecimal.valueOf(25).longValue(), activityResponse.getPrice().longValue());
+        Assertions.assertEquals(25, activityResponse.getPrice());
     }
 
     @Test

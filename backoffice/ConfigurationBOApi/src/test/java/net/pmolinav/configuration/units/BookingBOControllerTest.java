@@ -2,8 +2,8 @@ package net.pmolinav.configuration.units;
 
 import net.pmolinav.bookingslib.dto.BookingDTO;
 import net.pmolinav.bookingslib.dto.BookingStatus;
-import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.exception.CustomStatusException;
+import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.model.Booking;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -125,7 +125,7 @@ class BookingBOControllerTest extends BaseUnitTest {
     }
 
     private void givenValidBookingDTOForRequest(long userId, long activityId, Date startTime, Date endTime, BookingStatus status) {
-        bookingDTO = new BookingDTO(userId, activityId, startTime, endTime, status, new Date(), null);
+        bookingDTO = new BookingDTO(userId, activityId, startTime, endTime, status);
     }
 
     private void whenFindAllBookingsInServiceReturnedValidBookings() {

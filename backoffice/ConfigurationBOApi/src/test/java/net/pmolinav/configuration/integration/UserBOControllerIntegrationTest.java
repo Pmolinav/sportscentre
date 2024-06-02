@@ -67,7 +67,7 @@ class UserBOControllerIntegrationTest extends AbstractBaseTest {
         andCreateUserThrowsNonRetryableException();
 
         UserDTO requestDto = new UserDTO("someUser", "somePassword", "someName",
-                "some@email.com", Role.USER, new Date(), new Date());
+                "some@email.com", Role.USER);
 
         mockMvc.perform(post("/users?requestUid=" + requestUid)
                         .header(HttpHeaders.AUTHORIZATION, authToken)
@@ -81,7 +81,7 @@ class UserBOControllerIntegrationTest extends AbstractBaseTest {
         andCreateUserReturnedValidId();
 
         UserDTO requestDto = new UserDTO("someUser", "somePassword", "someName",
-                "some@email.com", Role.USER, new Date(), new Date());
+                "some@email.com", Role.USER);
 
         MvcResult result = mockMvc.perform(post("/users?requestUid=" + requestUid)
                         .header(HttpHeaders.AUTHORIZATION, authToken)

@@ -18,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -71,8 +70,8 @@ class ActivityBOControllerIntegrationTest extends AbstractBaseTest {
     void createActivityServerError() throws Exception {
         andCreateActivityThrowsNonRetryableException();
 
-        ActivityDTO requestDto = new ActivityDTO(ActivityType.GYM, "Gym", "Gym activity",
-                BigDecimal.valueOf(25), new Date(), null);
+        ActivityDTO requestDto = new ActivityDTO(ActivityType.GYM, "Gym",
+                "Gym activity", 25);
 
         mockMvc.perform(post("/activities?requestUid=" + requestUid)
                         .header(HttpHeaders.AUTHORIZATION, authToken)
@@ -85,8 +84,8 @@ class ActivityBOControllerIntegrationTest extends AbstractBaseTest {
     void createActivityHappyPath() throws Exception {
         andCreateActivityReturnedValidId();
 
-        ActivityDTO requestDto = new ActivityDTO(ActivityType.GYM, "Gym", "Gym activity",
-                BigDecimal.valueOf(25), new Date(), null);
+        ActivityDTO requestDto = new ActivityDTO(ActivityType.GYM, "Gym",
+                "Gym activity", 25);
 
         MvcResult result = mockMvc.perform(post("/activities?requestUid=" + requestUid)
                         .header(HttpHeaders.AUTHORIZATION, authToken)
@@ -153,7 +152,7 @@ class ActivityBOControllerIntegrationTest extends AbstractBaseTest {
 
     private void andFindActivityByIdReturnedActivity() {
         this.expectedActivities = List.of(new Activity(1L, ActivityType.FOOTBALL.name(), "someActivity",
-                "someDescription", BigDecimal.TEN, new Date(), null));
+                "someDescription", 100, new Date(), null));
 
         when(this.activityClient.findActivityById(anyLong())).thenReturn(this.expectedActivities.get(0));
     }
@@ -172,7 +171,7 @@ class ActivityBOControllerIntegrationTest extends AbstractBaseTest {
 
     private void andFindAllActivitiesReturnedValidActivities() {
         this.expectedActivities = List.of(new Activity(1L, ActivityType.FOOTBALL.name(), "someActivity",
-                "someDescription", BigDecimal.TEN, new Date(), null));
+                "someDescription", 100, new Date(), null));
 
         when(this.activityClient.findAllActivities()).thenReturn(this.expectedActivities);
     }

@@ -2,10 +2,10 @@ package net.pmolinav.bookings.integration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.pmolinav.bookings.repository.UserRepository;
 import net.pmolinav.bookingslib.dto.Role;
 import net.pmolinav.bookingslib.dto.UserDTO;
 import net.pmolinav.bookingslib.model.User;
+import net.pmolinav.bookings.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -66,7 +65,7 @@ class UsersControllerIntegrationTest extends AbstractContainerBaseTest {
     @Test
     void createUserHappyPath() throws Exception {
         UserDTO requestDto = new UserDTO("someUser", "somePassword", "someName",
-                "some@email.com", Role.USER, new Date(), new Date());
+                "some@email.com", Role.USER);
 
         MvcResult result = mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)

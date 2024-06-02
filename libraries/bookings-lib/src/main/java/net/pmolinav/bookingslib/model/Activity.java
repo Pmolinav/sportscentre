@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
@@ -33,7 +32,7 @@ public class Activity {
     private String description;
 
     @Column(name = "price", nullable = false)
-    private BigDecimal price;
+    private Integer price;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creationDate", nullable = false)
@@ -52,13 +51,11 @@ public class Activity {
                 && Objects.equals(type, activity.type)
                 && Objects.equals(name, activity.name)
                 && Objects.equals(description, activity.description)
-                && Objects.equals(price, activity.price)
-                && Objects.equals(creationDate, activity.creationDate)
-                && Objects.equals(modificationDate, activity.modificationDate);
+                && Objects.equals(price, activity.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(activityId, type, name, description, price, creationDate, modificationDate);
+        return Objects.hash(activityId, type, name, description, price);
     }
 }

@@ -22,8 +22,8 @@ Feature: BookingBOConfiguration
   Scenario: Create a new booking unauthorized
     Given invalid auth token
     When try to create a new booking with data
-      | start_time | end_time | status   |
-      | 123456     | 1234567  | ACCEPTED |
+      | status   |
+      | ACCEPTED |
     Then received status code is 401
 
   Scenario: Create a new booking successfully
@@ -35,8 +35,8 @@ Feature: BookingBOConfiguration
 
   Scenario: Create a new booking request
     When try to create a new booking with data
-      | start_time | end_time | status    |
-      | 123456     | 1234567  | CANCELLED |
+      | status   |
+      | INVENTED |
     Then received status code is 400
 
   Scenario: Get all bookings successfully

@@ -148,7 +148,7 @@ class UserControllerTest extends BaseUnitTest {
     }
 
     private void givenValidUserDTOForRequest(String username, String password, String name, String email, Role role) {
-        userDTO = new UserDTO(username, password, name, email, role, new Date(), null);
+        userDTO = new UserDTO(username, password, name, email, role);
     }
 
     private void whenFindAllUsersInServiceReturnedValidUsers() {

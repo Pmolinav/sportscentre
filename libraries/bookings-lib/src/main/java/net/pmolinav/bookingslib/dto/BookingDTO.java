@@ -1,7 +1,6 @@
 package net.pmolinav.bookingslib.dto;
 
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
@@ -31,12 +30,5 @@ public class BookingDTO {
 
     @NotNull(message = "Booking status is mandatory.")
     private BookingStatus status;
-
-    @NotNull(message = "Creation date is mandatory.")
-    @DateTimeFormat(pattern = "dd-MM-yyyy'T'HH:mm:ss") // Date format
-    private Date creationDate;
-
-    @DateTimeFormat(pattern = "dd-MM-yyyy'T'HH:mm:ss") // Date format
-    private Date modificationDate;
 
 }

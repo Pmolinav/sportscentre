@@ -23,8 +23,8 @@ Feature: UserBOConfiguration
 
   Scenario: Create a new user bad request
     When try to create a new user with data
-      | username | password    | email         | role  | creation_date | modification_date |
-      | newUser  | newPassword | new@email.com | ADMIN | 123456        | 123456            |
+      | username | password    | email         | role  |
+      | newUser  | newPassword | new@email.com | ADMIN |
     Then received status code is 400
 
   Scenario: Get all users successfully

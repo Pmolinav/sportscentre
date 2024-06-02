@@ -1,12 +1,10 @@
 package net.pmolinav.bookingslib.dto;
 
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -31,12 +29,5 @@ public class UserDTO {
 
     @NotNull(message = "Role is mandatory.")
     private Role role;
-
-    @NotNull(message = "Creation date is mandatory.")
-    @DateTimeFormat(pattern = "dd-MM-yyyy'T'HH:mm:ss") // Date format
-    private Date creationDate;
-
-    @DateTimeFormat(pattern = "dd-MM-yyyy'T'HH:mm:ss") // Date format
-    private Date modificationDate;
 
 }
