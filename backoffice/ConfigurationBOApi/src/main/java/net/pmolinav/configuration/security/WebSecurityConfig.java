@@ -31,8 +31,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JWTAuthorizationFilter jwtAuthorizationFilter;
 
     public WebSecurityConfig(UserClient userClient, JWTAuthorizationFilter jwtAuthorizationFilter) {
-        super();
-
         this.userClient = userClient;
         this.jwtAuthorizationFilter = jwtAuthorizationFilter;
 
@@ -74,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // Set permissions on endpoints
         http.authorizeRequests()
                 // Swagger endpoints must be publicly accessible
-                .antMatchers("/*").permitAll()
+                .antMatchers("/login").permitAll()
                 .antMatchers("/api-docs").permitAll()
                 .antMatchers("/csrf").permitAll()
                 .antMatchers("/api/swagger-ui/**").permitAll()

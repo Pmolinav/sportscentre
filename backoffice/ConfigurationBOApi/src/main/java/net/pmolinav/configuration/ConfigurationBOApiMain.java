@@ -7,10 +7,10 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableFeignClients
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-public class Main {
+public class ConfigurationBOApiMain {
 
     public static void main(String[] args) {
-        SpringApplication.run(Main.class, args);
+        SpringApplication.run(ConfigurationBOApiMain.class, args);
     }
 
 }

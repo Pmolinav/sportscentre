@@ -65,8 +65,6 @@ class UsersControllerIntegrationTest extends AbstractContainerBaseTest {
 
     @Test
     void createUserHappyPath() throws Exception {
-        givenSomePreviouslyStoredDataWithIds(1, 2, false, true, false);
-
         UserDTO requestDto = new UserDTO("someUser", "somePassword", "someName",
                 "some@email.com", Role.USER, new Date(), new Date());
 

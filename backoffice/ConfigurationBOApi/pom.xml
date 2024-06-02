@@ -162,7 +162,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>net.pmolinav.configuration.Main</mainClass>
+                            <mainClass>net.pmolinav.configuration.ConfigurationBOApiMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

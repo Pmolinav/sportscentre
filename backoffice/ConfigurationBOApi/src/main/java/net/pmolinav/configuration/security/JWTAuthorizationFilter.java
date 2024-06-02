@@ -27,6 +27,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+//        try {
         MDC.clear();
         String correlationUid = UUID.randomUUID().toString();
 
@@ -74,6 +75,10 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
         // Write the response data back to the actual response
         responseWrapper.copyBodyToResponse();
+//        } finally {
+//            // Clear the security context in all requests.
+//            SecurityContextHolder.clearContext();
+//        }
     }
 }
 
