@@ -25,7 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("bookings")
 @SecurityRequirement(name = "BearerToken")
-@Tag(name = "4. Booking", description = "The Booking Controller. Contains all the operations that can be performed on a booking.")
+@Tag(name = "5. Booking", description = "The Booking Controller. Contains all the operations that can be performed on a booking.")
 public class BookingBOController {
 
     private static final Logger logger = LoggerFactory.getLogger(BookingBOController.class);

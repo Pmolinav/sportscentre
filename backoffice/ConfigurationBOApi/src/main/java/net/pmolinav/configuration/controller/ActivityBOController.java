@@ -22,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("activities")
 @SecurityRequirement(name = "BearerToken")
-@Tag(name = "3. Activity", description = "The Activity Controller. Contains all the operations that can be performed on an activity.")
+@Tag(name = "4. Activity", description = "The Activity Controller. Contains all the operations that can be performed on an activity.")
 public class ActivityBOController {
 
     @Autowired

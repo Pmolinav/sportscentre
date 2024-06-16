@@ -22,7 +22,7 @@ import javax.validation.Valid;
 @CrossOrigin("*")
 @RestController
 @RequestMapping("login")
-@Tag(name = "1. Login", description = "The Login Controller. Required to authorize users. A valid token is granted and allows valid users to call other controllers with permissions.")
+@Tag(name = "2. Login", description = "The Login Controller. Required to authorize users. A valid token is granted and allows valid users to call other controllers with permissions.")
 public class LoginBOController {
 
     @Autowired

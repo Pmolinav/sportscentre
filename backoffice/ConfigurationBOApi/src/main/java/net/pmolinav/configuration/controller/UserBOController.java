@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("users")
 @SecurityRequirement(name = "BearerToken")
-@Tag(name = "2. User", description = "The User Controller. Contains all the operations that can be performed on an user.")
+@Tag(name = "3. User", description = "The User Controller. Contains all the operations that can be performed on an user.")
 public class UserBOController {
 
     @Autowired

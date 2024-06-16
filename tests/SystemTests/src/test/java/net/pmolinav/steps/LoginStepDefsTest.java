@@ -38,6 +38,11 @@ public class LoginStepDefsTest extends BaseSystemTest {
         authToken = "invalidAuthToken";
     }
 
+    @When("^try to get health")
+    public void tryToGetHealth() {
+        executeGet(localURL + "/health");
+    }
+
     @When("^an user with username (.*) and password (.*) tries to log in$")
     public void anUserTriesToLogIn(String user, String password) {
         try {

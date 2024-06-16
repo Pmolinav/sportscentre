@@ -73,6 +73,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 // Swagger endpoints must be publicly accessible
                 .antMatchers("/login").permitAll()
+                .antMatchers("/health").permitAll()
                 .antMatchers("/api-docs").permitAll()
                 .antMatchers("/csrf").permitAll()
                 .antMatchers("/api/swagger-ui/**").permitAll()
