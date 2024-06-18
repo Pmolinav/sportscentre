@@ -56,7 +56,7 @@ class ActivityBOControllerTest extends BaseUnitTest {
         andCreateActivityIsCalledInController();
         thenVerifyCreateActivityHasBeenCalledInService();
         thenReceivedStatusCodeIs(HttpStatus.CREATED);
-        thenReceivedResponseBodyAsStringIs(String.valueOf(1));
+        thenReceivedResponseBodyAsStringIs(activityDTO.getActivityName());
     }
 
     @Test

@@ -92,7 +92,7 @@ class ActivityBOControllerIntegrationTest extends AbstractBaseTest {
 
         String responseBody = result.getResponse().getContentAsString();
 
-        assertThat(responseBody, matchesPattern("\\d+"));
+        assertThat(responseBody, matchesPattern("\\w+"));
     }
 
     @Test
