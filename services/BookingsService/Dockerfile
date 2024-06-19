@@ -1,28 +1,15 @@
-FROM maven:3.8.4-openjdk-17-slim AS builder
+# Use a base image with OpenJDK 11
+FROM openjdk:17-alpine
 
+# Establecer el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-COPY ../.. /app
+# Copiar el archivo JAR construido desde el directorio target del backoffice
+COPY ./target/ConfigurationBOApi-*.jar app.jar
 
-RUN mvn dependency:go-offline -B
-
-COPY src ./src
-
-RUN mvn clean package -DskipTests
-
-FROM openjdk:17-jdk-alpine
-
-WORKDIR /app
-
-RUN mkdir ./logs
-
-ARG TARGET_FOLDER=/app/target
-
-COPY --from=builder $TARGET_FOLDER/ConfigurationBOApi-0.0.1.jar .
-
-ARG PORT_APP=8001
-
-ENV PORT $PORT_APP
+# Puerto configurado desde el archivo .env
+ENV PORT=8002
 EXPOSE $PORT
 
-CMD ["java", "-jar", "ConfigurationBOApi-0.0.1.jar"]
+# Comando para ejecutar la aplicación Spring Boot cuando se inicie el contenedor
+CMD ["java", "-jar", "app.jar"]

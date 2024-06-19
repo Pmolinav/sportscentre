@@ -6,6 +6,7 @@
         <groupId>net.pmolinav.sportscentre</groupId>
         <artifactId>sportscentre</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>net.pmolinav.sportscentre.backoffice.ConfigurationBOApi</groupId>
