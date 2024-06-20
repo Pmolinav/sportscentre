@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   postgres:
     container_name: postgres
@@ -18,9 +17,6 @@ services:
   configurationboapi:
     container_name: configurationboapi
     image: pablo7molina/configurationboapi:latest
-    #    build:
-    #      context: ./
-    #      dockerfile: ./Dockerfile
     ports:
       - "8002:8002"
     env_file: backoffice/ConfigurationBOApi/.env
@@ -31,9 +27,6 @@ services:
   bookingsservice:
     container_name: bookingsservice
     image: pablo7molina/bookingsservice:latest
-#    build:
-#      context: ./
-#      dockerfile: ./Dockerfile
     ports:
       - "8001:8001"
     env_file: services/BookingsService/.env
@@ -43,10 +36,8 @@ services:
       - postgres
     restart: always
 
-# Declare volume
 volumes:
   data-postgres:
 
-# Declare network
 networks:
   spring:

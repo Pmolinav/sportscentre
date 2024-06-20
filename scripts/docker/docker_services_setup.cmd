@@ -13,7 +13,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM Build Docker image
-call docker build -t configurationboapi-image .
+call docker build -t configurationboapi .
 
 REM Check if Docker image build was successful
 if %ERRORLEVEL% NEQ 0 (
@@ -22,7 +22,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM Run the container
-call docker run -d -p 8002:8002 --env-file .env --network=spring --name configurationboapi configurationboapi-image
+call docker run -d -p 8002:8002 --env-file .env --network=spring --name configurationboapi configurationboapi
 
 REM Check if container execution was successful
 if %ERRORLEVEL% NEQ 0 (
@@ -45,7 +45,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM Build Docker image
-call docker build -t bookingsservice-image .
+call docker build -t bookingsservice .
 
 REM Check if Docker image build was successful
 if %ERRORLEVEL% NEQ 0 (
@@ -54,7 +54,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM Run the container
-call docker run -d -p 8001:8001 --env-file .env --network=spring --name bookingsservice bookingsservice-image
+call docker run -d -p 8001:8001 --env-file .env --network=spring --name bookingsservice bookingsservice
 
 REM Check if container execution was successful
 if %ERRORLEVEL% NEQ 0 (
