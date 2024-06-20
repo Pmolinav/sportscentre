@@ -1,7 +1,7 @@
 @echo off
 
 REM Define the paths of the services
-set SERVICE_DIRS=../../backoffice/ConfigurationBOApi ../../services/OtherService
+set SERVICE_DIRS=../../backoffice/ConfigurationBOApi ../../services/BookingsService
 
 REM Iterate over each service path
 for %%i in (%SERVICE_DIRS%) do (

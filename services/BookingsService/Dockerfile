@@ -5,10 +5,10 @@ FROM openjdk:17-alpine
 WORKDIR /app
 
 # Copiar el archivo JAR construido desde el directorio target del backoffice
-COPY ./target/ConfigurationBOApi-*.jar app.jar
+COPY ./target/BookingsService-*.jar app.jar
 
 # Puerto configurado desde el archivo .env
-ENV PORT=8002
+ENV PORT=8001
 EXPOSE $PORT
 
 # Comando para ejecutar la aplicación Spring Boot cuando se inicie el contenedor

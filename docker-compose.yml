@@ -26,8 +26,6 @@ services:
     env_file: backoffice/ConfigurationBOApi/.env
     networks:
       - spring
-    depends_on:
-      - postgres
     restart: always
 
   bookingsservice:
