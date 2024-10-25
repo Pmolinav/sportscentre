@@ -1,4 +1,5 @@
 services:
+
   postgres:
     container_name: postgres
     image: postgres:15-alpine
@@ -14,6 +15,36 @@ services:
     networks:
       - spring
 
+  zookeeper:
+    container_name: zookeeper
+    image: 'bitnami/zookeeper:latest'
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - spring
+    ports:
+      - '2181:2181'
+    restart: always
+
+  kafka:
+    container_name: kafka
+    image: 'bitnami/kafka:latest'
+    depends_on:
+      - zookeeper
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+    networks:
+      - spring
+    ports:
+      - '9092:9092'
+    restart: always
+
   configurationboapi:
     container_name: configurationboapi
     image: pablo7molina/configurationboapi:latest
@@ -27,13 +58,12 @@ services:
   bookingsservice:
     container_name: bookingsservice
     image: pablo7molina/bookingsservice:latest
-    ports:
-      - "8001:8001"
+    depends_on:
+      - postgres
+      - kafka
     env_file: services/BookingsService/.env
     networks:
       - spring
-    depends_on:
-      - postgres
     restart: always
 
 volumes:

@@ -11,7 +11,7 @@ call docker build -t pablo7molina/configurationboapi .
 REM Push image
 call docker push pablo7molina/configurationboapi
 
-cd ../../backoffice/BookingsService
+cd ../../services/BookingsService
 
 REM Build with Maven (skip tests)
 call mvn clean package -DskipTests

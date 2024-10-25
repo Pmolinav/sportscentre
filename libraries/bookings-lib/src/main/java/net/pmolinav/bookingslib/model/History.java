@@ -1,18 +1,17 @@
 package net.pmolinav.bookingslib.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import net.pmolinav.bookingslib.dto.ChangeType;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Objects;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
+@ToString
 @Entity
 @Table(name = "history")
 public class History {
@@ -27,39 +26,27 @@ public class History {
     private Date creationDate;
 
     @Column(name = "changeType", nullable = false)
-    private String changeType;
+    @Enumerated(EnumType.STRING)
+    private ChangeType changeType;
 
-    @Column(name = "originalEntity", nullable = false)
-    private String originalEntity;
+    @Column(name = "entity", nullable = false)
+    private String entity;
 
-    @Column(name = "finalEntity")
-    private String finalEntity;
+    @Column(name = "entityId", nullable = false)
+    private String entityId;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        History history = (History) o;
-        return Objects.equals(id, history.id)
-                && Objects.equals(creationDate, history.creationDate)
-                && Objects.equals(changeType, history.changeType)
-                && Objects.equals(originalEntity, history.originalEntity)
-                && Objects.equals(finalEntity, history.finalEntity);
-    }
+    @Column(name = "changeDetails", columnDefinition = "jsonb", nullable = false)
+    private String changeDetails;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, creationDate, changeType, originalEntity, finalEntity);
-    }
+    @Column(name = "createUserId", nullable = false)
+    private String createUserId;
 
-    @Override
-    public String toString() {
-        return "History{" +
-                "id=" + id +
-                ", creationDate=" + creationDate +
-                ", changeType='" + changeType + '\'' +
-                ", originalEntity='" + originalEntity + '\'' +
-                ", finalEntity='" + finalEntity + '\'' +
-                '}';
+    public History(Date creationDate, ChangeType changeType, String entity, String entityId, String changeDetails, String createUserId) {
+        this.creationDate = creationDate;
+        this.changeType = changeType;
+        this.entity = entity;
+        this.entityId = entityId;
+        this.changeDetails = changeDetails;
+        this.createUserId = createUserId;
     }
 }
