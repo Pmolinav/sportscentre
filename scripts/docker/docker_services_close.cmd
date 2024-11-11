@@ -22,7 +22,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM Remove image.
-call docker rmi configurationboapi-image
+call docker rmi pablo7molina/configurationboapi
 
 if %ERRORLEVEL% NEQ 0 (
     echo Error: Failed to remove ConfigurationBOApi Docker image.
@@ -53,7 +53,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM Remove image.
-call docker rmi bookingsservice-image
+call docker rmi pablo7molina/bookingsservice
 
 if %ERRORLEVEL% NEQ 0 (
     echo Error: Failed to remove BookingsService Docker image.

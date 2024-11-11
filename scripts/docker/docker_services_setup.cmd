@@ -11,9 +11,11 @@ if %ERRORLEVEL% NEQ 0 (
     echo Error: Maven build failed for ConfigurationBOApi. Check the errors and try again.
     exit /b 1
 )
+REM Docker login
+call docker login
 
 REM Build Docker image
-call docker build -t configurationboapi .
+call docker build -t pablo7molina/configurationboapi .
 
 REM Check if Docker image build was successful
 if %ERRORLEVEL% NEQ 0 (
@@ -21,8 +23,11 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
+REM Docker image push to repository
+call docker push pablo7molina/configurationboapi
+
 REM Run the container
-call docker run -d -p 8002:8002 --env-file .env --network=spring --name configurationboapi configurationboapi
+call docker run -d -p 8002:8002 --env-file .env --network=spring --name configurationboapi pablo7molina/configurationboapi
 
 REM Check if container execution was successful
 if %ERRORLEVEL% NEQ 0 (
@@ -45,7 +50,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM Build Docker image
-call docker build -t bookingsservice .
+call docker build -t pablo7molina/bookingsservice .
 
 REM Check if Docker image build was successful
 if %ERRORLEVEL% NEQ 0 (
@@ -53,8 +58,11 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
+REM Docker image push to repository
+call docker push pablo7molina/bookingsservice
+
 REM Run the container
-call docker run -d -p 8001:8001 --env-file .env --network=spring --name bookingsservice bookingsservice
+call docker run -d -p 8001:8001 --env-file .env --network=spring --name bookingsservice pablo7molina/bookingsservice
 
 REM Check if container execution was successful
 if %ERRORLEVEL% NEQ 0 (

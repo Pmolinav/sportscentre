@@ -5,12 +5,22 @@ import net.pmolinav.bookings.security.WebSecurityConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertySource;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Docker Environment is needed to run integration tests.
@@ -21,6 +31,7 @@ public abstract class AbstractContainerBaseTest {
     private int databasePort;
     private final static int DB_PORT = 5432;
     static final PostgreSQLContainer<?> postgresContainer;
+    static final KafkaContainer kafkaContainer;
     static String jdbcUrl;
     static String username;
     static String password;
@@ -33,6 +44,10 @@ public abstract class AbstractContainerBaseTest {
                 .withPassword("mysecretpassword");
 
         postgresContainer.start();
+
+        kafkaContainer =
+                new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"));
+        kafkaContainer.start();
 
         jdbcUrl = postgresContainer.getJdbcUrl();
         username = postgresContainer.getUsername();

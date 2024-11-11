@@ -2,6 +2,7 @@ package net.pmolinav.bookings.integration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.pmolinav.bookings.producer.MessageProducer;
 import net.pmolinav.bookings.repository.ActivityRepository;
 import net.pmolinav.bookingslib.dto.ActivityDTO;
 import net.pmolinav.bookingslib.model.Activity;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

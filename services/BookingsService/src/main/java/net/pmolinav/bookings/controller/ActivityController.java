@@ -30,12 +30,12 @@ public class ActivityController {
     private final String KAFKA_TOPIC = "my-topic";
     private final ActivityService activityService;
 
-    @Autowired
-    private MessageProducer messageProducer;
+    private final MessageProducer messageProducer;
 
     @Autowired
-    public ActivityController(ActivityService activityService) {
+    public ActivityController(ActivityService activityService,MessageProducer messageProducer) {
         this.activityService = activityService;
+        this.messageProducer = messageProducer;
     }
 
     @GetMapping

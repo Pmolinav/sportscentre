@@ -1,4 +1,4 @@
-REM DEPRECATED
+REM DEPRECATED. Using docker-compose instead.
 REM Create spring network to connect our containers.
 docker network create spring
 
