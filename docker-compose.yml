@@ -1,5 +1,4 @@
 services:
-
   postgres:
     container_name: postgres
     image: postgres:15-alpine
@@ -50,7 +49,10 @@ services:
     image: pablo7molina/configurationboapi:latest
     ports:
       - "8002:8002"
+      - "5005:5005" # Debugging port
     env_file: backoffice/ConfigurationBOApi/.env
+    environment:
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     networks:
       - spring
     restart: always
@@ -60,10 +62,13 @@ services:
     image: pablo7molina/bookingsservice:latest
     ports:
       - "8001:8001"
+      - "5006:5006" # Debugging port
     depends_on:
       - postgres
       - kafka
     env_file: services/BookingsService/.env
+    environment:
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006
     networks:
       - spring
     restart: always

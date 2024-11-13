@@ -2,6 +2,7 @@ package net.pmolinav.bookings.controller;
 
 import net.pmolinav.bookings.service.BookingService;
 import net.pmolinav.bookingslib.dto.BookingDTO;
+import net.pmolinav.bookingslib.dto.ChangeType;
 import net.pmolinav.bookingslib.exception.InternalServerErrorException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.model.Booking;
@@ -40,6 +41,9 @@ public class BookingController {
     public ResponseEntity<Long> createBooking(@RequestBody BookingDTO bookingDTO) {
         try {
             Booking createdBooking = bookingService.createBooking(bookingDTO);
+
+            bookingService.storeInKafka(ChangeType.CREATE, createdBooking.getBookingId(), createdBooking);
+
             return new ResponseEntity<>(createdBooking.getBookingId(), HttpStatus.CREATED);
         } catch (InternalServerErrorException e) {
             return ResponseEntity.internalServerError().build();
@@ -90,6 +94,9 @@ public class BookingController {
     public ResponseEntity<?> deleteBooking(@PathVariable long id) {
         try {
             bookingService.deleteBooking(id);
+
+            bookingService.storeInKafka(ChangeType.DELETE, id, null);
+
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();

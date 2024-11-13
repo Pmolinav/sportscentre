@@ -1,32 +1,44 @@
 package net.pmolinav.bookings.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.pmolinav.bookings.producer.MessageProducer;
 import net.pmolinav.bookings.repository.UserRepository;
+import net.pmolinav.bookingslib.dto.ChangeType;
 import net.pmolinav.bookingslib.dto.UserDTO;
 import net.pmolinav.bookingslib.exception.InternalServerErrorException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.mapper.UserMapper;
+import net.pmolinav.bookingslib.model.History;
 import net.pmolinav.bookingslib.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Date;
 import java.util.List;
 
+@EnableAsync
 @Service
 public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    @Autowired
     private UserRepository userRepository;
     private final UserMapper userMapper;
+    private final MessageProducer messageProducer;
+
+    private final String KAFKA_TOPIC = "my-topic";
 
     @Autowired
-    public UserService(UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, MessageProducer messageProducer) {
+        this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.messageProducer = messageProducer;
     }
 
     @Transactional(readOnly = true)
@@ -98,6 +110,22 @@ public class UserService {
         } catch (Exception e) {
             logger.error("Unexpected error while removing user with id {} in repository.", id, e);
             throw new InternalServerErrorException(e.getMessage());
+        }
+    }
+
+    @Async
+    public void storeInKafka(ChangeType changeType, Long userId, User user) {
+        try {
+            messageProducer.sendMessage(this.KAFKA_TOPIC, new History(
+                    new Date(),
+                    changeType,
+                    "User",
+                    String.valueOf(userId),
+                    user == null ? null : new ObjectMapper().writeValueAsString(user), // TODO: USE JSON PATCH.
+                    "Admin" // TODO: createUser is not implemented yet.
+            ));
+        } catch (Exception e) {
+            logger.warn("Kafka operation {} with name {} and user {} need to be reviewed", changeType, userId, user);
         }
     }
 }

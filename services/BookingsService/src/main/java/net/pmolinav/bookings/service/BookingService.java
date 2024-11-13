@@ -1,32 +1,44 @@
 package net.pmolinav.bookings.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.pmolinav.bookings.producer.MessageProducer;
 import net.pmolinav.bookings.repository.BookingRepository;
 import net.pmolinav.bookingslib.dto.BookingDTO;
+import net.pmolinav.bookingslib.dto.ChangeType;
 import net.pmolinav.bookingslib.exception.InternalServerErrorException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.mapper.BookingMapper;
 import net.pmolinav.bookingslib.model.Booking;
+import net.pmolinav.bookingslib.model.History;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Date;
 import java.util.List;
 
+@EnableAsync
 @Service
 public class BookingService {
 
     private static final Logger logger = LoggerFactory.getLogger(BookingService.class);
 
-    @Autowired
-    private BookingRepository bookingRepository;
+    private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
+    private final MessageProducer messageProducer;
+
+    private final String KAFKA_TOPIC = "my-topic";
 
     @Autowired
-    public BookingService(BookingMapper bookingMapper) {
+    public BookingService(BookingRepository bookingRepository, BookingMapper bookingMapper, MessageProducer messageProducer) {
+        this.bookingRepository = bookingRepository;
         this.bookingMapper = bookingMapper;
+        this.messageProducer = messageProducer;
     }
 
     @Transactional(readOnly = true)
@@ -84,6 +96,22 @@ public class BookingService {
         } catch (Exception e) {
             logger.error("Unexpected error while removing booking with id {} in repository.", id, e);
             throw new InternalServerErrorException(e.getMessage());
+        }
+    }
+
+    @Async
+    public void storeInKafka(ChangeType changeType, Long bookingId, Booking booking) {
+        try {
+            messageProducer.sendMessage(this.KAFKA_TOPIC, new History(
+                    new Date(),
+                    changeType,
+                    "Booking",
+                    String.valueOf(bookingId),
+                    booking == null ? null : new ObjectMapper().writeValueAsString(booking), // TODO: USE JSON PATCH.
+                    "Admin" // TODO: createUser is not implemented yet.
+            ));
+        } catch (Exception e) {
+            logger.warn("Kafka operation {} with name {} and booking {} need to be reviewed", changeType, bookingId, booking);
         }
     }
 }

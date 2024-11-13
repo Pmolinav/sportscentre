@@ -1,6 +1,7 @@
 package net.pmolinav.bookings.controller;
 
 import net.pmolinav.bookings.service.UserService;
+import net.pmolinav.bookingslib.dto.ChangeType;
 import net.pmolinav.bookingslib.dto.UserDTO;
 import net.pmolinav.bookingslib.exception.InternalServerErrorException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
@@ -41,6 +42,9 @@ public class UserController {
     public ResponseEntity<Long> createUser(@RequestBody UserDTO userDTO) {
         try {
             User createdUser = userService.createUser(userDTO);
+
+            userService.storeInKafka(ChangeType.CREATE, createdUser.getUserId(), createdUser);
+
             return new ResponseEntity<>(createdUser.getUserId(), HttpStatus.CREATED);
         } catch (InternalServerErrorException e) {
             return ResponseEntity.internalServerError().build();
@@ -103,6 +107,9 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable long id) {
         try {
             userService.deleteUser(id);
+
+            userService.storeInKafka(ChangeType.DELETE, id, null);
+
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();

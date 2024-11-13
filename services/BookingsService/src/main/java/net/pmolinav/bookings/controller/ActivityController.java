@@ -1,41 +1,28 @@
 package net.pmolinav.bookings.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import net.pmolinav.bookings.producer.MessageProducer;
 import net.pmolinav.bookings.service.ActivityService;
 import net.pmolinav.bookingslib.dto.ActivityDTO;
 import net.pmolinav.bookingslib.dto.ChangeType;
 import net.pmolinav.bookingslib.exception.InternalServerErrorException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.model.Activity;
-import net.pmolinav.bookingslib.model.History;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
-//@CrossOrigin("*")
+@CrossOrigin("*")
 @RestController
 @RequestMapping("activities")
 public class ActivityController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ActivityController.class);
-
-    private final String KAFKA_TOPIC = "my-topic";
     private final ActivityService activityService;
 
-    private final MessageProducer messageProducer;
-
     @Autowired
-    public ActivityController(ActivityService activityService,MessageProducer messageProducer) {
+    public ActivityController(ActivityService activityService) {
         this.activityService = activityService;
-        this.messageProducer = messageProducer;
     }
 
     @GetMapping
@@ -55,7 +42,7 @@ public class ActivityController {
         try {
             Activity createdActivity = activityService.createActivity(activityDTO);
 
-            storeInKafka(ChangeType.CREATE, createdActivity.getActivityName(), createdActivity);
+            activityService.storeInKafka(ChangeType.CREATE, createdActivity.getActivityName(), createdActivity);
 
             return new ResponseEntity<>(createdActivity.getActivityName(), HttpStatus.CREATED);
         } catch (InternalServerErrorException e) {
@@ -108,7 +95,7 @@ public class ActivityController {
         try {
             activityService.deleteActivity(name);
 
-            storeInKafka(ChangeType.DELETE, name, null);
+            activityService.storeInKafka(ChangeType.DELETE, name, null);
 
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
@@ -118,18 +105,4 @@ public class ActivityController {
         }
     }
 
-    private void storeInKafka(ChangeType changeType, String name, Activity activity) {
-        try {
-            messageProducer.sendMessage(this.KAFKA_TOPIC, new History(
-                    new Date(),
-                    changeType,
-                    "Activity",
-                    name,
-                    activity == null ? null : new ObjectMapper().writeValueAsString(activity), // TODO: USE JSON PATCH.
-                    "Admin" // TODO: createUser is not implemented yet.
-            ));
-        } catch (JsonProcessingException e) {
-            logger.warn("Kafka operation {} with name {} and activity {} need to be reviewed", changeType, name, activity);
-        }
-    }
 }

@@ -34,7 +34,7 @@ public class History {
     @Column(name = "entityId", nullable = false)
     private String entityId;
 
-    @Column(name = "changeDetails", columnDefinition = "jsonb", nullable = false)
+    @Column(name = "changeDetails")
     private String changeDetails;
 
     @Column(name = "createUserId", nullable = false)
