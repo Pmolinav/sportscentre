@@ -32,6 +32,7 @@ Feature: BookingBOConfiguration
       | OPEN   |
     Then received status code is 201
     Then a booking with status OPEN has been stored successfully
+    Then an entity Booking with id N/A has been stored into historical by user Admin and with type CREATE
 
   Scenario: Create a new booking request
     When try to create a new booking with data
@@ -69,3 +70,5 @@ Feature: BookingBOConfiguration
     Then a booking with status CANCELLED has been stored successfully
     When try to delete a booking by bookingId
     Then received status code is 200
+    Then an entity Booking with id N/A has been stored into historical by user Admin and with type CREATE
+    Then an entity Booking with id N/A has been stored into historical by user Admin and with type DELETE

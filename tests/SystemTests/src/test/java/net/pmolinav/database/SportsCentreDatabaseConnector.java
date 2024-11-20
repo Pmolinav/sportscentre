@@ -1,10 +1,14 @@
 package net.pmolinav.database;
 
+import net.pmolinav.bookingslib.dto.ChangeType;
 import net.pmolinav.bookingslib.model.Activity;
 import net.pmolinav.bookingslib.model.Booking;
+import net.pmolinav.bookingslib.model.History;
 import net.pmolinav.bookingslib.model.User;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SportsCentreDatabaseConnector {
 
@@ -168,6 +172,49 @@ public class SportsCentreDatabaseConnector {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new SQLException("Unexpected error occurred while trying to get booking.", e);
+        }
+    }
+
+    /*** HISTORY  ***/
+
+    public void deleteHistory() throws SQLException {
+        String query = "DELETE FROM history";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Unexpected error occurred while trying to delete history table.", e);
+        }
+    }
+
+    public List<History> getHistoriesByEntityUserAndType(String entity, String user, String type) throws SQLException {
+        List<History> histories = new ArrayList<>();
+        String query = "SELECT id, change_details, change_type, create_user_id, creation_date, entity, entity_id" +
+                " FROM history WHERE entity = ? AND create_user_id = ? AND change_type = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            // Set query params.
+            preparedStatement.setString(1, entity);
+            preparedStatement.setString(2, user);
+            preparedStatement.setString(3, type);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            // Extract data from result set.
+            while (resultSet.next()) {
+                long id = resultSet.getLong("id");
+                String dbChangeDetails = resultSet.getString("change_details");
+                String dbChangeType = resultSet.getString("change_type");
+                String dbCreateUserId = resultSet.getString("create_user_id");
+                Date dbCreationDate = resultSet.getDate("creation_date");
+                String dbEntity = resultSet.getString("entity");
+                String dbEntityId = resultSet.getString("entity_id");
+
+                histories.add(new History(dbCreationDate, ChangeType.valueOf(dbChangeType), dbEntity, dbEntityId,
+                        dbChangeDetails, dbCreateUserId));
+            }
+            return histories;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Unexpected error occurred while trying to get histories.", e);
         }
     }
 }

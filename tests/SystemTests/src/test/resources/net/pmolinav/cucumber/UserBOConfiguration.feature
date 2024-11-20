@@ -20,6 +20,7 @@ Feature: UserBOConfiguration
       | newUser  | newPassword | someName | new@email.com | ADMIN |
     Then received status code is 201
     Then an user with username newUser has been stored successfully
+    Then an entity User with id N/A has been stored into historical by user Admin and with type CREATE
 
   Scenario: Create a new user bad request
     When try to create a new user with data
@@ -57,3 +58,5 @@ Feature: UserBOConfiguration
     Then an user with username newUser has been stored successfully
     When try to delete an user by userId
     Then received status code is 200
+    Then an entity User with id N/A has been stored into historical by user Admin and with type CREATE
+    Then an entity User with id N/A has been stored into historical by user Admin and with type DELETE

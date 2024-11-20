@@ -27,6 +27,7 @@ public class LoginStepDefsTest extends BaseSystemTest {
             dbConnector.deleteUsers();
             dbConnector.deleteActivities();
             dbConnector.deleteBookings();
+            dbConnector.deleteHistory();
         } catch (SQLException e) {
             e.printStackTrace();
             fail();

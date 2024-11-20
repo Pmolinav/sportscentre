@@ -20,6 +20,7 @@ Feature: ActivityBOConfiguration
       | GYM  | Some description of the GYM activity | 520   |
     Then received status code is 201
     Then an activity with name GYM has been stored successfully
+    Then an entity Activity with id GYM has been stored into historical by user Admin and with type CREATE
 
   Scenario: Create a new activity bad request
     When try to create a new activity with data
@@ -38,6 +39,8 @@ Feature: ActivityBOConfiguration
     When try to get all activities
     Then received status code is 200
     Then a list of activities with names GYM,FOOTBALL are returned in response
+    Then an entity Activity with id GYM has been stored into historical by user Admin and with type CREATE
+    Then an entity Activity with id FOOTBALL has been stored into historical by user Admin and with type CREATE
 
   Scenario: Get activity by activity name successfully
     When try to create a new activity with data
@@ -57,3 +60,5 @@ Feature: ActivityBOConfiguration
     Then an activity with name GYM has been stored successfully
     When try to delete an activity by activity name
     Then received status code is 200
+    Then an entity Activity with id GYM has been stored into historical by user Admin and with type CREATE
+    Then an entity Activity with id GYM has been stored into historical by user Admin and with type DELETE
