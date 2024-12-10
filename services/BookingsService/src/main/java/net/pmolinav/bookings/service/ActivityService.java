@@ -1,6 +1,7 @@
 package net.pmolinav.bookings.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import net.pmolinav.bookings.producer.MessageProducer;
 import net.pmolinav.bookings.repository.ActivityRepository;
 import net.pmolinav.bookingslib.dto.ActivityDTO;
@@ -10,8 +11,6 @@ import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.mapper.ActivityMapper;
 import net.pmolinav.bookingslib.model.Activity;
 import net.pmolinav.bookingslib.model.History;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -24,9 +23,8 @@ import java.util.List;
 
 @EnableAsync
 @Service
+@Slf4j
 public class ActivityService {
-
-    private static final Logger logger = LoggerFactory.getLogger(ActivityService.class);
 
     private final ActivityRepository activityRepository;
     private final ActivityMapper activityMapper;
@@ -47,14 +45,14 @@ public class ActivityService {
         try {
             activityList = activityRepository.findAll();
         } catch (Exception e) {
-            logger.error("Unexpected error while searching all activities in repository.", e);
+            log.error("Unexpected error while searching all activities in repository.", e);
             throw new InternalServerErrorException(e.getMessage());
         }
         if (CollectionUtils.isEmpty(activityList)) {
-            logger.warn("No activities were found in repository.");
+            log.warn("No activities were found in repository.");
             throw new NotFoundException("No activities found in repository.");
         } else {
-            logger.debug("Activities are returned OK from repository.");
+            log.debug("Activities are returned OK from repository.");
             return activityList;
         }
     }
@@ -65,7 +63,7 @@ public class ActivityService {
             Activity activity = activityMapper.activityDTOToActivityEntity(activityDTO);
             return activityRepository.save(activity);
         } catch (Exception e) {
-            logger.error("Unexpected error while creating new activity in repository.", e);
+            log.error("Unexpected error while creating new activity in repository.", e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -76,10 +74,10 @@ public class ActivityService {
             return activityRepository.findById(name)
                     .orElseThrow(() -> new NotFoundException(String.format("Activity with name %s does not exist.", name)));
         } catch (NotFoundException e) {
-            logger.error("Activity with name {} was not found.", name, e);
+            log.error("Activity with name {} was not found.", name, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while searching activity with name {} in repository.", name, e);
+            log.error("Unexpected error while searching activity with name {} in repository.", name, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -92,10 +90,10 @@ public class ActivityService {
 
             activityRepository.delete(activity);
         } catch (NotFoundException e) {
-            logger.error("Activity with name {} was not found.", name, e);
+            log.error("Activity with name {} was not found.", name, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while removing activity with name {} in repository.", name, e);
+            log.error("Unexpected error while removing activity with name {} in repository.", name, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -112,7 +110,7 @@ public class ActivityService {
                     "Admin" // TODO: createUser is not implemented yet.
             ));
         } catch (Exception e) {
-            logger.warn("Kafka operation {} with name {} and activity {} need to be reviewed", changeType, name, activity);
+            log.warn("Kafka operation {} with name {} and activity {} need to be reviewed", changeType, name, activity);
         }
     }
 }

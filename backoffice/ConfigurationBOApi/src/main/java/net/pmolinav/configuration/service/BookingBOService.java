@@ -2,23 +2,21 @@ package net.pmolinav.configuration.service;
 
 import feign.FeignException;
 import feign.RetryableException;
+import lombok.extern.slf4j.Slf4j;
 import net.pmolinav.bookingslib.dto.BookingDTO;
 import net.pmolinav.bookingslib.exception.CustomStatusException;
 import net.pmolinav.bookingslib.exception.InternalServerErrorException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.model.Booking;
 import net.pmolinav.configuration.client.BookingClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class BookingBOService {
-
-    private static final Logger logger = LoggerFactory.getLogger(ActivityBOService.class);
 
     @Autowired
     private BookingClient bookingClient;
@@ -28,14 +26,14 @@ public class BookingBOService {
             return bookingClient.findAllBookings();
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
-                logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
+                log.error("Unexpected error while calling service with status code {}.", e.status(), e);
                 throw new CustomStatusException(e.getMessage(), e.status());
             } else {
-                logger.warn("No bookings found", e);
+                log.warn("No bookings found", e);
                 throw new NotFoundException("No bookings found");
             }
         } catch (Exception e) {
-            logger.error("Unexpected exception occurred while calling service.", e);
+            log.error("Unexpected exception occurred while calling service.", e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -44,10 +42,10 @@ public class BookingBOService {
         try {
             return bookingClient.createBooking(bookingDTO);
         } catch (FeignException e) {
-            logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
+            log.error("Unexpected error while calling service with status code {}.", e.status(), e);
             throw new CustomStatusException(e.getMessage(), e.status());
         } catch (Exception e) {
-            logger.error("Unexpected exception occurred while calling service.", e);
+            log.error("Unexpected exception occurred while calling service.", e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -57,14 +55,14 @@ public class BookingBOService {
             return bookingClient.findBookingById(id);
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
-                logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
+                log.error("Unexpected error while calling service with status code {}.", e.status(), e);
                 throw new CustomStatusException(e.getMessage(), e.status());
             } else {
-                logger.warn("Booking with id {} not found.", id, e);
+                log.warn("Booking with id {} not found.", id, e);
                 throw new NotFoundException("Booking " + id + " not found");
             }
         } catch (Exception e) {
-            logger.error("Unexpected exception occurred while calling service.", e);
+            log.error("Unexpected exception occurred while calling service.", e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -74,14 +72,14 @@ public class BookingBOService {
             bookingClient.deleteBooking(id);
         } catch (FeignException e) {
             if (e instanceof RetryableException) {
-                logger.error("Unexpected error while calling service with status code {}.", e.status(), e);
+                log.error("Unexpected error while calling service with status code {}.", e.status(), e);
                 throw new CustomStatusException(e.getMessage(), e.status());
             } else {
-                logger.warn("Booking with id {} not found.", id, e);
+                log.warn("Booking with id {} not found.", id, e);
                 throw new NotFoundException("Booking " + id + " not found");
             }
         } catch (Exception e) {
-            logger.error("Unexpected exception occurred while calling service.", e);
+            log.error("Unexpected exception occurred while calling service.", e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }

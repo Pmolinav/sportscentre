@@ -1,18 +1,16 @@
 package net.pmolinav.bookings.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import net.pmolinav.bookings.service.HistoryService;
 import net.pmolinav.bookingslib.model.History;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class MessageConsumer {
-
-    private static final Logger logger = LoggerFactory.getLogger(MessageConsumer.class);
 
     @Autowired
     private final HistoryService historyService;
@@ -26,7 +24,7 @@ public class MessageConsumer {
         try {
             historyService.createHistory(new ObjectMapper().readValue(message, History.class));
         } catch (Exception e) {
-            logger.warn("Kafka operation with message {} failed in consumer and need to be reviewed", message);
+            log.warn("Kafka operation with message {} failed in consumer and need to be reviewed", message);
         }
     }
 

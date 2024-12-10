@@ -16,7 +16,7 @@ services:
 
   zookeeper:
     container_name: zookeeper
-    image: 'bitnami/zookeeper:latest'
+    image: bitnami/zookeeper:latest
     environment:
       - ZOOKEEPER_CLIENT_PORT=2181
       - ZOOKEEPER_TICK_TIME=2000
@@ -29,7 +29,7 @@ services:
 
   kafka:
     container_name: kafka
-    image: 'bitnami/kafka:latest'
+    image: bitnami/kafka:latest
     depends_on:
       - zookeeper
     environment:
@@ -43,6 +43,45 @@ services:
     ports:
       - '9092:9092'
     restart: always
+
+  logstash:
+    image: elastic/logstash:8.15.4
+    command: -f /etc/logstash/conf.d/
+    volumes:
+      - ./elk/logstash/:/etc/logstash/conf.d/
+      - ./Springboot-Elk.log:/tmp/logs/Springboot-Elk.log
+    ports:
+      - "5044:5044"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+    networks:
+      - spring
+
+  kibana:
+    image: elastic/kibana:8.15.4
+    volumes:
+      - ./elk/kibana/:/usr/share/kibana/config/
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    entrypoint: ["./bin/kibana", "--allow-root"]
+    networks:
+      - spring
+
+  elasticsearch:
+    image: elastic/elasticsearch:8.15.4
+    volumes:
+      - ./elk/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - spring
 
   configurationboapi:
     container_name: configurationboapi

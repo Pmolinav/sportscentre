@@ -1,8 +1,7 @@
 package net.pmolinav.bookings.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import net.pmolinav.bookingslib.exception.CustomStatusException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,6 +9,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalControllerAdvice {
 
     @ExceptionHandler(CustomStatusException.class)
@@ -20,9 +20,8 @@ public class GlobalControllerAdvice {
 
     private void logError(Exception e) {
         String controllerName = getControllerName();
-        Logger logger = LoggerFactory.getLogger(controllerName);
 
-        logger.error("Unexpected error while executing controller {}: {}", controllerName, e.getMessage(), e);
+        log.error("Unexpected error while executing controller {}: {}", controllerName, e.getMessage(), e);
     }
 
     private String getControllerName() {

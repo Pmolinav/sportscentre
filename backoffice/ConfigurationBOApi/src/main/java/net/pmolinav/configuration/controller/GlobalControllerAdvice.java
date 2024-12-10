@@ -1,10 +1,9 @@
 package net.pmolinav.configuration.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import net.pmolinav.bookingslib.dto.ApiError;
 import net.pmolinav.bookingslib.dto.MDCKeys;
 import net.pmolinav.bookingslib.exception.CustomStatusException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +19,7 @@ import org.springframework.web.servlet.HandlerMapping;
 import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalControllerAdvice {
 
     @ModelAttribute
@@ -31,7 +31,6 @@ public class GlobalControllerAdvice {
     public ResponseEntity<ApiError> handleUnexpectedException(CustomStatusException e,
                                                               WebRequest request,
                                                               HttpServletRequest httpServletRequest) {
-
         return logErrorAndReturn(e, request, httpServletRequest);
     }
 
@@ -39,7 +38,6 @@ public class GlobalControllerAdvice {
                                                        WebRequest request,
                                                        HttpServletRequest httpServletRequest) {
         String controllerName = getControllerName(httpServletRequest);
-        Logger logger = LoggerFactory.getLogger(controllerName);
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         String error = "Internal Server Error";
@@ -53,9 +51,9 @@ public class GlobalControllerAdvice {
         ApiError apiError = new ApiError(status.value(), error, message, httpServletRequest.getRequestURI());
         // Log will be different depending on error codes.
         if (status.value() >= 500) {
-            logger.error("An unexpected error occurred while executing controller {}. Error response: {}", controllerName, apiError, e);
+            log.error("An unexpected error occurred while executing controller {}. Error response: {}", controllerName, apiError, e);
         } else {
-            logger.warn("An error occurred while executing controller {}. Error response: {}", controllerName, apiError, e);
+            log.warn("An error occurred while executing controller {}. Error response: {}", controllerName, apiError, e);
         }
         return new ResponseEntity<>(apiError, status);
     }

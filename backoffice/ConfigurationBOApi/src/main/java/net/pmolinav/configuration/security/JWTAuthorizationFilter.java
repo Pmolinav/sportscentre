@@ -1,8 +1,7 @@
 package net.pmolinav.configuration.security;
 
+import lombok.extern.slf4j.Slf4j;
 import net.pmolinav.bookingslib.dto.MDCKeys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,9 +18,8 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Component
+@Slf4j
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
-
-    private static final Logger logger = LoggerFactory.getLogger(JWTAuthorizationFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -37,7 +35,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         MDC.put(MDCKeys.originIP.name(), requestWrapper.getRemoteAddr());
         MDC.put(MDCKeys.correlationUid.name(), correlationUid);
 
-        logger.info("Incoming call received. Method: {}. Path: {}. Query params: {}. " +
+        log.info("Incoming call received. Method: {}. Path: {}. Query params: {}. " +
                         "Request Body: {}. Headers: {}. Client IP: {}. Correlation-Uid: {} ",
                 requestWrapper.getMethod(), requestWrapper.getRequestURI(),
                 requestWrapper.getQueryParams(), requestWrapper.getRequestBody(),
@@ -61,13 +59,13 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         byte[] responseData = responseWrapper.getResponseData();
         String responseBody = new String(responseData, response.getCharacterEncoding());
         if (responseWrapper.getStatus() >= 400 && responseWrapper.getStatus() < 500) {
-            logger.warn("Incoming call failed with status {}. Elapsed time: {} ms. Response Body: {}. Correlation-Uid: {}",
+            log.warn("Incoming call failed with status {}. Elapsed time: {} ms. Response Body: {}. Correlation-Uid: {}",
                     responseWrapper.getStatus(), duration, responseBody, correlationUid);
         } else if (responseWrapper.getStatus() >= 500) {
-            logger.error("Incoming call failed with status {}. Elapsed time: {} ms. Response Body: {}. Correlation-Uid: {}",
+            log.error("Incoming call failed with status {}. Elapsed time: {} ms. Response Body: {}. Correlation-Uid: {}",
                     responseWrapper.getStatus(), duration, responseBody, correlationUid);
         } else {
-            logger.info("Incoming call succeeded with status {}. Elapsed time: {} ms. Response Body: {}. Correlation-Uid: {}",
+            log.info("Incoming call succeeded with status {}. Elapsed time: {} ms. Response Body: {}. Correlation-Uid: {}",
                     responseWrapper.getStatus(), duration, responseBody, correlationUid);
         }
 

@@ -1,6 +1,7 @@
 package net.pmolinav.bookings.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import net.pmolinav.bookings.producer.MessageProducer;
 import net.pmolinav.bookings.repository.BookingRepository;
 import net.pmolinav.bookingslib.dto.BookingDTO;
@@ -10,8 +11,6 @@ import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.mapper.BookingMapper;
 import net.pmolinav.bookingslib.model.Booking;
 import net.pmolinav.bookingslib.model.History;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -24,9 +23,8 @@ import java.util.List;
 
 @EnableAsync
 @Service
+@Slf4j
 public class BookingService {
-
-    private static final Logger logger = LoggerFactory.getLogger(BookingService.class);
 
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
@@ -47,11 +45,11 @@ public class BookingService {
         try {
             bookingsList = bookingRepository.findAll();
         } catch (Exception e) {
-            logger.error("Unexpected error while searching all bookings in repository.", e);
+            log.error("Unexpected error while searching all bookings in repository.", e);
             throw new InternalServerErrorException(e.getMessage());
         }
         if (CollectionUtils.isEmpty(bookingsList)) {
-            logger.warn("No bookings were found in repository.");
+            log.warn("No bookings were found in repository.");
             throw new NotFoundException("No bookings found in repository.");
         } else {
             return bookingsList;
@@ -64,7 +62,7 @@ public class BookingService {
             Booking booking = bookingMapper.bookingDTOToBookingEntity(bookingDTO);
             return bookingRepository.save(booking);
         } catch (Exception e) {
-            logger.error("Unexpected error while creating new booking in repository.", e);
+            log.error("Unexpected error while creating new booking in repository.", e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -75,10 +73,10 @@ public class BookingService {
             return bookingRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException(String.format("Booking with id %s does not exist.", id)));
         } catch (NotFoundException e) {
-            logger.error("Booking with id {} was not found.", id, e);
+            log.error("Booking with id {} was not found.", id, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while searching booking with id {} in repository.", id, e);
+            log.error("Unexpected error while searching booking with id {} in repository.", id, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -91,10 +89,10 @@ public class BookingService {
 
             bookingRepository.delete(booking);
         } catch (NotFoundException e) {
-            logger.error("Booking with id {} was not found.", id, e);
+            log.error("Booking with id {} was not found.", id, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while removing booking with id {} in repository.", id, e);
+            log.error("Unexpected error while removing booking with id {} in repository.", id, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -111,7 +109,7 @@ public class BookingService {
                     "Admin" // TODO: createUser is not implemented yet.
             ));
         } catch (Exception e) {
-            logger.warn("Kafka operation {} with name {} and booking {} need to be reviewed", changeType, bookingId, booking);
+            log.warn("Kafka operation {} with name {} and booking {} need to be reviewed", changeType, bookingId, booking);
         }
     }
 }

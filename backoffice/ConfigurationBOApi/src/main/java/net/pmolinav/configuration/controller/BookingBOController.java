@@ -4,13 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.pmolinav.bookingslib.dto.BookingDTO;
 import net.pmolinav.bookingslib.exception.CustomStatusException;
 import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.model.Booking;
 import net.pmolinav.configuration.service.BookingBOService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +25,8 @@ import java.util.List;
 @RequestMapping("bookings")
 @SecurityRequirement(name = "BearerToken")
 @Tag(name = "5. Booking", description = "The Booking Controller. Contains all the operations that can be performed on a booking.")
+@Slf4j
 public class BookingBOController {
-
-    private static final Logger logger = LoggerFactory.getLogger(BookingBOController.class);
 
     @Autowired
     private BookingBOService bookingBOService;
@@ -90,11 +88,11 @@ public class BookingBOController {
 //                bookingService.createBooking(updatedBooking);
 //                return ResponseEntity.ok(updatedBooking);
 //            } else {
-//                logger.error(message);
+//                log.error(message);
 //                throw new BadRequestException(message);
 //            }
 //        } catch (NotFoundException e) {
-//            logger.error(e.getMessage());
+//            log.error(e.getMessage());
 //            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //        }
 //    }
@@ -115,7 +113,7 @@ public class BookingBOController {
     private String validateMandatoryFieldsInRequest(BookingDTO bookingDTO) {
         StringBuilder messageBuilder = new StringBuilder();
         if (bookingDTO.getStartTime().compareTo(bookingDTO.getEndTime()) >= 0) {
-            logger.error("End time must be greater than start time.");
+            log.error("End time must be greater than start time.");
             messageBuilder.append("End time must be greater than start time.");
         }
         return messageBuilder.toString();

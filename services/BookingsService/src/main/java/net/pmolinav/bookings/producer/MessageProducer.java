@@ -2,16 +2,15 @@ package net.pmolinav.bookings.producer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import net.pmolinav.bookingslib.model.History;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class MessageProducer {
-    private static final Logger logger = LoggerFactory.getLogger(MessageProducer.class);
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
@@ -21,7 +20,7 @@ public class MessageProducer {
         try {
             kafkaTemplate.send(topic, objectMapper.writeValueAsString(history));
         } catch (JsonProcessingException e) {
-            logger.error("Unexpected error occurred while trying to parse the following historical message: {}", history);
+            log.error("Unexpected error occurred while trying to parse the following historical message: {}", history);
             throw new RuntimeException(e);
         }
     }

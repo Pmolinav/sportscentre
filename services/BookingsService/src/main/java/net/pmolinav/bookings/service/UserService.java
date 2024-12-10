@@ -1,6 +1,7 @@
 package net.pmolinav.bookings.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import net.pmolinav.bookings.producer.MessageProducer;
 import net.pmolinav.bookings.repository.UserRepository;
 import net.pmolinav.bookingslib.dto.ChangeType;
@@ -10,8 +11,6 @@ import net.pmolinav.bookingslib.exception.NotFoundException;
 import net.pmolinav.bookingslib.mapper.UserMapper;
 import net.pmolinav.bookingslib.model.History;
 import net.pmolinav.bookingslib.model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -24,11 +23,10 @@ import java.util.List;
 
 @EnableAsync
 @Service
+@Slf4j
 public class UserService {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final MessageProducer messageProducer;
 
@@ -47,11 +45,11 @@ public class UserService {
         try {
             usersList = userRepository.findAll();
         } catch (Exception e) {
-            logger.error("Unexpected error while searching all users in repository.", e);
+            log.error("Unexpected error while searching all users in repository.", e);
             throw new InternalServerErrorException(e.getMessage());
         }
         if (CollectionUtils.isEmpty(usersList)) {
-            logger.warn("No users were found in repository.");
+            log.warn("No users were found in repository.");
             throw new NotFoundException("No users found in repository.");
         } else {
             return usersList;
@@ -64,7 +62,7 @@ public class UserService {
             User user = userMapper.userDTOToUserEntity(userDTO);
             return userRepository.save(user);
         } catch (Exception e) {
-            logger.error("Unexpected error while creating new user in repository.", e);
+            log.error("Unexpected error while creating new user in repository.", e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -75,10 +73,10 @@ public class UserService {
             return userRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException(String.format("User with id %s does not exist.", id)));
         } catch (NotFoundException e) {
-            logger.error("User with id {} was not found.", id, e);
+            log.error("User with id {} was not found.", id, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while searching user with id {} in repository.", id, e);
+            log.error("Unexpected error while searching user with id {} in repository.", id, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -89,10 +87,10 @@ public class UserService {
             return userRepository.findByUsername(username)
                     .orElseThrow(() -> new NotFoundException(String.format("User with username %s does not exist.", username)));
         } catch (NotFoundException e) {
-            logger.error("User with username {} was not found.", username, e);
+            log.error("User with username {} was not found.", username, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while searching user with username {} in repository.", username, e);
+            log.error("Unexpected error while searching user with username {} in repository.", username, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -105,10 +103,10 @@ public class UserService {
 
             userRepository.delete(user);
         } catch (NotFoundException e) {
-            logger.error("User with id {} was not found.", id, e);
+            log.error("User with id {} was not found.", id, e);
             throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error while removing user with id {} in repository.", id, e);
+            log.error("Unexpected error while removing user with id {} in repository.", id, e);
             throw new InternalServerErrorException(e.getMessage());
         }
     }
@@ -125,7 +123,7 @@ public class UserService {
                     "Admin" // TODO: createUser is not implemented yet.
             ));
         } catch (Exception e) {
-            logger.warn("Kafka operation {} with name {} and user {} need to be reviewed", changeType, userId, user);
+            log.warn("Kafka operation {} with name {} and user {} need to be reviewed", changeType, userId, user);
         }
     }
 }
